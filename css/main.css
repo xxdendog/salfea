@@ -560,6 +560,40 @@ html.lenis body {
     border-top-color: rgba(0, 0, 0, 0.2);
   }
 }
+@media (max-width: 991px) {
+  .metrics[data-pin-band] {
+    position: relative;
+    display: block;
+    height: 100svh;
+    border-top: none;
+  }
+  .metrics[data-pin-band] .metric {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0;
+  }
+  .metrics[data-pin-band] .metric + .metric {
+    border-top: none;
+  }
+  .metrics[data-pin-band] .metric__label {
+    font-size: 16rem;
+    line-height: 22rem;
+  }
+  .metrics[data-pin-band] .metric__value {
+    margin-top: 10rem;
+    font-size: 64rem;
+    line-height: 70rem;
+    letter-spacing: -1.92rem;
+  }
+  .metrics[data-pin-band] .metric__desc {
+    margin-top: 16rem;
+    font-size: 18rem;
+    line-height: 26rem;
+  }
+}
 .title-roll {
   --roll-gap: 0.18em;
 }
@@ -991,8 +1025,8 @@ html.lenis body {
   padding: 120rem 20rem 40rem;
   background: linear-gradient(173deg, #000 0%, #002594 60%, #3b56b8 100%);
   color: #fff;
-  clip-path: inset(0 0 100% 0);
-  transition: clip-path 0.6s var(--ease-main);
+  clip-path: inset(0 50% 0 50%);
+  transition: clip-path 0.8s var(--ease-main);
   pointer-events: none;
 }
 
@@ -1328,24 +1362,24 @@ html.lenis body {
 }
 
 @media (max-width: 991px) {
-  .modal-contacts {
-    top: 12rem;
-    right: 12rem;
-    left: 12rem;
-    width: auto;
-    max-height: calc(100svh - 24rem);
-    overflow-y: auto;
-    padding: 52rem 20rem 28rem;
+  .modal__panel {
+    border-radius: 0;
+    clip-path: inset(0 50% 0 50%);
   }
+  .modal.is--open .modal__panel {
+    clip-path: inset(0);
+  }
+  .modal-contacts,
   .modal-callback {
-    top: 50%;
-    left: 12rem;
-    right: 12rem;
+    inset: 0;
     width: auto;
-    max-height: calc(100svh - 24rem);
+    max-height: none;
     overflow-y: auto;
-    padding: 48rem 20rem 28rem;
-    transform: translateY(-50%);
+    transform: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 72rem 20rem 32rem;
   }
   .contact-row {
     gap: 12rem;
@@ -1841,30 +1875,42 @@ html.lenis body {
     font-size: 16rem;
     line-height: 24rem;
   }
+  .hero-bg {
+    position: sticky;
+    inset: auto;
+    top: 0;
+    height: 100svh;
+    margin-bottom: -100svh;
+  }
   .hero-stats {
     padding-bottom: 0;
   }
   .hero-stats__grid {
-    flex-direction: column;
+    position: relative;
+    display: block;
+    height: 100svh;
     gap: 0;
-    height: auto;
+    border-top: none;
   }
   .hero-stats__item {
+    position: absolute;
+    inset: 0;
     flex: none;
-    gap: 6rem;
-    padding: 16rem 0;
+    justify-content: center;
+    gap: 12rem;
+    padding: 0;
   }
   .hero-stats__item + .hero-stats__item {
     border-left: none;
-    border-top: 1px solid rgba(255, 255, 255, 0.3);
+    border-top: none;
   }
   .hero-stats__value {
-    font-size: 24rem;
-    line-height: 30rem;
+    font-size: 48rem;
+    line-height: 54rem;
   }
   .hero-stats__text {
-    font-size: 15rem;
-    line-height: 21rem;
+    font-size: 18rem;
+    line-height: 26rem;
   }
 }
 .products {
@@ -2039,7 +2085,7 @@ html.lenis body {
   }
   .hit-card {
     flex: none;
-    height: 420rem;
+    height: 480rem;
     padding: 20rem;
   }
   .hit-card:first-child {
@@ -2068,10 +2114,11 @@ html.lenis body {
     margin-top: 14rem;
   }
   .hit-card__media {
-    left: auto;
-    right: -6rem;
-    width: 200rem;
-    height: 180rem;
+    left: 50%;
+    right: auto;
+    width: 260rem;
+    height: 240rem;
+    margin-left: -130rem;
   }
   .hit-card__badge {
     right: 16rem;
@@ -2094,7 +2141,7 @@ html.lenis body {
 }
 @media (max-width: 767px) {
   .hit-card {
-    height: 480rem;
+    height: 540rem;
   }
 }
 .form-flat {
@@ -2520,6 +2567,10 @@ html.lenis body {
   color: rgba(255, 255, 255, 0.5);
 }
 
+.rating-head {
+  display: contents;
+}
+
 .rating .sec-title {
   max-width: 703rem;
   margin-top: 8rem;
@@ -2558,8 +2609,21 @@ html.lenis body {
     font-size: 16rem;
     line-height: 24rem;
   }
+  .rating-head {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: calc(100svh - 112rem);
+  }
+  .rating-bg {
+    position: sticky;
+    inset: auto;
+    top: 0;
+    height: 100svh;
+    margin-bottom: -100svh;
+  }
   .rating-inner > .metrics {
-    margin-top: 40rem;
+    margin-top: 0;
   }
 }
 .features {
@@ -2664,7 +2728,7 @@ html.lenis body {
   .features {
     display: flex;
     flex-direction: column;
-    gap: 24rem;
+    gap: 20rem;
     height: auto;
     min-height: 0;
     padding: 48rem 20rem 56rem;
@@ -2715,6 +2779,10 @@ html.lenis body {
   .features-img img {
     top: 0;
     height: 100%;
+  }
+  .features-item:nth-of-type(2),
+  .features-item:nth-of-type(3) {
+    margin-top: 40rem;
   }
   .features-item:nth-of-type(1) {
     order: 1;
@@ -2869,15 +2937,16 @@ html.lenis body {
     line-height: 24rem;
   }
   .plant-slider {
-    --slide-w: 300;
+    --slide-w: 440;
     --slide-gap: 12;
+    --slide-center: 1;
     margin-top: 32rem;
   }
   .plant-track {
-    height: 235rem;
+    height: 345rem;
   }
   .plant-slide {
-    height: 235rem;
+    height: 345rem;
   }
   .plant-nav {
     left: calc(20rem + 12rem);
@@ -3069,12 +3138,12 @@ html.lenis body {
     margin-top: 28rem;
   }
   .delivery-globe {
-    --globe-size: 230;
+    --globe-size: 262;
     position: relative;
     left: auto;
     top: auto;
-    width: 300rem;
-    height: 300rem;
+    width: 350rem;
+    height: 350rem;
     margin: 40rem auto 8rem;
   }
   .delivery-list {

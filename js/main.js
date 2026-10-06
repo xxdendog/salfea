@@ -9,7 +9,9 @@
  * Содержание:
  *   Плавный скролл        lenis + ScrollTrigger
  *   Общее для страниц     initGlobalParallax, initTitleRoll (перекат текста),
- *                         initNavDropdown, initMobileMenu, initAnchorScroll,
+ *                         initNavDropdown, initMobileMenu,
+ *                         initMobileCallButton, initMobilePinBands,
+ *                         initAnchorScroll,
  *                         initModals,
  *                         initFaq, initCallbackForm, initMetricCounters,
  *                         initFooterParallax (футер выезжает медленнее)
@@ -263,9 +265,10 @@ function initMobileMenu() {
 
     if (open) {
       lenis.stop();
+      // как содержимое попапа: блоки догоняют край шторки, кривая мягкая
       gsap.fromTo(rows,
-        { yPercent: 40, autoAlpha: 0 },
-        { yPercent: 0, autoAlpha: 1, duration: 0.5, ease: ROLL_EASE, stagger: 0.05, delay: 0.15 });
+        { yPercent: 25, autoAlpha: 0 },
+        { yPercent: 0, autoAlpha: 1, duration: 0.9, ease: 'power2.out', stagger: 0.07, delay: 0.18 });
     } else {
       lenis.start();
       gsap.killTweensOf(rows);
@@ -284,6 +287,83 @@ function initMobileMenu() {
   window.matchMedia('(min-width: 992px)').addEventListener('change', (e) => {
     if (e.matches) setOpen(false);
   });
+}
+
+
+// Полосы цифр на мобильном: пин со сменой по одной.
+// Три колонки, которые на десктопе стоят в ряд, на телефоне не влезают, а
+// столбиком читаются как простыня. Поэтому полоса занимает экран целиком и
+// листается вместе со страницей: пин на (N-1) экранов, цифра меняется на
+// середине шага, после последней пин отпускает и скролл идёт дальше обычным.
+// Полоса помечается в разметке атрибутом data-pin-band; элементы — её дети.
+// Живёт только ниже 992: gsap.matchMedia сам соберёт пин при сужении окна
+// и разберёт при возврате на десктоп.
+function initMobilePinBands() {
+  const bands = Array.from(document.querySelectorAll('[data-pin-band]'));
+  if (!bands.length) return;
+
+  gsap.matchMedia().add('(max-width: 991px)', () => {
+    bands.forEach((band) => {
+      const items = Array.from(band.children);
+      if (items.length < 2) return;
+
+      const steps = items.length - 1;
+      let current = 0;
+
+      gsap.set(items, { autoAlpha: 0 });
+      gsap.set(items[0], { autoAlpha: 1 });
+
+      // dir: 1 — листаем вниз (цифра уходит вверх, новая приходит снизу)
+      const swap = (to, dir) => {
+        gsap.to(items[current], {
+          autoAlpha: 0, yPercent: -14 * dir,
+          duration: 0.4, ease: ROLL_EASE, overwrite: true
+        });
+        gsap.fromTo(items[to],
+          { autoAlpha: 0, yPercent: 14 * dir },
+          { autoAlpha: 1, yPercent: 0, duration: 0.5, ease: ROLL_EASE, overwrite: true });
+        current = to;
+      };
+
+      ScrollTrigger.create({
+        trigger: band,
+        start: 'top top',
+        end: () => `+=${steps * 100}%`,
+        pin: true,
+        scrub: true,
+        invalidateOnRefresh: true,
+        onUpdate: (self) => {
+          // round, а не floor: цифра меняется на середине шага
+          const idx = Math.max(0, Math.min(steps, Math.round(self.progress * steps)));
+          if (idx !== current) swap(idx, idx > current ? 1 : -1);
+        }
+      });
+    });
+
+    // при возврате на десктоп matchMedia снимет пин, а состояния снимем сами
+    return () => bands.forEach((band) => gsap.set(Array.from(band.children), { clearProps: 'all' }));
+  });
+}
+
+
+// Кнопка-телефон в шапке: на десктопе открывает окно «Контакты», на телефоне —
+// сразу форму заявки. Контакты на мобильном и так лежат в меню целиком,
+// поэтому второе окно с ними дублирует меню, а форма — следующий шаг.
+// Цель читается в момент клика (initModals берёт её из атрибута), поэтому
+// достаточно переписать атрибут при смене ширины.
+function initMobileCallButton() {
+  const btn = document.querySelector('.header-contact[data-modal-open]');
+  if (!btn) return;
+
+  const wide = window.matchMedia('(min-width: 992px)');
+  const desktopTarget = btn.getAttribute('data-modal-open');
+
+  const apply = () => {
+    btn.setAttribute('data-modal-open', wide.matches ? desktopTarget : '#modal-callback');
+  };
+
+  apply();
+  wide.addEventListener('change', apply);
 }
 
 
@@ -1047,9 +1127,14 @@ function initPlantSlider() {
     GAP = cssNum('--slide-gap', 17);
     step = (SLIDE + GAP) * k;
     total = step * slides.length;
-    offsetLeft = grid
-      ? grid.getBoundingClientRect().left + parseFloat(getComputedStyle(grid).paddingLeft)
-      : (window.innerWidth - 1440 * k) / 2 + 80 * k;
+    // --slide-center: слайд шире экрана и стоит по его середине (мобильная
+    // ветка). Обычно же лента начинается от левого края сетки, вровень
+    // с заголовком блока.
+    offsetLeft = cssNum('--slide-center', 0)
+      ? (window.innerWidth - SLIDE * k) / 2
+      : grid
+        ? grid.getBoundingClientRect().left + parseFloat(getComputedStyle(grid).paddingLeft)
+        : (window.innerWidth - 1440 * k) / 2 + 80 * k;
   };
 
   // Каждый слайд встаёт на своё место по модулю длины ленты — она бесконечна
@@ -1368,6 +1453,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initTitleRoll();
   initNavDropdown();
   initMobileMenu();
+  initMobileCallButton();
+  initMobilePinBands();
   initAnchorScroll();
   initCallbackForm();
   initModals();

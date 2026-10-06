@@ -315,27 +315,30 @@
 // собственную прокрутку — форма из четырёх полей на коротком экране
 // (iPhone SE — 667) иначе не помещается целиком.
 @include tablet {
-  .modal-contacts {
-    top: 12rem;
-    right: 12rem;
-    left: 12rem;
-    width: auto;
-    max-height: calc(100svh - 24rem);
-    overflow-y: auto;
-    padding: 52rem 20rem 28rem;
+  // Окно во весь экран: на телефоне половинчатая карточка с полями по краям
+  // смотрится как недооткрытая, а место под форму лишним не бывает.
+  // Скругление снимаем — скруглять нечего, углы совпадают с углами экрана.
+  .modal__panel {
+    border-radius: 0;
+    clip-path: inset(0 50% 0 50%);
   }
 
+  .modal.is--open .modal__panel {
+    clip-path: inset(0);
+  }
+
+  .modal-contacts,
   .modal-callback {
-    top: 50%;
-    left: 12rem;
-    right: 12rem;
+    inset: 0;
     width: auto;
-    max-height: calc(100svh - 24rem);
+    max-height: none;
     overflow-y: auto;
-    padding: 48rem 20rem 28rem;
-    // left/right заменили центрирование по горизонтали — по вертикали
-    // окно по-прежнему держится серединой
-    transform: translateY(-50%);
+    transform: none;
+    // содержимое держится середины экрана, пока помещается
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 72rem 20rem 32rem;
   }
 
   .contact-row {

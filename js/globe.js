@@ -450,11 +450,16 @@ export function initDeliveryGlobe() {
 
       const a = p.vis * (p.home ? 1 : 0.85);
       const y = p.sy + (p.below ? LABEL_GAP : -LABEL_GAP);
+      // Подпись у самой кромки не даём обрезать краем канваса: подвигаем её
+      // внутрь ровно настолько, чтобы влезла целиком. На мобильном шар почти
+      // во всю ширину коробки, и запаса по бокам почти нет.
+      const half = ctx.measureText(p.text).width / 2;
+      const x = Math.max(half + 2, Math.min(w - half - 2, p.sx));
 
       ctx.fillStyle = 'rgba(' + LABEL_BACK + ', ' + (a * 0.6).toFixed(3) + ')';
-      ctx.fillText(p.text, p.sx, y + 1);
+      ctx.fillText(p.text, x, y + 1);
       ctx.fillStyle = 'rgba(' + LABEL_TEXT + ', ' + a.toFixed(3) + ')';
-      ctx.fillText(p.text, p.sx, y);
+      ctx.fillText(p.text, x, y);
     });
   };
 
@@ -489,10 +494,14 @@ export function initDeliveryGlobe() {
       phi += (MOTION.spin + boost + fling) * dt;
     }
 
-    // Разгон от скролла множителем: ускорился шар втрое — втрое ускоряются и
-    // орбита, и хвосты маршрутов. Прибавка в своих единицах у каждого из них
-    // была бы незаметна, а общий множитель держит их заодно.
-    const rush = (MOTION.spin + boost) / MOTION.spin;
+    // Разгон множителем: ускорился шар втрое — втрое ускоряются и орбита,
+    // и хвосты маршрутов. Прибавка в своих единицах у каждого из них была бы
+    // незаметна, а общий множитель держит их заодно.
+    // Считаем от всего, что крутит шар прямо сейчас: прокрутка страницы,
+    // бросок после отпускания и рука, пока она тянет. Берём модуль — влево
+    // шар иногда едет, но хвосты от этого не должны бежать назад.
+    const spun = boost + Math.abs(dragging ? dragVel : fling);
+    const rush = (MOTION.spin + spun) / MOTION.spin;
 
     // Хвосты: у каждого маршрута свой сдвиг по времени, голова бежит от
     // Бишкека к городу, хвост идёт следом, и после него дуга пустая.

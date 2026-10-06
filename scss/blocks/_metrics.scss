@@ -131,3 +131,47 @@
     border-top-color: rgba(0, 0, 0, 0.2);
   }
 }
+
+// Полоса-пин (data-pin-band, мобильный): занимает экран целиком, элементы
+// лежат друг на друге, виден один — переключает initMobilePinBands().
+// Столбиком все три читались как простыня, а по одному цифра работает так же,
+// как на десктопе: крупно и по очереди.
+@include tablet {
+  .metrics[data-pin-band] {
+    position: relative;
+    display: block;
+    height: 100svh;
+    border-top: none;
+  }
+
+  .metrics[data-pin-band] .metric {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0;
+  }
+
+  .metrics[data-pin-band] .metric + .metric {
+    border-top: none;
+  }
+
+  .metrics[data-pin-band] .metric__label {
+    font-size: 16rem;
+    line-height: 22rem;
+  }
+
+  .metrics[data-pin-band] .metric__value {
+    margin-top: 10rem;
+    font-size: 64rem;
+    line-height: 70rem;
+    letter-spacing: -1.92rem;
+  }
+
+  .metrics[data-pin-band] .metric__desc {
+    margin-top: 16rem;
+    font-size: 18rem;
+    line-height: 26rem;
+  }
+}

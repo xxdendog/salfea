@@ -223,14 +223,16 @@
     margin-top: 28rem;
   }
 
+  // Орбита во всю ширину сетки: 350 — это 390 минус поля по 20. Шар внутри
+  // держит ту же долю, что и на десктопе (413 из 552), отсюда 262.
   .delivery-globe {
-    --globe-size: 230;
+    --globe-size: 262;
 
     position: relative;
     left: auto;
     top: auto;
-    width: 300rem;
-    height: 300rem;
+    width: 350rem;
+    height: 350rem;
     margin: 40rem auto 8rem;
   }
 

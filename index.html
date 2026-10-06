@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#000000">
   <!-- Превью на GitHub Pages: страницы закрыты от поисковиков.
        TODO: удалить эту строку при запуске на боевом домене. -->
   <meta name="robots" content="noindex, nofollow">
@@ -235,7 +236,7 @@
 
     <div class="hero-stats">
       <div class="container">
-        <div class="hero-stats__grid">
+        <div class="hero-stats__grid" data-pin-band>
           <div class="hero-stats__item">
             <p class="hero-stats__value">25M+</p>
             <p class="hero-stats__text">Изделий в&nbsp;год&nbsp;— производственная мощность предприятия</p>
@@ -451,11 +452,14 @@
       <img src="assets/images/rating-bg.webp" alt="" data-parallax="target" loading="lazy">
     </div>
     <div class="rating-inner">
-      <p class="rating-caption">Wildberries</p>
+      <div class="rating-head">
+<p class="rating-caption">Wildberries</p>
       <h2 class="sec-title">Salfea™&nbsp;— высокий рейтинг и&nbsp;сотни тысяч оценок</h2>
       <p class="rating-desc">Высокий рейтинг и&nbsp;сотни тысяч оценок подтверждают устойчивый спрос и&nbsp;доверие покупателей.</p>
+      </div>
 
-      <div class="metrics">
+
+      <div class="metrics" data-pin-band>
         <div class="metric">
           <p class="metric__label">Рейтинг</p>
           <p class="metric__value"><number-flow data-count="4.9" data-digits="1" data-from="1" aria-label="4.9"></number-flow></p>

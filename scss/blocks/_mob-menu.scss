@@ -62,10 +62,11 @@
   background: linear-gradient(173deg, #000 0%, #{$color-blue} 60%, #3b56b8 100%);
   color: #fff;
 
-  // Панель раскрывается шторкой сверху вниз, как и остальные маски на сайте.
-  // clip-path, а не высота: не трогает раскладку и не вызывает перерасчёт.
-  clip-path: inset(0 0 100% 0);
-  transition: clip-path 0.6s var(--ease-main);
+  // Раскрытие — то же движение, что у попапов: подложка расходится из центра
+  // в обе стороны, содержимое уже лежит на местах и открывается краем шторки.
+  // Длительность и изинг общие с ними (--modal-reveal в _modal.scss).
+  clip-path: inset(0 50% 0 50%);
+  transition: clip-path 0.8s var(--ease-main);
   pointer-events: none;
 }
 

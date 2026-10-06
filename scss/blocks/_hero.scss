@@ -158,38 +158,55 @@
     line-height: 24rem;
   }
 
-  // Полоса цифр: три колонки не влезают, поэтому строки друг под другом,
-  // разделитель переезжает с боков на верх
+  // Фон на всю высоту секции не тянем: с пином полосы цифр секция вырастает
+  // на три экрана, и фото пришлось бы растягивать вчетверо. Вместо этого оно
+  // липнет к верху окна и так и остаётся в кадре, пока листаем первый экран
+  // и цифры; параллакс внутри него продолжает работать. Отрицательное поле
+  // снимает место, которое липкий блок занял бы в потоке.
+  .hero-bg {
+    position: sticky;
+    inset: auto;
+    top: 0;
+    height: 100svh;
+    margin-bottom: -100svh;
+  }
+
+  // Полоса цифр занимает экран целиком и листается пином: один показатель
+  // за раз (initMobilePinBands). Три колонки в ряд не влезают, а столбиком
+  // читаются как простыня.
   .hero-stats {
     padding-bottom: 0;
   }
 
   .hero-stats__grid {
-    flex-direction: column;
+    position: relative;
+    display: block;
+    height: 100svh;
     gap: 0;
-    height: auto;
+    border-top: none;
   }
 
-  // В строку не ставим: «ЕАС/МИР» длиннее колонки и ломает сетку,
-  // а цифра сверху читается на узком экране даже лучше
   .hero-stats__item {
+    position: absolute;
+    inset: 0;
     flex: none;
-    gap: 6rem;
-    padding: 16rem 0;
+    justify-content: center;
+    gap: 12rem;
+    padding: 0;
 
     & + & {
       border-left: none;
-      border-top: 1px solid rgba(255, 255, 255, 0.3);
+      border-top: none;
     }
   }
 
   .hero-stats__value {
-    font-size: 24rem;
-    line-height: 30rem;
+    font-size: 48rem;
+    line-height: 54rem;
   }
 
   .hero-stats__text {
-    font-size: 15rem;
-    line-height: 21rem;
+    font-size: 18rem;
+    line-height: 26rem;
   }
 }
