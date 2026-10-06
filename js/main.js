@@ -10,8 +10,7 @@
  *   Плавный скролл        lenis + ScrollTrigger
  *   Общее для страниц     initGlobalParallax, initTitleRoll (перекат текста),
  *                         initNavDropdown, initMobileMenu,
- *                         initMobileCallButton, initMobilePinBands,
- *                         initAnchorScroll,
+ *                         initMobileCallButton, initAnchorScroll,
  *                         initModals,
  *                         initFaq, initCallbackForm, initMetricCounters,
  *                         initFooterParallax (футер выезжает медленнее)
@@ -286,62 +285,6 @@ function initMobileMenu() {
   // вернулись на десктопную ширину — панели там нет, состояние надо сбросить
   window.matchMedia('(min-width: 992px)').addEventListener('change', (e) => {
     if (e.matches) setOpen(false);
-  });
-}
-
-
-// Полосы цифр на мобильном: пин со сменой по одной.
-// Три колонки, которые на десктопе стоят в ряд, на телефоне не влезают, а
-// столбиком читаются как простыня. Поэтому полоса занимает экран целиком и
-// листается вместе со страницей: пин на (N-1) экранов, цифра меняется на
-// середине шага, после последней пин отпускает и скролл идёт дальше обычным.
-// Полоса помечается в разметке атрибутом data-pin-band; элементы — её дети.
-// Живёт только ниже 992: gsap.matchMedia сам соберёт пин при сужении окна
-// и разберёт при возврате на десктоп.
-function initMobilePinBands() {
-  const bands = Array.from(document.querySelectorAll('[data-pin-band]'));
-  if (!bands.length) return;
-
-  gsap.matchMedia().add('(max-width: 991px)', () => {
-    bands.forEach((band) => {
-      const items = Array.from(band.children);
-      if (items.length < 2) return;
-
-      const steps = items.length - 1;
-      let current = 0;
-
-      gsap.set(items, { autoAlpha: 0 });
-      gsap.set(items[0], { autoAlpha: 1 });
-
-      // dir: 1 — листаем вниз (цифра уходит вверх, новая приходит снизу)
-      const swap = (to, dir) => {
-        gsap.to(items[current], {
-          autoAlpha: 0, yPercent: -14 * dir,
-          duration: 0.4, ease: ROLL_EASE, overwrite: true
-        });
-        gsap.fromTo(items[to],
-          { autoAlpha: 0, yPercent: 14 * dir },
-          { autoAlpha: 1, yPercent: 0, duration: 0.5, ease: ROLL_EASE, overwrite: true });
-        current = to;
-      };
-
-      ScrollTrigger.create({
-        trigger: band,
-        start: 'top top',
-        end: () => `+=${steps * 100}%`,
-        pin: true,
-        scrub: true,
-        invalidateOnRefresh: true,
-        onUpdate: (self) => {
-          // round, а не floor: цифра меняется на середине шага
-          const idx = Math.max(0, Math.min(steps, Math.round(self.progress * steps)));
-          if (idx !== current) swap(idx, idx > current ? 1 : -1);
-        }
-      });
-    });
-
-    // при возврате на десктоп matchMedia снимет пин, а состояния снимем сами
-    return () => bands.forEach((band) => gsap.set(Array.from(band.children), { clearProps: 'all' }));
   });
 }
 
@@ -1454,7 +1397,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initNavDropdown();
   initMobileMenu();
   initMobileCallButton();
-  initMobilePinBands();
   initAnchorScroll();
   initCallbackForm();
   initModals();

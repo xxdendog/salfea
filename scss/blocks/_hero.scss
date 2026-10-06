@@ -118,95 +118,120 @@
 }
 
 // ---------------------------------------------------------------- мобильный
-// Первый экран держит ту же схему, что и на десктопе: бегущая строка, крупный
-// заголовок, кнопка, описание внизу. Меняются только кегли и то, что описание
-// и полоса цифр встают в колонку.
+// Первый экран собран по макету 1.svg (402x912): лента, подпись, заголовок,
+// описание, кнопки и полоса из двух показателей — всё в один экран.
+// Заголовок на телефоне читается иначе, чем на десктопе: «из микрофибры и
+// целлюлозы» уходит наверх отдельной приглушённой строкой-подписью, а
+// остальные части перестраиваются. Текст при этом тот же самый и остаётся
+// одним H1 — меняется только порядок и оформление частей.
 @include tablet {
+  // Секция — ровно экран: содержимое сверху, полоса цифр прижата к низу
+  .hero {
+    display: flex;
+    flex-direction: column;
+    min-height: 100svh;
+  }
+
   .hero-screen {
-    // На телефоне берём ровно высоту экрана: 100svh учитывает сворачивающуюся
-    // адресную строку, а жёсткий минимум в 790 на коротких экранах (iPhone SE)
-    // вылезал бы за кадр
+    flex: 1 1 auto;
+    height: auto;
     min-height: 0;
     max-height: none;
   }
 
   .hero-marquee {
-    margin-top: 84rem;
+    margin-top: 90rem;
   }
 
   .hero-content {
+    flex: 1 0 auto;
     padding-top: 28rem;
   }
 
+  // Части заголовка встают в столбец и меняются местами
   .hero-title {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
     max-width: none;
-    font-size: 34rem;
-    line-height: 40rem;
-    letter-spacing: -0.68rem;
+    font-size: 36rem;
+    line-height: 42rem;
+    letter-spacing: -0.72rem;
   }
 
-  .hero-buttons {
-    margin-top: 24rem;
+  .hero-title__part.is--stuff { order: 1; }
+  .hero-title__part.is--name  { order: 2; }
+  .hero-title__part.is--from  { order: 3; }
+  .hero-title__part.is--form  { order: 4; }
+
+  // «из микрофибры и целлюлозы» на телефоне — подпись над заголовком.
+  // Прописную даём через ::first-letter: в разметке строка идёт серединой
+  // предложения и начинаться с большой буквы не может.
+  .hero-title__part.is--stuff {
+    margin-bottom: 14rem;
+    font-size: 17rem;
+    line-height: 22rem;
+    letter-spacing: 0;
+    color: $color-muted-light;
+
+    &::first-letter {
+      text-transform: uppercase;
+    }
   }
 
+  // В макете описание идёт сразу за заголовком, кнопки — под ним
   .hero-desc {
+    order: 2;
     align-self: stretch;
     width: auto;
-    padding-bottom: 32rem;
-    // 16 — нижняя граница комфортного чтения с руки; мельче уже щуримся
+    margin-top: 18rem;
+    padding-bottom: 0;
     font-size: 16rem;
     line-height: 24rem;
   }
 
-  // Фон на всю высоту секции не тянем: с пином полосы цифр секция вырастает
-  // на три экрана, и фото пришлось бы растягивать вчетверо. Вместо этого оно
-  // липнет к верху окна и так и остаётся в кадре, пока листаем первый экран
-  // и цифры; параллакс внутри него продолжает работать. Отрицательное поле
-  // снимает место, которое липкий блок занял бы в потоке.
-  .hero-bg {
-    position: sticky;
-    inset: auto;
-    top: 0;
-    height: 100svh;
-    margin-bottom: -100svh;
+  .hero-buttons {
+    order: 3;
+    margin-top: 32rem;
+    padding-bottom: 28rem;
   }
 
-  // Полоса цифр занимает экран целиком и листается пином: один показатель
-  // за раз (initMobilePinBands). Три колонки в ряд не влезают, а столбиком
-  // читаются как простыня.
+  // Полоса показателей: две колонки рядом, как в макете. Третья
+  // («ЕАС/МИР») на телефоне не показывается — в ряд влезают две,
+  // а столбиком полоса занимала бы пол-экрана.
   .hero-stats {
-    padding-bottom: 0;
+    flex: none;
+    padding-bottom: 20rem;
   }
 
   .hero-stats__grid {
-    position: relative;
-    display: block;
-    height: 100svh;
-    gap: 0;
-    border-top: none;
+    flex-direction: row;
+    gap: 16rem;
+    height: auto;
   }
 
   .hero-stats__item {
-    position: absolute;
-    inset: 0;
-    flex: none;
-    justify-content: center;
-    gap: 12rem;
-    padding: 0;
+    flex: 1 1 50%;
+    gap: 8rem;
+    padding: 18rem 0 0;
 
     & + & {
-      border-left: none;
-      border-top: none;
+      border-left: 1px solid rgba(255, 255, 255, 0.4);
+      padding-left: 16rem;
+    }
+
+    &:nth-child(3) {
+      display: none;
     }
   }
 
   .hero-stats__value {
-    font-size: 48rem;
-    line-height: 54rem;
+    font-size: 28rem;
+    line-height: 34rem;
   }
 
   .hero-stats__text {
-    font-size: 18rem;
-    line-height: 26rem;
+    font-size: 13rem;
+    line-height: 18rem;
   }
 }

@@ -108,27 +108,9 @@
     line-height: 24rem;
   }
 
-  // Текст занимает первый экран целиком, полоса цифр приходит следующим
-  .rating-head {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    min-height: calc(100svh - 112rem); // минус паддинги .rating-inner
-  }
-
-  // Фон липнет к верху окна: с пином полосы секция вырастает на три экрана,
-  // и растягивать фото на всю её высоту было бы и некрасиво, и тяжело
-  .rating-bg {
-    position: sticky;
-    inset: auto;
-    top: 0;
-    height: 100svh;
-    margin-bottom: -100svh;
-  }
-
   // margin-top: auto прижимал полосу к низу секции высотой 900; высоты больше
-  // нет, а полоса теперь сама занимает экран — отступ ей не нужен
+  // нет, поэтому отступ задаём явно
   .rating-inner > .metrics {
-    margin-top: 0;
+    margin-top: 40rem;
   }
 }
