@@ -285,7 +285,11 @@ export function initDeliveryGlobe() {
 
   // Шар стоит там же, где его коробка: считаем, на сколько её середина ушла
   // от середины канваса, и переводим в единицы offset.
+  // Когда канвас лежит в потоке (мобильная ветка ниже), считать нечего:
+  // он и есть коробка орбиты, браузер двигает его вместе со страницей.
+  let inline = false;
   const place = () => {
+    if (inline) return;
     const shift = anchorCenter - window.scrollY - (box.top + box.height / 2);
     offset[1] = (2 * shift) / scale;
   };
@@ -299,6 +303,36 @@ export function initDeliveryGlobe() {
   labels.setAttribute('aria-hidden', 'true');
   canvas.parentElement.appendChild(labels);
   const ctx = labels.getContext('2d');
+
+  // ------------------------------------------- канвас в потоке на мобильном
+  // На телефоне страницу крутит сам браузер, на своём потоке, а положение шара
+  // внутри прибитого к вьюпорту канваса считает JS по window.scrollY — и
+  // отстаёт от страницы на кадр-другой: шар заметно плывёт за секцией.
+  // Поэтому ниже 992 канвас переезжает внутрь коробки орбиты обычным
+  // absolute — его двигает браузер вместе со всем остальным, и offset не нужен.
+  // На десктопе оставляем как было: там канвас фиксирован не от хорошей жизни,
+  // а потому что Safari рвёт скролл, когда таскает слой WebGL вместе с Lenis.
+  const home = canvas.parentElement;
+  const wide = window.matchMedia('(min-width: 992px)');
+
+  const setInline = (on) => {
+    if (on === inline) return;
+    inline = on;
+    canvas.classList.toggle('is--inline', on);
+    labels.classList.toggle('is--inline', on);
+    // порядок важен: канвас и подписи встают перед svg орбиты, иначе
+    // пунктир и стрелки уедут под шар
+    if (on) {
+      anchor.prepend(labels);
+      anchor.prepend(canvas);
+    } else {
+      home.appendChild(canvas);
+      home.appendChild(labels);
+    }
+    offset[0] = 0;
+    offset[1] = 0;
+    resize();
+  };
 
   const order = Object.keys(LABEL);
   const ring = anchor.querySelector('.delivery-globe__orbit.is--ring');
@@ -575,6 +609,8 @@ export function initDeliveryGlobe() {
   }
 
   measure();
+  setInline(!wide.matches);
+  wide.addEventListener('change', () => setInline(!wide.matches));
   window.addEventListener('resize', resize);
   window.addEventListener('load', measure);
   // пины ScrollTrigger сдвигают секции, после пересчёта меряем заново

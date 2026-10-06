@@ -3099,8 +3099,14 @@ html.lenis body {
     font-size: 16rem;
     line-height: 24rem;
   }
-  .globe-canvas {
-    width: 314rem;
+  .globe-canvas.is--inline,
+  .globe-labels.is--inline {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    transform: none;
   }
 }
 .page-blog {
