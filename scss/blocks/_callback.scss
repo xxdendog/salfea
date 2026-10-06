@@ -1,0 +1,201 @@
+@use '../utils/variables' as *;
+@use '../utils/mixins' as *;
+
+// Общая «шкура» формы — одна на блок 3 главной и на попап заявки.
+// Поля без подписей: плейсхолдер + иконка справа, тонкая рамка на прозрачном.
+// Бэкенда нет, состояния и валидация — в js/main.js (initCallbackForm).
+.form-flat {
+  display: flex;
+  flex-direction: column;
+  gap: 48rem;
+}
+
+.form-flat__fields {
+  display: flex;
+  flex-direction: column;
+  gap: 24rem;
+}
+
+.callback-form__fields {
+  display: flex;
+  flex-direction: column;
+  gap: 12rem;
+}
+
+.form-field {
+  position: relative;
+}
+
+.form-field__input {
+  display: block; // иначе textarea как inline добавляет ~7px снизу
+  width: 100%;
+  height: 52rem;
+  padding: 16rem 40rem 16rem 12rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 4rem;
+  background: transparent;
+  font-family: inherit;
+  font-size: 18rem;
+  font-weight: 500;
+  line-height: 20rem;
+  color: #fff;
+  transition: border-color 0.25s ease;
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  @include hover {
+    &:hover {
+      border-color: rgba(255, 255, 255, 0.8);
+    }
+  }
+
+  &:focus {
+    outline: none;
+    border-color: #fff;
+  }
+
+  &.is--textarea {
+    height: 156rem;
+    padding-block: 16rem;
+    resize: none;
+  }
+}
+
+// Ошибка — только красная рамка, без текста под полем
+.form-field.is--error .form-field__input {
+  border-color: $color-error;
+}
+
+.form-field__icon {
+  position: absolute;
+  right: 12rem;
+  top: 18rem;
+  width: 16rem;
+  height: 16rem;
+  color: #fff;
+  pointer-events: none;
+}
+
+// Кастомный чекбокс согласия
+.form-check {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 8rem;
+  cursor: pointer;
+  user-select: none;
+
+  input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+.form-check__box {
+  position: relative;
+  flex-shrink: 0;
+  width: 18rem;
+  height: 18rem;
+  margin: 5rem; // зона клика те же 28, рамка 18 — по макету
+  border: 2px solid #fff;
+  border-radius: 3rem;
+  transition: border-color 0.2s ease;
+
+  // отметка — залитый квадрат 10, а не галочка
+  &::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 10rem;
+    height: 10rem;
+    border-radius: 1rem;
+    background-color: #fff;
+    transform: translate(-50%, -50%) scale(0.4);
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s var(--ease-main);
+  }
+}
+
+.form-check input:checked + .form-check__box::after {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.form-check input:focus-visible + .form-check__box {
+  outline: 2px solid #fff;
+  outline-offset: 2rem;
+}
+
+.form-check.is--error .form-check__box {
+  border-color: $color-error;
+}
+
+.form-check__text {
+  font-size: 16rem;
+  font-weight: 400;
+  line-height: 18rem;
+  color: rgba(255, 255, 255, 0.4);
+
+  a {
+    color: #fff;
+    text-decoration: underline;
+
+    @include hover {
+      &:hover {
+        text-decoration: none;
+      }
+    }
+  }
+}
+
+.callback-form__status {
+  display: none;
+  margin-bottom: 16rem;
+  font-size: 16rem;
+  line-height: 1.4;
+  color: #b9f6ca;
+
+  &.is--visible {
+    display: block;
+  }
+}
+
+// ---------------------------------------------------------------- мобильный
+// Поля крупнее относительно канвы, чем на десктопе: 48 — нижняя граница
+// удобного попадания пальцем, а кегль ровно 16 обязателен — при меньшем
+// Safari на iOS зумит страницу, как только встаёшь в поле.
+@include tablet {
+  .form-flat {
+    gap: 28rem;
+  }
+
+  .form-flat__fields {
+    gap: 14rem;
+  }
+
+  .form-field__input {
+    height: 48rem;
+    padding: 14rem 40rem 14rem 12rem;
+    font-size: 16rem;
+
+    &.is--textarea {
+      height: 120rem;
+      padding-block: 14rem;
+    }
+  }
+
+  .form-field__icon {
+    top: 16rem;
+  }
+
+  .form-check__text {
+    font-size: 14rem;
+    line-height: 18rem;
+  }
+}

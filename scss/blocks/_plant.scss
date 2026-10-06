@@ -1,0 +1,201 @@
+@use '../utils/variables' as *;
+@use '../utils/mixins' as *;
+
+// Блок 7 «Топ-1 производитель в Средней Азии» (макет 1440x1474):
+// шапка, полоса из трёх цифр и бесконечный слайдер фотографий (Swiper).
+.plant {
+  padding: 80rem 0;
+  background-color: #fff;
+  color: #000;
+  overflow: hidden;
+}
+
+.plant-note {
+  flex-shrink: 0;
+  width: 413rem;
+  margin-top: 4rem;
+  font-size: 20rem;
+  font-weight: 500;
+  line-height: 29rem;
+}
+
+// Слайдер во всю ширину окна, слайды разной ширины.
+// Размеры слайда объявлены переменными: их же читает initPlantSlider,
+// чтобы раскладка ленты и её вёрстка не разъезжались.
+.plant-slider {
+  --slide-w: 850;
+  --slide-gap: 17;
+
+  position: relative;
+  margin-top: 80rem;
+}
+
+// Лента: своя механика вместо слайдера-библиотеки (принцип codrops parallax
+// slider) — позиции слайдов считает js, инерция через lerp, картинка внутри
+// рамки едет от положения слайда на экране.
+.plant-track {
+  position: relative;
+  height: 666rem;
+  overflow: hidden;
+  cursor: grab;
+  user-select: none;
+
+  &.is--dragging {
+    cursor: grabbing;
+  }
+}
+
+.plant-track__inner {
+  position: absolute;
+  inset: 0;
+}
+
+.plant-slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(var(--slide-w) * 1rem);
+  height: 666rem;
+  will-change: transform;
+}
+
+// рамка обрезает картинку, внутри неё картинка ездит параллаксом
+.plant-slide__frame {
+  position: absolute;
+  inset: 0;
+  border-radius: 6rem;
+  overflow: hidden;
+
+  // запас по обеим осям ровно под ход параллакса (IMG_SHIFT / IMG_SHIFT_Y)
+  img {
+    position: absolute;
+    top: -6%;
+    left: -14%;
+    width: 128%;
+    height: 112%;
+    max-width: none;
+    object-fit: cover;
+    will-change: transform;
+    -webkit-user-drag: none;
+  }
+}
+
+// Стрелки лежат в левом нижнем углу первого слайда, отступ 28 от его краёв
+.plant-nav {
+  position: absolute;
+  left: calc((100vw - 1440rem) / 2 + 108rem);
+  bottom: 28rem;
+  z-index: 2;
+  display: flex;
+  gap: 8rem;
+}
+
+.plant-nav__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64rem;
+  height: 64rem;
+  border-radius: 50%;
+  background-color: #fff;
+  color: #000;
+
+  overflow: hidden;
+}
+
+// Ход как у кнопки с пузырьком (.btn-calc): иконка уезжает по своей оси,
+// а её место занимает копия, приехавшая с другой стороны. Шаг всегда вперёд —
+// и по наведению, и по клику (`.is--step` вешает initPlantSlider); назад
+// анимация не отматывается, строка просто сбрасывается в начало без перехода
+// (`.is--instant`), а копия неотличима от оригинала.
+.plant-nav__icons {
+  position: relative;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  width: 21rem;
+  height: 17rem;
+  gap: 4rem; // зазор между уходящей иконкой и приходящей
+
+  svg {
+    flex: none;
+    width: 21rem;
+    height: 17rem;
+    transition: transform 0.525s var(--ease-main);
+  }
+
+  &.is--step svg {
+    transform: translateX(var(--icon-step));
+  }
+
+  &.is--instant svg {
+    transition: none;
+  }
+}
+
+// сдвиг на ширину иконки плюс зазор, каждая кнопка — по своей оси
+.plant-nav__btn.is--prev .plant-nav__icons {
+  --icon-step: calc(-100% - 4rem);
+
+  justify-content: flex-start;
+}
+
+.plant-nav__btn.is--next .plant-nav__icons {
+  --icon-step: calc(100% + 4rem);
+
+  justify-content: flex-end;
+}
+
+// Полоса показателей — общий компонент `.metrics` в варианте для белого фона
+.plant .metrics {
+  margin-top: 80rem;
+}
+
+// ---------------------------------------------------------------- мобильный
+// Ленту оставляем живой: это не «тяжёлая» анимация — один transform на слайд
+// в кадре, и именно она показывает производство. Уменьшаем сам слайд,
+// сохраняя пропорцию кадра 850/666: 300x235. В экран попадает слайд с
+// хвостом соседнего — видно, что лента продолжается.
+@include tablet {
+  .plant {
+    padding: 48rem 0 56rem;
+  }
+
+  .plant-note {
+    width: auto;
+    margin-top: 0;
+    font-size: 16rem;
+    line-height: 24rem;
+  }
+
+  .plant-slider {
+    --slide-w: 300;
+    --slide-gap: 12;
+
+    margin-top: 32rem;
+  }
+
+  .plant-track {
+    height: 235rem;
+  }
+
+  .plant-slide {
+    height: 235rem;
+  }
+
+  // Стрелки встают в левый нижний угол первого слайда — он теперь начинается
+  // от поля страницы, поэтому и отступ считаем от него
+  .plant-nav {
+    left: calc(#{$page-margin-mobile} + 12rem);
+    bottom: 12rem;
+  }
+
+  .plant-nav__btn {
+    width: 48rem;
+    height: 48rem;
+  }
+
+  .plant .metrics {
+    margin-top: 40rem;
+  }
+}

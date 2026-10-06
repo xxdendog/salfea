@@ -1,0 +1,218 @@
+@use '../utils/variables' as *;
+@use '../utils/mixins' as *;
+
+.btn-mask {
+  display: block;
+  overflow: hidden;
+}
+
+// Текстовый ролл: под надписью лежит её тень-двойник, на ховере блок уезжает
+// вверх и двойник встаёт на место. Сейчас это только кнопка формы
+// (.btn-calc.is--wide), ролл запускает её ховер в конце файла.
+.btn-text {
+  --text-duplicate-distance: 1.5em;
+
+  display: block;
+  text-shadow: 0 var(--text-duplicate-distance) currentColor;
+  transition: transform 0.525s var(--ease-main);
+}
+
+// ----------------------------------------------------------------------------
+// Основная кнопка макета — osmo Button with Bubble Arrow, механика снипета 1:1.
+// Белая пилюля с круглым «пузырьком»; пузырёк не звонит, он часть кнопки.
+// В покое: [скрытый пузырёк слева][капсула, сдвинутая влево][пузырёк справа].
+// На ховере капсула уезжает вправо, левый пузырёк вырастает, правый схлопывается.
+// ----------------------------------------------------------------------------
+.btn-calc {
+  --calc-size: 72rem;
+  --calc-text: 22rem;
+  --bubble-bg: linear-gradient(180deg, #d3ddff 0%, #527cff 100%);
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 4rem; // зазор между капсулой и пузырьком
+  border-radius: 99rem;
+}
+
+.btn-calc__bubble {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--calc-size);
+  height: var(--calc-size);
+  border-radius: 99rem;
+  background: var(--bubble-bg);
+  color: #1c1b1f;
+  transition: transform 0.735s var(--ease-main);
+  transform: scale(0) rotate(0.001deg);
+  transform-origin: left;
+
+  svg {
+    width: calc(var(--calc-size) * 0.33);
+    height: calc(var(--calc-size) * 0.33);
+  }
+
+  &.is--duplicate {
+    position: absolute;
+    z-index: 2;
+    right: 0;
+    transform: scale(1) rotate(0.001deg);
+    transform-origin: right;
+  }
+}
+
+.btn-calc__pill {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--calc-size);
+  padding: 0 40rem;
+  border-radius: 99rem;
+  background-color: #fff;
+  color: $color-dark;
+  font-size: var(--calc-text);
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  transition: transform 0.735s var(--ease-main);
+  // в покое капсула сдвинута влево на ширину пузырька + зазор 4
+  transform: translateX(calc((var(--calc-size) + 4rem) * -1)) rotate(0.001deg);
+}
+
+// ----------------------------------------------------------------------------
+// Кнопка отправки формы: капсула на всю ширину, высота 56, пузырёк 48 внутри
+// справа (отступ 4 со всех сторон). Ховер — osmo Button with Rotating Icon:
+// снизу под наклоном въезжает заливка и выпрямляется, текст прокручивается,
+// фон пузырька поворачивается на 90°, иконка уезжает вправо, её сменяет копия.
+// Всё на одном времени и изинге, как в снипете (0.525s + --ease-main).
+// ----------------------------------------------------------------------------
+.btn-calc.is--wide {
+  --calc-size: 48rem;
+  --calc-anim: 0.525s;
+
+  display: block;
+  position: relative;
+  width: 100%;
+
+  .btn-calc__pill {
+    overflow: hidden; // заливка ездит внутри капсулы
+    width: 100%;
+    height: 56rem;
+    font-size: 20rem;
+    line-height: 28rem;
+    transform: none;
+    transition: color 0.25s linear 0.12s;
+  }
+
+  // Заливка шире капсулы, чтобы наклонённый край не оголял углы.
+  // В снипете вынос 175%, но там кнопка узкая; наша в 10 раз шире,
+  // и наклон 15° поднимает дальний угол выше нижней кромки — отсюда 300%.
+  .btn-calc__fill {
+    position: absolute;
+    z-index: 0;
+    left: -10%;
+    bottom: 0;
+    width: 120%;
+    height: 100%;
+    background-color: $color-blue;
+    transform: translate(0, 300%) rotate(15deg);
+    transition: transform var(--calc-anim) var(--ease-main);
+  }
+
+  .btn-mask {
+    position: relative;
+    z-index: 1;
+  }
+
+  .btn-calc__bubble {
+    position: absolute;
+    z-index: 2; // капсула идёт следом в разметке и иначе перекрывает пузырёк
+    right: 4rem;
+    top: 4rem;
+    background: none; // градиент переехал на отдельный слой — он крутится
+    transform: scale(1) rotate(0.001deg);
+  }
+
+  .btn-calc__bubble-bg {
+    position: absolute;
+    inset: 0;
+    border-radius: 99rem;
+    background: var(--bubble-bg);
+    transition: transform var(--calc-anim) var(--ease-main);
+  }
+
+  // окно шириной в одну иконку: три копии в ряд, видна последняя
+  .btn-calc__icons {
+    position: relative;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    overflow: hidden;
+    width: 20rem;
+    height: 20rem;
+
+    svg {
+      flex: none;
+      width: 20rem;
+      height: 20rem;
+      transition: transform var(--calc-anim) var(--ease-main);
+    }
+  }
+}
+
+@include hover {
+  .btn-calc:not(.is--wide):hover .btn-calc__pill {
+    transform: translateX(4rem) rotate(0.001deg);
+  }
+
+  .btn-calc:not(.is--wide):hover .btn-calc__bubble {
+    transform: scale(1) rotate(0.001deg);
+  }
+
+  .btn-calc:not(.is--wide):hover .btn-calc__bubble.is--duplicate {
+    transform: scale(0) rotate(0.001deg);
+  }
+
+  .btn-calc.is--wide:hover {
+    .btn-calc__pill {
+      color: #fff;
+    }
+
+    .btn-calc__fill {
+      transform: translate(0, 0) rotate(0deg);
+    }
+
+    .btn-text {
+      transform: translateY(calc(-1 * var(--text-duplicate-distance)));
+    }
+
+    .btn-calc__bubble-bg {
+      transform: rotate(90deg);
+    }
+
+    .btn-calc__icons svg {
+      transform: translateX(200%);
+    }
+  }
+}
+
+// ---------------------------------------------------------------- мобильный
+// Геометрия кнопки целиком висит на двух переменных, поэтому мельчить её
+// на телефоне — это поменять их, а не переписывать правила.
+@include tablet {
+  .btn-calc {
+    --calc-size: 52rem;
+    --calc-text: 16rem;
+  }
+
+  // У широкой кнопки надпись стоит по центру капсулы, а пузырёк прибит
+  // к правому краю: на узком экране строка доезжала до него и шла внахлёст
+  .btn-calc.is--wide .btn-calc__pill {
+    font-size: 16rem;
+    line-height: 24rem;
+  }
+}

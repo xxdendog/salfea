@@ -1,0 +1,367 @@
+@use '../utils/variables' as *;
+@use '../utils/mixins' as *;
+
+// Модалки по макету 3.svg (1440x900):
+// «Контакты» — карточка 417x538 в правом верхнем углу,
+// «Заявка» — карточка 594x682 по центру экрана.
+// Появление окна: подложка раскрывается из центра в обе стороны (clip-path),
+// содержимое уже лежит на местах и просто открывается краем шторки,
+// плюс лёгкое проявление прозрачностью. Закрытие — то же движение назад,
+// окно схлопывается обратно в центр. Механизм общий для всех окон —
+// новое окно получает его автоматически, достаточно класса .modal__panel.
+.modal {
+  --modal-reveal: 0.8s; // шторка подложки
+  --modal-fade: 0.9s; // проявление содержимого — мягче и дольше шторки
+  --modal-fade-step: 0.07s; // шаг между блоками внутри окна
+  --modal-fade-delay: 0.18s; // содержимое трогается чуть позже шторки
+  --modal-fade-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  visibility: hidden;
+
+  // во время закрытия окно ещё видно — иначе анимацию схлопывания не увидеть
+  &.is--open,
+  &.is--closing {
+    visibility: visible;
+  }
+}
+
+.modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  transition: opacity 0.55s ease;
+
+  .modal.is--open & {
+    opacity: 1;
+  }
+}
+
+// Крестик: 24 и отступ 20 от угла — одинаково в обоих окнах (макет 3.svg).
+// Размер вынесен в переменную на случай, если где-то понадобится другой.
+.modal__close {
+  --close-size: 24rem;
+
+  position: absolute;
+  top: 20rem;
+  right: 20rem;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--close-size);
+  height: var(--close-size);
+  color: #fff;
+}
+
+// Крестик из двух линий (приём osmo Burger Menu Button): в каждой ячейке две
+// полосы — та, что улетает, и та, что прилетает следом. Линии не обрезаются
+// маской, а уезжают и гаснут — иначе движения просто не видно.
+// Порядок как в снипете: ушла первая, ушла вторая, пришла третья, пришла
+// четвёртая. Скорость и изинг тоже из снипета (0.3s, button-ease).
+.modal__close-line {
+  --close-time: 0.3s;
+  --close-step: 0.1s; // сдвиг между шагами
+  --close-shift: 90%; // насколько улетает линия
+  --close-ease: cubic-bezier(0.5, 0.05, 0.05, 0.99);
+
+  position: absolute;
+  width: calc(var(--close-size) * 0.82); // диагональ глифа 14 в клетке 24
+  height: 2rem;
+
+  i,
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: currentColor;
+    transition: transform var(--close-time) var(--close-ease),
+      opacity var(--close-time) var(--close-ease);
+  }
+
+  // полоса, которая прилетит, ждёт в стороне и невидима
+  &::after {
+    opacity: 0;
+    transform: translateX(calc(var(--close-shift) * -1));
+  }
+
+  &:nth-child(1) {
+    transform: rotate(45deg);
+  }
+
+  &:nth-child(2) {
+    transform: rotate(-45deg);
+
+    // вторая линия работает в зеркальную сторону
+    &::after {
+      transform: translateX(var(--close-shift));
+    }
+  }
+}
+
+// Возврат идёт обратным порядком: сперва улетают прилетевшие полосы,
+// следом возвращаются исходные
+.modal__close-line:nth-child(1)::after { transition-delay: 0s; }
+.modal__close-line:nth-child(2)::after { transition-delay: var(--close-step); }
+.modal__close-line:nth-child(1) i { transition-delay: calc(var(--close-step) * 2); }
+.modal__close-line:nth-child(2) i { transition-delay: calc(var(--close-step) * 3); }
+
+@include hover {
+  .modal__close:hover {
+    // 1-2 шаг: исходные полосы улетают по своим осям и гаснут
+    .modal__close-line:nth-child(1) i {
+      opacity: 0;
+      transform: translateX(var(--close-shift));
+      transition-delay: 0s;
+    }
+
+    .modal__close-line:nth-child(2) i {
+      opacity: 0;
+      transform: translateX(calc(var(--close-shift) * -1));
+      transition-delay: var(--close-step);
+    }
+
+    // 3-4 шаг: на их место прилетают новые
+    .modal__close-line:nth-child(1)::after,
+    .modal__close-line:nth-child(2)::after {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .modal__close-line:nth-child(1)::after {
+      transition-delay: calc(var(--close-step) * 2);
+    }
+
+    .modal__close-line:nth-child(2)::after {
+      transition-delay: calc(var(--close-step) * 3);
+    }
+  }
+}
+
+
+.modal__panel {
+  position: absolute;
+  background-color: #000;
+  color: #fff;
+  // закрыто: нулевая полоса по центру, открыто: всё окно
+  border-radius: 8rem;
+  clip-path: inset(0 50% round 8rem);
+  transition: clip-path var(--modal-reveal) var(--ease-main);
+
+  .modal.is--open & {
+    clip-path: inset(0 round 8rem);
+  }
+
+  // при закрытии отдельного правила не нужно: без is--open работает
+  // базовое состояние, и окно само схлопывается обратно в центр
+
+  // Содержимое стоит на месте — его открывает край шторки. Сверху добавлена
+  // прозрачность: блоки проявляются по очереди вслед за шторкой, кривая
+  // мягкая (без рывка в конце, как у шторки) и длиннее самой шторки.
+  > * {
+    opacity: 0;
+    // лёгкий подъём снизу вместе с проявлением
+    transform: translateY(12rem);
+    transition: opacity var(--modal-fade) var(--modal-fade-ease),
+      transform var(--modal-fade) var(--modal-fade-ease);
+  }
+
+  .modal.is--open & > * {
+    opacity: 1;
+    transform: none;
+
+    // задержки 0.14 / 0.21 / 0.28 … — блоки догоняют край шторки
+    @for $i from 1 through 6 {
+      &:nth-child(#{$i}) {
+        transition-delay: calc(var(--modal-fade-delay) + var(--modal-fade-step) * #{$i + 1});
+      }
+    }
+  }
+
+  // при закрытии гаснет разом, без задержек
+  .modal.is--closing & > * {
+    opacity: 0;
+    transform: translateY(6rem);
+    transition-duration: 0.3s;
+    transition-timing-function: ease;
+    transition-delay: 0s;
+  }
+}
+
+// ---------------------------------------------------------------- Контакты
+.modal-contacts {
+  top: 20rem;
+  right: 20rem;
+  width: 417rem;
+  padding: 64rem 40rem 52rem;
+}
+
+.modal-contacts__list {
+  display: flex;
+  flex-direction: column;
+  gap: 12rem;
+}
+
+// Карточка контакта: иконка 40, следом значение и подпись
+.contact-row {
+  display: flex;
+  align-items: center;
+  gap: 16rem;
+  height: 80rem;
+  padding-left: 24rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8rem;
+  color: #fff;
+  transition: border-color 0.25s ease, background-color 0.25s ease;
+
+  @include hover {
+    &:hover {
+      border-color: rgba(255, 255, 255, 0.7);
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+  }
+}
+
+.contact-row__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 40rem;
+  height: 40rem;
+
+  svg {
+    width: 40rem;
+    height: 40rem;
+  }
+}
+
+.contact-row__info {
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+}
+
+.contact-row__value {
+  font-size: 18rem;
+  font-weight: 500;
+  line-height: 22rem;
+}
+
+.contact-row__note {
+  font-size: 16rem;
+  font-weight: 400;
+  line-height: 20rem;
+  color: $color-muted-light;
+}
+
+// Мессенджеры и адрес выровнены по левому краю карточек
+.modal-contacts__messengers {
+  display: flex;
+  flex-direction: column;
+  gap: 16rem;
+  margin-top: 40rem;
+}
+
+.messenger-link {
+  display: flex;
+  align-items: center;
+  gap: 16rem;
+  font-size: 18rem;
+  font-weight: 500;
+  line-height: 20rem;
+  color: #fff;
+  transition: opacity 0.2s ease;
+
+  img {
+    width: 20rem;
+    height: 20rem;
+  }
+
+  @include hover {
+    &:hover {
+      opacity: 0.65;
+    }
+  }
+}
+
+.modal-contacts__address {
+  margin-top: 40rem;
+  font-size: 16rem;
+  font-weight: 500;
+  line-height: 22rem;
+  color: $color-muted-light;
+}
+
+// ------------------------------------------------------------------ Заявка
+.modal-callback {
+  top: 50%;
+  left: 50%;
+  // ширина как у панели формы в блоке «Обсудим вашу оптовую закупку»
+  width: 541rem;
+  padding: 64rem 40rem;
+  transform: translate(-50%, -50%);
+}
+
+// ---------------------------------------------------------------- мобильный
+// Оба окна превращаются в почти полноэкранные карточки с полем 12 по краям:
+// «Контакты» прижаты к верху, «Заявка» остаётся по центру и получает
+// собственную прокрутку — форма из четырёх полей на коротком экране
+// (iPhone SE — 667) иначе не помещается целиком.
+@include tablet {
+  .modal-contacts {
+    top: 12rem;
+    right: 12rem;
+    left: 12rem;
+    width: auto;
+    max-height: calc(100svh - 24rem);
+    overflow-y: auto;
+    padding: 52rem 20rem 28rem;
+  }
+
+  .modal-callback {
+    top: 50%;
+    left: 12rem;
+    right: 12rem;
+    width: auto;
+    max-height: calc(100svh - 24rem);
+    overflow-y: auto;
+    padding: 48rem 20rem 28rem;
+    // left/right заменили центрирование по горизонтали — по вертикали
+    // окно по-прежнему держится серединой
+    transform: translateY(-50%);
+  }
+
+  .contact-row {
+    gap: 12rem;
+    height: 68rem;
+    padding-left: 16rem;
+  }
+
+  .contact-row__icon,
+  .contact-row__icon svg {
+    width: 32rem;
+    height: 32rem;
+  }
+
+  .contact-row__value {
+    font-size: 16rem;
+    line-height: 20rem;
+  }
+
+  .contact-row__note {
+    font-size: 14rem;
+    line-height: 18rem;
+  }
+
+  .modal-contacts__messengers,
+  .modal-contacts__address {
+    margin-top: 28rem;
+  }
+}

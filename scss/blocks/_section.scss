@@ -1,0 +1,122 @@
+@use '../utils/variables' as *;
+@use '../utils/mixins' as *;
+
+// Общая шапка секции нового макета: подпись 20/28 + заголовок 64/70
+// и необязательная колонка-примечание справа (24/30).
+.sec-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 40rem;
+}
+
+.sec-label {
+  font-size: 20rem;
+  font-weight: 500;
+  line-height: 28rem;
+  color: rgba(0, 0, 0, 0.75);
+}
+
+.sec-title {
+  margin-top: 12rem;
+  font-size: 64rem;
+  font-weight: 500;
+  line-height: 70rem;
+  letter-spacing: -1.92rem;
+
+  // В блоках «производство» и «доставка» интерлиньяж чуть больше
+  &.is--wide {
+    line-height: 72rem;
+  }
+}
+
+.sec-note {
+  flex-shrink: 0;
+  width: 413rem;
+  margin-top: 12rem;
+  font-size: 24rem;
+  font-weight: 500;
+  line-height: 30rem;
+}
+
+// Тёмные секции
+.is--light {
+  .sec-label {
+    color: rgba(255, 255, 255, 0.75);
+  }
+}
+
+// Список со стрелками ↘ (карточки товаров, блок доставки)
+.arrow-list {
+  list-style: none;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 10rem;
+    height: 32rem;
+    font-size: 18rem;
+    font-weight: 500;
+    line-height: 28rem;
+  }
+
+  svg {
+    flex-shrink: 0;
+    width: 24rem;
+    height: 24rem;
+  }
+}
+
+// ---------------------------------------------------------------- мобильный
+// Шапка секции встаёт в колонку, заголовок уменьшается с 64 до 34. Меньше
+// нельзя — на узком экране крупная строка и есть главный приём макета;
+// больше тоже нельзя: длинные слова («производство») перестают влезать в 350.
+@include tablet {
+  .sec-head {
+    flex-direction: column;
+    gap: 16rem;
+  }
+
+  .sec-label {
+    font-size: 15rem;
+    line-height: 20rem;
+  }
+
+  .sec-title {
+    margin-top: 10rem;
+    font-size: 34rem;
+    line-height: 38rem;
+    letter-spacing: -0.68rem;
+
+    &.is--wide {
+      line-height: 40rem;
+    }
+  }
+
+  .sec-note {
+    width: auto;
+    margin-top: 0;
+    font-size: 16rem;
+    line-height: 24rem;
+  }
+
+  // Строка списка перестаёт быть одной: текст переносится, поэтому высота
+  // свободная, а стрелка прижимается к верху и выравнивается по первой строке
+  .arrow-list li {
+    height: auto;
+    align-items: flex-start;
+    gap: 8rem;
+    font-size: 15rem;
+    line-height: 21rem;
+  }
+
+  .arrow-list li + li {
+    margin-top: 8rem;
+  }
+
+  .arrow-list svg {
+    width: 18rem;
+    height: 18rem;
+    margin-top: 2rem;
+  }
+}

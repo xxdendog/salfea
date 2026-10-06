@@ -1,0 +1,145 @@
+@use '../utils/variables' as *;
+@use '../utils/mixins' as *;
+
+// Герой страницы продукта (макет 1440x900): градиент из Figma,
+// слева текст и кнопки, справа два рулона внахлёст.
+.product-hero {
+  position: relative;
+  height: 900rem;
+  overflow: hidden;
+  background: linear-gradient(173deg, #000 0%, #{$color-blue} 50%, #7993e3 100%);
+  color: #fff;
+}
+
+// Координаты внутри держим от сетки 1440, а не от края окна
+.product-hero__inner {
+  position: relative;
+  width: 1440rem;
+  height: 100%;
+  margin-inline: auto;
+}
+
+// Рулоны: вырезки с прозрачностью, задний правее и выше переднего
+.product-hero__media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+
+  img {
+    position: absolute;
+    width: 886rem;
+    max-width: none;
+    height: auto;
+    object-fit: contain;
+    will-change: transform;
+  }
+
+  .product-hero__roll--back {
+    left: 686rem;
+    top: 53rem;
+  }
+
+  .product-hero__roll--front {
+    left: 507rem;
+    top: 182rem;
+  }
+}
+
+.product-hero__content {
+  position: absolute;
+  z-index: 1;
+  left: 120rem;
+  top: 224rem;
+  width: 571rem;
+}
+
+.product-hero__label {
+  font-size: 20rem;
+  font-weight: 500;
+  line-height: 28rem;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.product-hero__desc {
+  width: 413rem;
+  margin-top: 32rem;
+  font-size: 24rem;
+  font-weight: 500;
+  line-height: 30rem;
+}
+
+.product-hero__actions {
+  margin-top: 40rem;
+
+  // капсула «Купить оптом» по макету 224
+  .btn-calc__pill {
+    width: 224rem;
+    padding: 0;
+  }
+}
+
+// ---------------------------------------------------------------- мобильный
+// Текст встаёт в поток сверху, рулоны уходят под него и вправо: на 390 они
+// занимают больше половины экрана, и ставить их рядом с текстом негде.
+// Высоту секции задаёт содержимое плюс место под рулоны.
+@include tablet {
+  .product-hero {
+    height: auto;
+  }
+
+  // Запас под рулоны даём внутреннему блоку, а не секции: коробка с рулонами
+  // лежит внутри него (inset: 0), и по его высоте они и выравниваются
+  .product-hero__inner {
+    width: 100%;
+    height: auto;
+    padding: 120rem $page-margin-mobile 300rem;
+  }
+
+  .product-hero__content {
+    position: static;
+    left: auto;
+    top: auto;
+    width: auto;
+  }
+
+  .product-hero__label {
+    font-size: 15rem;
+    line-height: 20rem;
+  }
+
+  .product-hero__desc {
+    width: auto;
+    margin-top: 20rem;
+    font-size: 16rem;
+    line-height: 24rem;
+  }
+
+  .product-hero__actions {
+    margin-top: 28rem;
+
+    .btn-calc__pill {
+      width: auto;
+      padding: 0 28rem;
+    }
+  }
+
+  // Рулоны прижимаем к нижнему краю секции и уменьшаем вдвое с небольшим:
+  // кадр остаётся узнаваемым, а текст над ними не зажимается
+  .product-hero__media img {
+    width: 300rem;
+  }
+
+  .product-hero__media .product-hero__roll--back {
+    left: auto;
+    right: -70rem;
+    top: auto;
+    bottom: 60rem;
+  }
+
+  .product-hero__media .product-hero__roll--front {
+    left: -40rem;
+    top: auto;
+    bottom: 0;
+  }
+}

@@ -1,0 +1,109 @@
+@use '../utils/variables' as *;
+@use '../utils/mixins' as *;
+
+// Блок 5 «Salfea™ — высокий рейтинг» (финальный макет 5.svg, 1440x900,
+// сверен 02.10.2026): фон-фото с параллаксом, слева текст, внизу полоса
+// показателей — общий компонент `.metrics` (scss/blocks/_metrics.scss).
+.rating {
+  position: relative;
+  height: 900rem;
+  overflow: hidden;
+  background: linear-gradient(173deg, #162f8d 0%, #0032c8 50%, #7993e3 100%);
+  color: #fff;
+}
+
+// Фото едет параллаксом ±5% по вертикали, поэтому запас нужен только сверху
+// и снизу: при ходе ±5% высоты картинка перекрывает секцию, если она не ниже
+// 111% (900 / 0.9). Берём 112% и приподнимаем на половину запаса.
+// По горизонтали запаса нет и не нужно — вбок ничего не едет, а кадрирование
+// под пропорции секции делает сам object-fit: cover.
+.rating-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+
+  img {
+    position: absolute;
+    top: -6%;
+    left: 0;
+    width: 100%;
+    max-width: none; // перебиваем reset: иначе фото обрежется по ширине секции
+    height: 112%;
+    object-fit: cover;
+  }
+}
+
+.rating-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 1440rem;
+  margin-inline: auto;
+  padding: 80rem 80rem 80rem;
+}
+
+.rating-caption {
+  font-size: 16rem;
+  font-weight: 500;
+  line-height: 22rem;
+  color: $color-muted-light;
+}
+
+// Заголовок — общий `.sec-title`; в этом блоке он уже 8 от подписи
+// (подпись здесь мельче, чем обычная `.sec-label`) и не тянется во всю ширину
+.rating .sec-title {
+  max-width: 703rem;
+  margin-top: 8rem;
+}
+
+.rating-desc {
+  width: 421rem;
+  margin-top: 32rem;
+  font-size: 24rem;
+  font-weight: 500;
+  line-height: 30rem;
+}
+
+// Полоса показателей прижата к низу секции
+.rating-inner > .metrics {
+  margin-top: auto;
+}
+
+// ---------------------------------------------------------------- мобильный
+// Жёсткие 900 снимаем: на узком экране текст и полоса показателей занимают
+// больше, и высоту задаёт содержимое. Фото-фон с запасом 112% остаётся —
+// параллакс вертикальный, на телефоне он так же уместен.
+@include tablet {
+  .rating {
+    height: auto;
+  }
+
+  .rating-inner {
+    width: 100%;
+    padding: 56rem $page-margin-mobile;
+  }
+
+  .rating-caption {
+    font-size: 14rem;
+    line-height: 20rem;
+  }
+
+  .rating .sec-title {
+    max-width: none;
+  }
+
+  .rating-desc {
+    width: auto;
+    margin-top: 20rem;
+    font-size: 16rem;
+    line-height: 24rem;
+  }
+
+  // margin-top: auto прижимал полосу к низу секции высотой 900; высоты больше
+  // нет, поэтому отступ задаём явно
+  .rating-inner > .metrics {
+    margin-top: 40rem;
+  }
+}

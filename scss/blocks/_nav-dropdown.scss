@@ -1,0 +1,162 @@
+@use '../utils/variables' as *;
+@use '../utils/mixins' as *;
+
+// Выпадающее меню «Продукты» (osmo Multilevel Navigation).
+// Белая панель во всю ширину окна выезжает из-под шапки, внутри три карточки.
+// Пока панель открыта, шапка переключается в тёмный вариант (см. _header.scss).
+// Тайминги и изинг — из сниппета
+.nav-dropdown {
+  --nav-ease: cubic-bezier(0.525, 0, 0, 1);
+  --nav-fast: 0.2s;
+  --nav-normal: 0.45s;
+
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 50%;
+  width: 100vw;
+  height: 0;
+  border-radius: 0 0 16rem 16rem;
+  background-color: #fff;
+  overflow: hidden;
+  pointer-events: none;
+  transform: translateX(-50%);
+  transition: height var(--nav-normal) var(--nav-ease);
+}
+
+// Панель разворачивается высотой, а не проявляется прозрачностью
+.nav-dropdown.is--open {
+  height: 484rem;
+  pointer-events: auto;
+}
+
+.nav-dropdown__inner {
+  padding: 116rem 0 48rem;
+}
+
+.nav-dropdown__list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20rem;
+  list-style: none;
+}
+
+// Карточки въезжают справа по очереди, как в сниппете
+.nav-dropdown__list li {
+  opacity: 0;
+  transform: translateX(4em);
+  transition: opacity var(--nav-normal) var(--nav-ease),
+    transform var(--nav-normal) var(--nav-ease);
+}
+
+.nav-dropdown.is--open .nav-dropdown__list li {
+  opacity: 1;
+  transform: translateX(0);
+
+  &:nth-child(1) { transition-delay: 0.18s; }
+  &:nth-child(2) { transition-delay: 0.24s; }
+  &:nth-child(3) { transition-delay: 0.3s; }
+}
+
+.nav-dropdown__card {
+  position: relative;
+  display: block;
+  height: 320rem;
+  border-radius: 10rem;
+  overflow: hidden;
+  color: #fff;
+
+  // Градиенты те же, что у карточек товара на ховере
+  &.is--cellu,
+  &.is--brand {
+    background: linear-gradient(180deg, #000 0%, #{$color-blue} 55%, #7993e3 100%);
+  }
+
+  &.is--micro {
+    background: linear-gradient(180deg, #080808 0%, #93979b 100%);
+  }
+}
+
+.nav-dropdown__label {
+  position: absolute;
+  z-index: 2;
+  left: 22rem;
+  top: 20rem;
+  font-size: 20rem;
+  font-weight: 500;
+  line-height: 28rem;
+  color: #fff;
+  opacity: 0.7; // на ховере карточки выходит в единицу
+  transition: opacity var(--nav-normal) var(--nav-ease);
+}
+
+// Вырезка рулона: крупно по центру, снизу обрезается краем карточки.
+// Ширина подобрана так, чтобы сам рулон был ~155 в поперечнике, как в макете
+// (в файле он занимает ~43% ширины холста, а сверху идёт прозрачное поле).
+.nav-dropdown__img {
+  position: absolute;
+  left: 50%;
+  top: 9rem;
+  width: 358rem;
+  max-width: none;
+  transform: translateX(-50%);
+  transition: transform 0.5s var(--ease-main);
+}
+
+.nav-dropdown__arrow {
+  position: absolute;
+  z-index: 2;
+  right: 20rem;
+  bottom: 20rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52rem;
+  height: 52rem;
+  border-radius: 50%;
+  background-color: #000;
+  color: #fff;
+  transition: background-color 0.35s var(--ease-main);
+
+  svg {
+    width: 20rem;
+    height: 20rem;
+  }
+}
+
+// Третья карточка — фирменный блок с лого
+// Карточка бренда — готовая картинка из макета: градиент, крылья и лого
+.nav-dropdown__brand-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+}
+
+@include hover {
+  .nav-dropdown__card:hover {
+    // масштаб 1.1 — как в сниппете
+    .nav-dropdown__img {
+      transform: translateX(-50%) scale(1.1);
+    }
+
+    .nav-dropdown__arrow {
+      background-color: $color-blue;
+    }
+
+    .nav-dropdown__label {
+      opacity: 1;
+    }
+  }
+}
+
+// Кнопка «Продукты» в шапке выглядит как обычная ссылка меню
+.nav-link {
+  display: flex;
+  align-items: center;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}

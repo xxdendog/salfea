@@ -1,0 +1,8 @@
+# Храним переводы строк как LF — файлы в проекте уже такие
+* text=auto eol=lf
+
+# Бинарные ресурсы не трогаем
+*.woff2 binary
+*.webp binary
+*.jpg binary
+*.png binary

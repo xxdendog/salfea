@@ -1,0 +1,25 @@
+// Основной шрифт нового макета — GT America LCG (Regular/Medium).
+// Жирных начертаний нет: 600/700 в макете добираем Medium.
+@font-face {
+  font-family: 'GT America LCG';
+  src: url('../assets/fonts/GTAmericaLCG-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'GT America LCG';
+  src: url('../assets/fonts/GTAmericaLCG-Medium.woff2') format('woff2');
+  font-weight: 500 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Benzin';
+  src: url('../assets/fonts/Benzin-Semibold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}

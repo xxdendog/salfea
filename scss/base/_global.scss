@@ -1,0 +1,82 @@
+@use '../utils/variables' as *;
+@use '../utils/mixins' as *;
+
+// Fluid-масштабирование всего макета: 1rem = 1px при ширине 1440.
+// Всё, что задано в rem, пропорционально тянется за шириной окна.
+// После 1920px рост останавливается — макет фиксируется, растут боковые поля.
+// Пока окно уже пропорций макета (1440x900) — масштаб считаем от ширины.
+// Когда шире — от высоты, чтобы первый экран всегда влезал целиком,
+// а пропорции блоков сохранялись.
+html {
+  font-size: calc(100vw / 1440);
+
+  @media (min-aspect-ratio: 1440 / 900) {
+    font-size: calc(100vh / 900);
+  }
+
+  // Ниже 992 макет перестраивается в одну колонку (см. «Адаптив» в CLAUDE.md).
+  // Канва мобильной вёрстки — 390: типовая ширина телефона, на ней 1rem = 1px,
+  // и мобильные значения пишутся так же буквально, как десктопные на 1440.
+  // Рост ограничен 1.25px — без потолка к планшетной ширине кегли раздуваются
+  // почти вдвое, и крупно выходит не «солидно», а неряшливо. Правило идёт
+  // последним, чтобы перебить ветку по соотношению сторон: у телефона в
+  // альбомной ориентации оно шире 1440/900, и масштаб считался бы от высоты.
+  @media (max-width: $bp-tablet) {
+    font-size: min(calc(100vw / 390), 1.25px);
+  }
+}
+
+body {
+  font-family: $font-main;
+  font-weight: 500;
+  font-size: 20rem;
+  line-height: 1.4;
+  color: $color-text;
+  background-color: $color-bg-top;
+  -webkit-font-smoothing: antialiased;
+}
+
+// Спрайт иконок в начале <body> — только источник для <use>, сам не рисуется
+.icon-sprite {
+  display: none;
+}
+
+.container {
+  width: 100%;
+  max-width: calc($container + $page-margin * 2);
+  margin-inline: auto;
+  padding-inline: $page-margin;
+
+  // На мобильном поля 20 — тот же воздух, что у списков и карточек внутри
+  @include tablet {
+    padding-inline: $page-margin-mobile;
+  }
+}
+
+// Служебные стили Lenis (плавный скролл)
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+// Склейка слов, которые нельзя разрывать (аббревиатуры со слэшем и т.п.):
+// браузер переносит после «/», в макетах такого переноса нет
+.nowrap {
+  white-space: nowrap;
+}

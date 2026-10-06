@@ -1,0 +1,21 @@
+// Footer Parallax Effect (osmo): обёртка футера.
+// Внутренний слой стартует поднятым на четверть своей высоты и к моменту, когда
+// обёртка встаёт под верх экрана, приходит на место — блок выезжает медленнее
+// страницы, как будто открывается из-под предыдущей секции. Сдвиг обрезает
+// overflow, сверху лежит затемнение, которое к концу хода гаснет.
+// Движение — initFooterParallax() в js/main.js.
+.footer-wrap {
+  position: relative;
+  overflow: hidden;
+  // цвет футера: страховка на узких высоких окнах, где блок ниже вьюпорта
+  background-color: #000;
+}
+
+.footer-wrap__dark {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background-color: #000;
+  opacity: 0;
+  pointer-events: none;
+}

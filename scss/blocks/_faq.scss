@@ -1,0 +1,165 @@
+@use '../utils/variables' as *;
+@use '../utils/mixins' as *;
+
+// Блок 9 «Популярные вопросы» (макет 1440x592): заголовок слева, аккордеон справа
+.faq {
+  padding: 64rem 0 96rem;
+  background-color: #fff;
+  color: #000;
+}
+
+.faq-inner {
+  display: flex;
+  align-items: flex-start;
+}
+
+.faq-info {
+  flex: 0 0 542rem;
+}
+
+.faq-label {
+  font-size: 20rem;
+  font-weight: 500;
+  line-height: 28rem;
+  color: $color-muted-dark;
+}
+
+.faq-title {
+  max-width: 529rem;
+  margin-top: 12rem;
+  font-size: 60rem;
+  font-weight: 500;
+  line-height: 68rem;
+  letter-spacing: -1.8rem;
+}
+
+.faq-note {
+  max-width: 350rem;
+  margin-top: 24rem;
+  font-size: 20rem;
+  font-weight: 500;
+  line-height: 28rem;
+  color: $color-muted-dark;
+}
+
+.faq-list {
+  flex: 1;
+  min-width: 0;
+  padding-right: 4rem;
+}
+
+.faq-item {
+  border-bottom: 1px solid $color-line-grey;
+}
+
+.faq-item__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20rem;
+  width: 100%;
+  height: 72rem;
+  padding-right: 8rem;
+  text-align: left;
+  font-size: 22rem;
+  font-weight: 500;
+  line-height: 28rem;
+
+  img {
+    flex-shrink: 0;
+    width: 32rem;
+    height: 32rem;
+    transition: transform 0.4s var(--ease-main);
+  }
+
+  @include hover {
+    &:hover {
+      opacity: 0.7;
+    }
+  }
+}
+
+.faq-item.is--open .faq-item__head img {
+  transform: rotate(180deg);
+}
+
+// Раскрытие анимируется через max-height в JS
+.faq-item__body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.45s var(--ease-main);
+
+  p {
+    max-width: 640rem;
+    padding-bottom: 24rem;
+    font-size: 19rem;
+    font-weight: 400;
+    line-height: 28.8rem;
+    color: rgba(0, 0, 0, 0.55);
+  }
+}
+
+// ---------------------------------------------------------------- мобильный
+// Две колонки превращаются в одну: шапка сверху, аккордеон под ней.
+// Высоту строки вопроса отпускаем — на 350 вопрос занимает две строки,
+// и жёсткие 72 его обрезали бы.
+@include tablet {
+  .faq {
+    padding: 48rem 0 56rem;
+  }
+
+  .faq-inner {
+    flex-direction: column;
+  }
+
+  .faq-info {
+    flex: none;
+  }
+
+  .faq-label {
+    font-size: 15rem;
+    line-height: 20rem;
+  }
+
+  .faq-title {
+    max-width: none;
+    margin-top: 10rem;
+    font-size: 34rem;
+    line-height: 38rem;
+    letter-spacing: -0.68rem;
+  }
+
+  .faq-note {
+    max-width: none;
+    margin-top: 16rem;
+    font-size: 16rem;
+    line-height: 24rem;
+  }
+
+  .faq-list {
+    width: 100%;
+    margin-top: 28rem;
+    padding-right: 0;
+  }
+
+  .faq-item__head {
+    gap: 16rem;
+    height: auto;
+    min-height: 56rem;
+    padding: 14rem 0;
+    font-size: 17rem;
+    line-height: 24rem;
+
+    img {
+      width: 24rem;
+      height: 24rem;
+    }
+  }
+
+  .faq-item__body p {
+    max-width: none;
+    padding-bottom: 18rem;
+    font-size: 15rem;
+    line-height: 22rem;
+  }
+}

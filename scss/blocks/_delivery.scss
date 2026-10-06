@@ -1,0 +1,268 @@
+@use '../utils/variables' as *;
+@use '../utils/mixins' as *;
+
+// Блок 8 «Организуем поставку» (макет 1440x1036): глобус в центре,
+// слева текст и кнопки, справа три шага. Глобус разгоняется на скролле
+// (js/main.js -> initAcceleratingGlobe), разметка — osmo Accelerating Globe.
+.delivery {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(173deg, #000 0%, #{$color-blue} 50%, #7993e3 100%), #000;
+  color: #fff;
+}
+
+// Внутри — координаты макета, поэтому сетка фиксированная и центрированная
+.delivery-inner {
+  position: relative;
+  z-index: 2; // выше фиксированного канваса глобуса
+  width: 1440rem;
+  height: 1036rem;
+  margin-inline: auto;
+}
+
+.delivery-main {
+  position: absolute;
+  left: 80rem;
+  top: 64rem;
+  width: 916rem;
+}
+
+.delivery-title {
+  max-width: 792rem;
+}
+
+.delivery-desc {
+  width: 413rem;
+  margin-top: 32rem;
+  font-size: 24rem;
+  font-weight: 500;
+  line-height: 30rem;
+}
+
+.delivery-actions {
+  margin-top: 44rem;
+}
+
+.delivery-list {
+  position: absolute;
+  left: 80rem;
+  top: 876rem;
+  width: 470rem;
+}
+
+// Правая колонка: три шага
+.delivery-steps {
+  position: absolute;
+  left: 1070rem;
+  top: 80rem;
+  display: flex;
+  flex-direction: column;
+  gap: 80rem;
+  width: 313rem;
+}
+
+.delivery-step__num {
+  font-size: 20rem;
+  font-weight: 500;
+  line-height: 28rem;
+  color: $color-muted-light;
+}
+
+.delivery-step__title {
+  margin-top: 20rem;
+  font-size: 36rem;
+  font-weight: 500;
+  line-height: 44rem;
+  letter-spacing: -0.72rem;
+}
+
+.delivery-step__desc {
+  margin-top: 24rem;
+  font-size: 20rem;
+  font-weight: 500;
+  line-height: 28rem;
+  color: $color-muted-light;
+}
+
+// Глобус: пунктирная орбита 552, сетка 473 и заливка сферы 413
+// Перетаскивание ловит секция (коробка глобуса лежит под текстом), поэтому
+// курсор и запрет выделения вешаем на неё же. Вертикаль оставляем странице.
+.delivery {
+  &.is--grab {
+    cursor: grab;
+  }
+
+  &.is--drag {
+    cursor: grabbing;
+    user-select: none;
+  }
+}
+
+.delivery-globe {
+  // диаметр самого шара внутри коробки орбиты; значение читает js/globe.js
+  --globe-size: 413;
+
+  position: absolute;
+  touch-action: pan-y;
+
+  left: 444rem;
+  top: 304rem;
+  width: 552rem;
+  height: 552rem;
+}
+
+// Орбита — svg с координатами макета: точечный пунктир и три стрелки на нём.
+// Крутятся оба слоя вокруг центра орбиты, но с разной скоростью: пунктир идёт
+// медленнее, поэтому стрелки заметно обгоняют его по траектории.
+// Шаг пунктира в макете 1.43/8.58 подогнан так, чтобы период укладывался
+// в длину окружности целое число раз (173 точки) — иначе на стыке был бы шов.
+// Крутим целые svg, а не группы внутри: элемент вращается вокруг середины
+// своей коробки (она же центр орбиты), а браузер держит его отдельным слоем и
+// не перерисовывает вектор каждый кадр. will-change — ради Safari, там без
+// него растеризация пунктира на каждом кадре заметно ест fps.
+// Угол задаёт js/globe.js тем же циклом, что крутит шар: так орбита получает
+// общий с ним разгон от скролла. Раньше тут были CSS-анимации.
+.delivery-globe__orbit {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible; // стрелки выходят за круг
+  will-change: transform;
+
+}
+
+
+// Канвас глобуса живёт отдельно от потока: он прибит к вьюпорту и никогда не
+// двигается, поэтому браузеру не приходится таскать слой WebGL на каждом кадре
+// скролла. Шар внутри канваса едет за секцией сам (offset в js/globe.js).
+// Ширина — коробка орбиты, высота — экран: столько шару нужно, чтобы проехать
+// вьюпорт сверху донизу.
+.globe-canvas {
+  position: fixed;
+  left: 50%;
+  top: 0;
+  z-index: 1;
+  width: 566rem;
+  height: 100vh;
+  transform: translateX(-50%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+
+  &.is--on {
+    opacity: 1;
+  }
+}
+
+// Подписи городов — отдельный 2D-слой ровно поверх канваса глобуса.
+// Рисуются в канвас, а не в DOM: 21 элемент с пересчётом стилей на кадр
+// в Safari обходится дороже, чем один clearRect с текстом.
+.globe-labels {
+  position: fixed;
+  left: 50%;
+  top: 0;
+  z-index: 1;
+  transform: translateX(-50%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.globe-canvas.is--on + .globe-labels,
+.globe-labels.is--on {
+  opacity: 1;
+}
+
+// Маркеры-стрелки живут внутри svg орбиты — своих стилей им не нужно
+
+// ---------------------------------------------------------------- мобильный
+// Секция разворачивается в колонку: текст — глобус — список — три шага.
+// Глобус оставляем: это WebGL, но один маленький канвас с 13-килобайтной
+// библиотекой, и он уже гаснет, когда блок уходит с экрана. Выбрасывать его
+// значило бы оставить главный блок о логистике без картинки вовсе; вместо
+// этого ужимаем шар с 413 до 230 и орбиту с 552 до 300 — на 390 это ровно
+// та же композиция, только мельче.
+@include tablet {
+  // В разметке глобус идёт первым (по макету он лежит под текстом), на
+  // телефоне же порядок чтения другой: сперва о чём блок, потом картинка
+  .delivery-inner {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: auto;
+    padding: 56rem $page-margin-mobile;
+  }
+
+  .delivery-main { order: 1; }
+  .delivery-globe { order: 2; }
+  .delivery-list { order: 3; }
+  .delivery-steps { order: 4; }
+
+  .delivery-main,
+  .delivery-list,
+  .delivery-steps {
+    position: static;
+    left: auto;
+    top: auto;
+    width: auto;
+  }
+
+  .delivery-title {
+    max-width: none;
+  }
+
+  .delivery-desc {
+    width: auto;
+    margin-top: 20rem;
+    font-size: 16rem;
+    line-height: 24rem;
+  }
+
+  .delivery-actions {
+    margin-top: 28rem;
+  }
+
+  .delivery-globe {
+    --globe-size: 230;
+
+    position: relative;
+    left: auto;
+    top: auto;
+    width: 300rem;
+    height: 300rem;
+    margin: 40rem auto 8rem;
+  }
+
+  .delivery-list {
+    margin-top: 32rem;
+  }
+
+  .delivery-steps {
+    gap: 32rem;
+    margin-top: 40rem;
+  }
+
+  .delivery-step__num {
+    font-size: 14rem;
+    line-height: 20rem;
+  }
+
+  .delivery-step__title {
+    margin-top: 10rem;
+    font-size: 24rem;
+    line-height: 30rem;
+    letter-spacing: -0.48rem;
+  }
+
+  .delivery-step__desc {
+    margin-top: 12rem;
+    font-size: 16rem;
+    line-height: 24rem;
+  }
+
+  // ширина канваса — коробка орбиты плюс тот же запас, что и на десктопе
+  .globe-canvas {
+    width: 314rem;
+  }
+}

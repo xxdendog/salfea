@@ -1,0 +1,790 @@
+@use '../utils/variables' as *;
+@use '../utils/mixins' as *;
+
+// Конфигуратор продукта (страница товара). Макет: Slide 1/2/3, фрейм 1440x1431.
+// Позиции элементов — абсолютные, по координатам макета (1rem = 1px на 1440).
+
+.configurator {
+  position: relative;
+  height: 1277rem;
+  overflow: hidden;
+  color: #fff;
+  user-select: none;
+}
+
+// Три фона (по одному на слайд), переключаются прозрачностью
+.configurator__bg {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.9s ease;
+
+  &--1,
+  &--2 { background: linear-gradient(180deg, #162f8d 0%, #0032c8 50%, #7993e3 100%); }
+  &--3 { background: linear-gradient(180deg, #5e0703 0%, #ae0c05 100%); }
+}
+
+.configurator[data-slide='0'] .configurator__bg--1,
+.configurator[data-slide='1'] .configurator__bg--2,
+.configurator[data-slide='2'] .configurator__bg--3 {
+  opacity: 1;
+}
+
+.configurator__inner {
+  position: relative;
+  width: 1440rem;
+  height: 100%;
+  margin-inline: auto;
+}
+
+// Шапка — общая .sec-head (подпись + заголовок 64/70 + примечание справа)
+.configurator__title {
+  position: absolute;
+  z-index: 2;
+  top: 80rem;
+  left: 80rem;
+  width: 1280rem;
+
+  .sec-title {
+    max-width: 813rem;
+  }
+}
+
+// Сцена: слайды с рулонами и задниками; drag/свайп/wheel по ней переключает слайд
+.configurator__stage {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+
+  &.is--grabbing {
+    cursor: grabbing;
+  }
+
+  // картинки не хватаются как файлы и не выделяются при grab
+  img {
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+}
+
+// Слайды по схеме osmo: все в одной ячейке, обрезающие обёртки.
+// Неактивный слайд — opacity 0 (GSAP двигает xPercent при переходе)
+.configurator__slide {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+
+  &.is--current {
+    opacity: 1;
+  }
+}
+
+.configurator__slide-inner {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+}
+
+// Слои внутри слайда — под скролл-параллакс страницы
+.configurator__layer {
+  position: absolute;
+  inset: 0;
+
+  > div {
+    position: absolute;
+    inset: 0;
+  }
+}
+
+.configurator__back,
+.configurator__roll {
+  position: absolute;
+  display: block;
+  backface-visibility: hidden;
+}
+
+// Задники: «бабочка» на слайде 2 и новогодний паттерн на слайде 3.
+// Стартуют на 40rem ниже макета (как рулон), параллакс поднимает
+.configurator__back--2 {
+  top: 373rem;
+  left: 136rem;
+  width: 1169rem;
+  height: 904rem;
+}
+
+// Новый паттерн (Slide 4, фрейм Pattern 883x995 на 282,577)
+.configurator__back--3 {
+  top: 378rem;
+  left: 282rem;
+  width: 883rem;
+  height: 995rem;
+}
+
+// Рулоны: все три на одном месте. Стартуют на 40rem ниже макетной позиции (558),
+// параллакс подтягивает по мере прокрутки.
+// --roll-s задаёт JS от слайдеров: общий масштаб (оба слайдера дают вклад)
+.configurator__roll {
+  top: 556rem;
+  left: 318rem;
+  width: 807rem;
+  height: 1074rem;
+  transform: scale(var(--roll-s, 1));
+  transform-origin: 50% 50%;
+  transition: transform 0.25s ease-out;
+  will-change: transform;
+}
+
+// Пока тянут ручку — масштаб без transition
+.configurator.is--sliding .configurator__roll {
+  transition: transform 0s;
+}
+
+// Левый текст со свойствами
+.configurator__text {
+  position: absolute;
+  top: 471rem;
+  left: 95rem;
+  width: 313rem;
+  z-index: 2;
+}
+
+.configurator__text-title {
+  font-size: 36rem;
+  font-weight: 500;
+  line-height: 44rem;
+  letter-spacing: -0.72rem;
+}
+
+.configurator__text-desc {
+  margin-top: 24rem;
+  font-size: 20rem;
+  font-weight: 500;
+  line-height: 28rem;
+  color: $color-muted-light;
+}
+
+// Три карточки характеристик справа
+.configurator__items {
+  position: absolute;
+  top: 471rem;
+  left: 1055rem;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 20rem;
+  width: 305rem;
+}
+
+.cfg-item {
+  height: 178rem;
+  padding: 25rem 32rem;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 8rem;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+
+  @include hover {
+    &:hover {
+      border-color: #fff;
+      background-color: rgba(255, 255, 255, 0.06);
+    }
+  }
+}
+
+.cfg-item__title {
+  font-size: 24rem;
+  font-weight: 500;
+  line-height: 34rem;
+}
+
+.cfg-item__desc {
+  margin-top: 12rem;
+  font-size: 20rem;
+  font-weight: 400;
+  line-height: 28rem;
+}
+
+// Слайдеры вдоль рулона
+.cfg-slider {
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+}
+
+.cfg-slider__number {
+  text-align: center;
+}
+
+.cfg-slider__value {
+  display: inline-flex;
+  align-items: baseline;
+  font-size: 60rem;
+  font-weight: 500;
+  line-height: 64rem;
+  letter-spacing: -0.6rem;
+  // как в макете: OpenType LNUM+PNUM — пропорциональные цифры без табличных отступов
+  font-variant-numeric: lining-nums proportional-nums;
+  font-feature-settings: 'lnum' 1, 'pnum' 1;
+  letter-spacing: 0;
+
+  // NumberFlow: цифры прокручиваются как одометр; наследует шрифт от родителя
+  number-flow {
+    font: inherit;
+    line-height: inherit;
+    --number-flow-mask-height: 0.15em;
+  }
+}
+
+.cfg-slider__x {
+  margin: 0 0.02em;
+}
+
+.cfg-slider__caption {
+  margin-top: 12rem;
+  font-size: 24rem;
+  font-weight: 500;
+  line-height: 34rem;
+}
+
+// Трек: стрелки по краям, между ними пунктирная линия. Ручка позиционируется
+// абсолютно по прогрессу (--t: 0..1), линия под ручкой прячется зазором
+.cfg-slider__track {
+  --t: 0.5;
+  --knob: 71rem;
+  --gap: 12rem; // зазор между кольцом и линией
+  --ring: 1;    // масштаб кольца (1.22 на ховере) — линии отступают вместе с ним
+
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+// Ховер/drag ручки — кольцо больше, линии отодвигаются на тот же зазор
+.cfg-slider__track:has(.cfg-slider__knob:hover),
+.cfg-slider__track.is--dragging {
+  --ring: 1.22;
+}
+
+.cfg-slider__line {
+  position: absolute;
+  display: block;
+  border-top: 1px dashed rgba(255, 255, 255, 0.9);
+  pointer-events: none;
+  transition: width 0.35s var(--ease-main), height 0.35s var(--ease-main);
+}
+
+// Во время drag длина линий меняется каждый кадр — без transition
+.cfg-slider__track.is--dragging .cfg-slider__line {
+  transition: none;
+}
+
+.cfg-slider__arrow {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 40rem;
+  height: 40rem;
+  transition: opacity 0.2s ease, transform 0.25s var(--ease-main);
+
+  img {
+    width: 8rem;
+    height: 17rem;
+  }
+
+  &--prev img {
+    transform: rotate(180deg);
+  }
+
+  @include hover {
+    &:hover {
+      transform: scale(1.2);
+    }
+  }
+}
+
+// Ручка: внешнее кольцо (CSS, растёт на ховере) + центр с уголками (svg).
+// Позиция обновляется без transition — двигается синхронно с мышью
+.cfg-slider__knob {
+  position: absolute;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--knob);
+  height: var(--knob);
+  cursor: grab;
+  transition: none; // перебиваем глобальный transition кнопок — иначе лаг за мышью
+
+  img {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.6s var(--ease-main);
+  }
+
+  &.is--dragging {
+    cursor: grabbing;
+  }
+}
+
+.cfg-slider__ring {
+  position: absolute;
+  inset: 0;
+  border: 1px solid #fff;
+  border-radius: 50%;
+  transition: transform 0.35s var(--ease-main);
+  transform: scale(1);
+}
+
+// Ховер: кольцо растёт, центр с уголками поворачивается
+@include hover {
+  .cfg-slider__knob:hover .cfg-slider__ring,
+  .cfg-slider__knob.is--dragging .cfg-slider__ring {
+    transform: scale(1.22);
+  }
+
+  .cfg-slider__knob:hover img,
+  .cfg-slider__knob.is--dragging img {
+    transform: rotate(90deg);
+  }
+}
+
+// Горизонтальный (кол-во листов): над рулоном, 20rem под заголовком (заголовок 80+303)
+.cfg-slider--h {
+  top: 324rem;
+  left: 487rem;
+  width: 467rem;
+  flex-direction: column;
+  gap: 8rem;
+
+  .cfg-slider__number {
+    width: 366rem;
+  }
+
+  .cfg-slider__track {
+    // рабочая зона ручки — между внутренними краями стрелок
+    --range: calc(467rem - 80rem - var(--knob));
+
+    width: 467rem;
+    height: 92rem;
+    margin-top: 8rem;
+  }
+
+  .cfg-slider__knob {
+    left: calc(40rem + var(--range) * var(--t));
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  // линия доходит до края кольца минус зазор; при росте кольца край уезжает
+  // на (ring-1)*knob/2 — вычитаем это из длины
+  .cfg-slider__line--a {
+    left: 40rem;
+    width: calc(var(--range) * var(--t) - var(--gap) - (var(--ring) - 1) * var(--knob) / 2);
+  }
+
+  .cfg-slider__line--b {
+    right: 40rem;
+    width: calc(var(--range) * (1 - var(--t)) - var(--gap) - (var(--ring) - 1) * var(--knob) / 2);
+  }
+}
+
+// Вертикальный (размер): слева от рулона, текст повёрнут
+.cfg-slider--v {
+  top: 643rem;
+  left: 264rem;
+  width: 210rem;
+  height: 561rem;
+  display: block;
+
+  // Число и подпись повёрнуты на -90° (читаются снизу вверх) и стоят рядом:
+  // число ближе к рулону, подпись слева от него — как в макете (114x366)
+  .cfg-slider__number {
+    position: absolute;
+    top: 97rem;
+    left: 0;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    gap: 16rem;
+    width: 366rem;
+    height: 114rem;
+    // поворот вокруг центра, затем сдвиг: центр блока должен встать в (57, 97+183)
+    transform-origin: center;
+    transform: translate(-126rem, 126rem) rotate(-90deg); // (366-114)/2 = 126
+  }
+
+  .cfg-slider__value,
+  .cfg-slider__caption {
+    white-space: nowrap;
+    text-align: center;
+  }
+
+  .cfg-slider__caption {
+    margin-top: 0;
+  }
+
+  .cfg-slider__track {
+    margin-left: 118rem; // трек прижат к правому краю блока (210 - 92)
+  }
+
+  .cfg-slider__track {
+    --range: calc(561rem - 80rem - var(--knob));
+
+    flex-direction: column;
+    width: 92rem;
+    height: 561rem;
+  }
+
+  .cfg-slider__line {
+    width: 0;
+    border-top: none;
+    border-left: 1px dashed rgba(255, 255, 255, 0.9);
+  }
+
+  .cfg-slider__arrow--prev img { transform: rotate(-90deg); }
+  .cfg-slider__arrow--next img { transform: rotate(90deg); }
+
+  // вверх = больше: ручка отсчитывается от низа трека
+  .cfg-slider__knob {
+    bottom: calc(40rem + var(--range) * var(--t));
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .cfg-slider__line--a {
+    bottom: 40rem;
+    left: 50%;
+    height: calc(var(--range) * var(--t) - var(--gap) - (var(--ring) - 1) * var(--knob) / 2);
+  }
+
+  .cfg-slider__line--b {
+    top: 40rem;
+    left: 50%;
+    height: calc(var(--range) * (1 - var(--t)) - var(--gap) - (var(--ring) - 1) * var(--knob) / 2);
+  }
+}
+
+// Переключатель цвета
+.cfg-switcher {
+  position: absolute;
+  top: 1121rem;
+  left: 599rem;
+  z-index: 3;
+  display: flex;
+  gap: 11rem;
+  padding: 14rem;
+  border: 1px solid #fff;
+  border-radius: 999rem;
+  background: rgba(121, 147, 227, 0.08);
+  backdrop-filter: blur(6rem);
+}
+
+.cfg-switcher__btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64rem;
+  height: 64rem;
+  border-radius: 50%;
+  transition: transform 0.35s var(--ease-main), box-shadow 0.35s ease;
+
+  &--white { background: #fff; }
+  &--blue  { background: #0032c8; }
+  &--red   { background: #be2222; }
+
+  img {
+    width: 26rem;
+    height: 20rem;
+    opacity: 0;
+    transform: scale(0.6);
+    transition: opacity 0.3s ease, transform 0.35s var(--ease-main);
+  }
+
+  &--white img { filter: none; }
+  &--blue img,
+  &--red img { filter: invert(1); }
+
+  &.is--active {
+    box-shadow: 0 0 0 3rem rgba(255, 255, 255, 0.35);
+
+    img {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @include hover {
+    &:hover:not(.is--active) {
+      transform: scale(1.08);
+    }
+  }
+}
+
+// Кнопка действия справа внизу: белая капсула 229 + круглая кнопка-телефон
+.configurator__actions {
+  position: absolute;
+  top: 1141rem;
+  left: 1055rem;
+  z-index: 3;
+
+  .btn-calc__pill {
+    width: 229rem;
+    padding: 0;
+  }
+}
+
+// ---------------------------------------------------------------- мобильный
+// Секция разворачивается в колонку: заголовок — сцена — переключатель цвета —
+// два слайдера — текст — список — кнопка. Сцену не переверстываем, а
+// пересчитываем в масштабе 0.21 от макета (рулон 807x1074 -> 169x226):
+// картинок в ней всего три, и держать их пропорции числами честнее, чем
+// давить всю композицию transform: scale — при нём вместе с картинкой
+// ужался бы и текст.
+@include tablet {
+  .configurator {
+    height: auto;
+  }
+
+  .configurator__inner {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: auto;
+    padding: 48rem $page-margin-mobile 56rem;
+  }
+
+  .configurator__title {
+    position: static;
+    order: 1;
+    width: auto;
+
+    .sec-title {
+      max-width: none;
+    }
+  }
+
+  .configurator__stage {
+    position: relative;
+    inset: auto;
+    order: 2;
+    height: 320rem;
+    margin-top: 24rem;
+  }
+
+  .configurator__roll {
+    top: 60rem;
+    left: 90rem;
+    width: 169rem;
+    height: 226rem;
+  }
+
+  .configurator__back--2 {
+    top: 22rem;
+    left: 52rem;
+    width: 245rem;
+    height: 190rem;
+  }
+
+  .configurator__back--3 {
+    top: 23rem;
+    left: 82rem;
+    width: 185rem;
+    height: 209rem;
+  }
+
+  .cfg-switcher {
+    position: static;
+    order: 3;
+    align-self: center;
+    gap: 8rem;
+    margin-top: 20rem;
+    padding: 8rem;
+  }
+
+  .cfg-switcher__btn {
+    width: 44rem;
+    height: 44rem;
+  }
+
+  .cfg-slider {
+    position: static;
+    width: auto;
+    margin-top: 32rem;
+  }
+
+  .cfg-slider--h { order: 4; }
+  .cfg-slider--v { order: 5; }
+
+  .cfg-slider__value {
+    font-size: 40rem;
+    line-height: 44rem;
+  }
+
+  .cfg-slider__caption {
+    margin-top: 8rem;
+    font-size: 16rem;
+    line-height: 22rem;
+  }
+
+  // Трек тянется на всю ширину колонки, поэтому рабочая зона ручки считается
+  // в процентах от него, а не от макетных 467/561. Селекторы с модификатором
+  // не для красоты: у обоих слайдеров ширина трека задана через него, и
+  // правило без модификатора до неё не достаёт.
+  .cfg-slider--h .cfg-slider__track,
+  .cfg-slider--v .cfg-slider__track {
+    --knob: 48rem;
+    --range: calc(100% - 80rem - var(--knob));
+
+    width: 100%;
+    height: 72rem;
+    margin-top: 4rem;
+  }
+
+  .cfg-slider--h .cfg-slider__number {
+    width: auto;
+  }
+
+  // Слайдер размера из вертикального становится обычным горизонтальным:
+  // на 350 в ширину вертикальная шкала высотой 561 не живёт, а поворот
+  // подписи на -90° рядом с ней читался бы как сбой вёрстки.
+  // Ось перетаскивания JS теперь берёт у формы трека, так что менять нечего.
+  .cfg-slider--v {
+    display: flex;
+    flex-direction: column;
+    gap: 8rem;
+    width: auto;
+    height: auto;
+
+    .cfg-slider__number {
+      position: static;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0;
+      width: auto;
+      height: auto;
+      transform: none;
+    }
+
+    .cfg-slider__value,
+    .cfg-slider__caption {
+      text-align: left;
+    }
+
+    .cfg-slider__caption {
+      margin-top: 8rem;
+    }
+
+    // Кнопки меняются местами: «prev» у этого слайдера увеличивает значение
+    // (вверх = больше), а по горизонтали больше должно быть справа
+    .cfg-slider__track {
+      flex-direction: row-reverse;
+      margin-left: 0;
+    }
+
+    .cfg-slider__line {
+      width: auto;
+      height: 0;
+      border-top: 1px dashed rgba(255, 255, 255, 0.9);
+      border-left: none;
+    }
+
+    // Из-за row-reverse «prev» уезжает вправо, «next» влево — иконки
+    // разворачиваем под новое место, а не под порядок в разметке
+    .cfg-slider__arrow--prev img { transform: none; }
+    .cfg-slider__arrow--next img { transform: rotate(180deg); }
+
+    .cfg-slider__knob {
+      top: 50%;
+      bottom: auto;
+      left: calc(40rem + var(--range) * var(--t));
+      transform: translateY(-50%);
+    }
+
+    .cfg-slider__line--a {
+      top: 50%;
+      bottom: auto;
+      left: 40rem;
+      height: 0;
+      width: calc(var(--range) * var(--t) - var(--gap) - (var(--ring) - 1) * var(--knob) / 2);
+    }
+
+    .cfg-slider__line--b {
+      top: 50%;
+      left: auto;
+      right: 40rem;
+      height: 0;
+      width: calc(var(--range) * (1 - var(--t)) - var(--gap) - (var(--ring) - 1) * var(--knob) / 2);
+    }
+  }
+
+  .configurator__text {
+    position: static;
+    order: 6;
+    width: auto;
+    margin-top: 36rem;
+  }
+
+  .configurator__text-title {
+    font-size: 24rem;
+    line-height: 30rem;
+  }
+
+  .configurator__text-desc {
+    margin-top: 12rem;
+    font-size: 16rem;
+    line-height: 24rem;
+  }
+
+  .configurator__items {
+    position: static;
+    order: 7;
+    width: auto;
+    margin-top: 28rem;
+  }
+
+  .cfg-item {
+    height: auto;
+
+    & + & {
+      margin-top: 20rem;
+    }
+  }
+
+  .cfg-item__title {
+    font-size: 20rem;
+    line-height: 26rem;
+  }
+
+  .cfg-item__desc {
+    margin-top: 8rem;
+    font-size: 15rem;
+    line-height: 22rem;
+  }
+
+  .configurator__actions {
+    position: static;
+    order: 8;
+    margin-top: 32rem;
+
+    .btn-calc__pill {
+      width: auto;
+      padding: 0 28rem;
+    }
+  }
+}

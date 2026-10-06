@@ -1,0 +1,290 @@
+@use '../utils/variables' as *;
+@use '../utils/mixins' as *;
+
+// Блок 2 «Два хита продаж» (макет 1440x1189): две карточки-ссылки 640x789.
+// На ховере карточка заливается градиентом, текст становится белым,
+// рулон подрастает от нижнего края, а у целлюлозы подменяется фото
+// рулона на упаковку. Изинг мягкий (ease-out-quart): фирменный --ease-main
+// для ховера слишком резкий — он почти стоит на месте, а потом дёргается.
+.products {
+  padding: 80rem 0;
+  background-color: #fff;
+  color: #000;
+}
+
+// Ряд из двух карточек. Имя по блоку: раньше класс звался .catalog —
+// по нему не было видно, что он относится к .products.
+.products-row {
+  display: flex;
+  margin-top: 64rem;
+}
+
+.hit-card {
+  --hover-bg: linear-gradient(180deg, #080808 0%, #93979b 100%);
+  --hit-ease: var(--ease-out-quart);
+  --hit-time: 0.5s;
+  --hit-swap: 0.3s; // подмена фото рулона — быстрее остального ховера
+
+  position: relative;
+  flex: 1 1 640rem;
+  min-width: 0;
+  height: 740rem;
+  padding: 32rem 80rem 32rem 32rem;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  color: #000;
+  isolation: isolate;
+  transition: color var(--hit-time) var(--hit-ease);
+
+  &:first-child {
+    border-radius: 12rem 0 0 12rem;
+  }
+
+  &:last-child {
+    border-left: none;
+    border-radius: 0 12rem 12rem 0;
+  }
+
+  // Заливка ховера — отдельный слой, чтобы плавно проявлялась
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--hover-bg);
+    opacity: 0;
+    transition: opacity var(--hit-time) var(--hit-ease);
+  }
+}
+
+// Целлюлоза — синий градиент
+.hit-card--blue {
+  --hover-bg: linear-gradient(173deg, #000 0%, #{$color-blue} 50%, #7993e3 100%);
+}
+
+.hit-card__cat {
+  font-size: 20rem;
+  font-weight: 500;
+  line-height: 28rem;
+  color: $color-muted-dark;
+  transition: color var(--hit-time) var(--hit-ease);
+}
+
+.hit-card__title {
+  margin-top: 12rem;
+  font-size: 36rem;
+  font-weight: 500;
+  line-height: 44rem;
+  letter-spacing: -1.08rem;
+}
+
+.hit-card__list {
+  margin-top: 20rem;
+}
+
+// Фото по макету: 560x512, прижато к нижней кромке карточки
+.hit-card__media {
+  position: absolute;
+  left: 40rem;
+  bottom: 0;
+  width: 560rem;
+  height: 512rem;
+  // растём вверх от нижней кромки — рулон остаётся стоять на месте
+  transform-origin: bottom center;
+  transition: transform var(--hit-time) var(--hit-ease);
+
+  img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: opacity var(--hit-swap) var(--hit-ease);
+  }
+}
+
+// Слой параллакса: рулон скользит на скролле (initGlobalParallax),
+// а масштаб на ховере живёт на родителе — так трансформации не конфликтуют
+.hit-card__slide {
+  position: absolute;
+  inset: 0;
+}
+
+.hit-card__img.is--hover {
+  opacity: 0;
+}
+
+// Кружок «ХИТ» — 56, наклон -15°
+.hit-card__badge {
+  position: absolute;
+  right: 24rem;
+  top: 24rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56rem;
+  height: 56rem;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  background-color: $color-blue;
+  transform: rotate(-15deg);
+  font-size: 16rem;
+  font-weight: 700;
+  line-height: 20rem;
+  letter-spacing: 0.37rem;
+  text-transform: uppercase;
+  text-indent: 0.37rem; // компенсация трекинга последней буквы
+  color: #fff;
+}
+
+// Стрелка в пунктирном кружке
+.hit-card__arrow {
+  position: absolute;
+  right: 24rem;
+  bottom: 24rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72rem;
+  height: 72rem;
+  border: 1px dashed currentColor;
+  border-radius: 50%;
+  transition: background-color var(--hit-time) var(--hit-ease),
+    border-color var(--hit-time) var(--hit-ease);
+
+  svg {
+    width: 25rem;
+    height: 25rem;
+  }
+}
+
+@include hover {
+  .hit-card:hover {
+    color: #fff;
+
+    &::before {
+      opacity: 1;
+    }
+
+    .hit-card__cat {
+      color: $color-muted-light;
+    }
+
+    .hit-card__arrow {
+      border-color: transparent;
+      background-color: $color-blue;
+    }
+
+    // у тёмной карточки стрелка заливается чёрным, а не синим
+    &.hit-card--dark .hit-card__arrow {
+      background-color: #000;
+    }
+
+    .hit-card__img.is--hover {
+      opacity: 1;
+    }
+
+    .hit-card__img.is--base {
+      opacity: 0;
+    }
+
+    .hit-card__media {
+      transform: scale(1.05);
+    }
+  }
+}
+
+// ---------------------------------------------------------------- мобильный
+// Две карточки 640 рядом не помещаются — ставим их друг под другом на всю
+// ширину. Фото уезжает в правый нижний угол и уменьшается: текст на узкой
+// карточке занимает больше строк, и прежнее большое фото его перекрывало.
+@include tablet {
+  .products {
+    padding: 48rem 0;
+  }
+
+  .products-row {
+    flex-direction: column;
+    margin-top: 32rem;
+  }
+
+  .hit-card {
+    flex: none;
+    // Высота считается от содержимого и фото: фото прибито к нижней кромке,
+    // поэтому карточке нужен явный рост. На планшете строк меньше — хватает 420
+    height: 420rem;
+    padding: 20rem;
+
+    &:first-child {
+      border-radius: 12rem 12rem 0 0;
+    }
+
+    &:last-child {
+      border-left: 1px solid rgba(0, 0, 0, 0.2);
+      border-top: none;
+      border-radius: 0 0 12rem 12rem;
+    }
+  }
+
+  // Запас справа под кружок «ХИТ»: на узкой карточке первая строка
+  // заголовка доходила до правого края и уезжала ему под низ
+  .hit-card__cat,
+  .hit-card__title {
+    padding-right: 52rem;
+  }
+
+  .hit-card__cat {
+    font-size: 15rem;
+    line-height: 20rem;
+  }
+
+  .hit-card__title {
+    margin-top: 8rem;
+    font-size: 24rem;
+    line-height: 30rem;
+    letter-spacing: -0.72rem;
+  }
+
+  // размеры строк задаёт общий .arrow-list в _section.scss
+  .hit-card__list {
+    margin-top: 14rem;
+  }
+
+  // Фото меньше и прижато к правому нижнему углу: список на узкой карточке
+  // занимает вдвое больше строк, и прежний крупный рулон лез ему под текст
+  .hit-card__media {
+    left: auto;
+    right: -6rem;
+    width: 200rem;
+    height: 180rem;
+  }
+
+  .hit-card__badge {
+    right: 16rem;
+    top: 16rem;
+    width: 40rem;
+    height: 40rem;
+    font-size: 12rem;
+    line-height: 15rem;
+  }
+
+  .hit-card__arrow {
+    right: 16rem;
+    bottom: 16rem;
+    width: 48rem;
+    height: 48rem;
+
+    svg {
+      width: 18rem;
+      height: 18rem;
+    }
+  }
+}
+
+// На телефоне заголовок и пункты списка переносятся чаще, и 420 карточке мало:
+// нижние строки упирались бы в фото
+@include mobile {
+  .hit-card {
+    height: 480rem;
+  }
+}

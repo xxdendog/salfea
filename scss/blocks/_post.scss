@@ -1,0 +1,512 @@
+@use '../utils/variables' as *;
+@use '../utils/mixins' as *;
+
+// Страница статьи (светлая, шапка в варианте .header--dark).
+//
+// Раскладка из макета заказчика: узкая липкая колонка слева (оглавление и
+// «Поделиться»), текст — отдельной колонкой правее, обложка шире текста и
+// выходит за его правый край. Текстовая колонка 700 при кегле 20 даёт около
+// 70 знаков в строке — это верхняя граница комфортного чтения; шире делать
+// нельзя, поэтому свободное место ушло вправо, а не в ширину абзаца.
+//
+// Блок подписки из макета убран: рассылки нет, форма собирала бы адреса
+// в никуда. Его место заняло оглавление — для длинной статьи оно полезнее
+// (якоря попадают в выдачу и читатель видит, где находится).
+.post {
+  padding-top: 124rem;
+  padding-bottom: 120rem;
+  background-color: #fff;
+  color: #000;
+}
+
+.post-layout {
+  display: grid;
+  grid-template-columns: 230rem 700rem;
+  column-gap: 96rem;
+  align-items: start;
+  margin-top: 48rem;
+}
+
+// ----------------------------------------------------------- левая колонка
+.post-aside {
+  position: sticky;
+  top: 124rem;
+  // колонка короче текста, поэтому прилипает к своему же верху
+}
+
+.post-aside__title {
+  font-size: 16rem;
+  font-weight: 500;
+  line-height: 20rem;
+  color: $color-muted-dark;
+}
+
+.post-toc {
+  margin-top: 20rem;
+  list-style: none;
+
+  li + li {
+    margin-top: 12rem;
+  }
+
+  a {
+    display: block;
+    padding-left: 14rem;
+    border-left: 1px solid $color-line-grey;
+    font-size: 16rem;
+    font-weight: 500;
+    line-height: 22rem;
+    color: $color-muted-dark;
+    transition: color 0.25s ease, border-color 0.25s ease;
+  }
+
+  // Активный пункт ведёт синей линией — видно, какой раздел читают сейчас
+  a.is--on {
+    border-color: $color-blue;
+    color: $color-blue;
+  }
+
+  @include hover {
+    a:hover {
+      color: #000;
+    }
+  }
+}
+
+.post-share {
+  margin-top: 56rem;
+}
+
+.post-share__list {
+  display: flex;
+  flex-direction: column;
+  gap: 14rem;
+  margin-top: 20rem;
+}
+
+.post-share__list a,
+.post-share__copy {
+  display: flex;
+  align-items: center;
+  gap: 10rem;
+  border: 0;
+  padding: 0;
+  background: none;
+  color: #000;
+  font-family: inherit;
+  font-size: 16rem;
+  font-weight: 500;
+  line-height: 20rem;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+
+  img,
+  svg {
+    width: 20rem;
+    height: 20rem;
+  }
+
+  // Иконки мессенджеров нарисованы белым под тёмный футер — на светлой
+  // странице перекрашиваем инверсией, как и логотип в .header--dark
+  img {
+    filter: invert(1);
+  }
+
+  @include hover {
+    &:hover {
+      opacity: 0.6;
+    }
+  }
+}
+
+// --------------------------------------------------------------- заголовок
+.post-meta {
+  display: flex;
+  align-items: center;
+  gap: 12rem;
+  font-size: 16rem;
+  font-weight: 500;
+  line-height: 20rem;
+  color: $color-muted-dark;
+}
+
+.post-meta__cat {
+  padding: 6rem 14rem;
+  border-radius: 100rem;
+  background-color: #eef1fb;
+  color: $color-blue;
+  font-size: 14rem;
+}
+
+.post-title {
+  margin-top: 24rem;
+  font-size: 48rem;
+  font-weight: 500;
+  line-height: 56rem;
+  letter-spacing: -1.44rem;
+}
+
+// Обложка шире текстовой колонки и выходит за её правый край — приём из макета
+.post-cover {
+  width: 860rem;
+  max-width: none;
+  height: 480rem;
+  margin-top: 44rem;
+  border-radius: 6rem;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+// ------------------------------------------------------------- тело статьи
+// Стили навешаны на теги, а не на классы: тело статьи — единственное место
+// на сайте, где разметку пишут текстом, и помнить набор классов там неудобно.
+.post-body {
+  margin-top: 48rem;
+  font-size: 20rem;
+  font-weight: 400;
+  line-height: 32rem;
+  color: rgba(0, 0, 0, 0.75);
+
+  p {
+    margin-top: 24rem;
+  }
+
+  // Лид — первый абзац крупнее и чёрным: он же идёт в description и анонс
+  .post-lead {
+    margin-top: 0;
+    font-size: 22rem;
+    font-weight: 500;
+    line-height: 32rem;
+    color: #000;
+  }
+
+  h2 {
+    margin-top: 64rem;
+    font-size: 32rem;
+    font-weight: 500;
+    line-height: 40rem;
+    letter-spacing: -0.64rem;
+    color: #000;
+    // якорь не должен уезжать под шапку при переходе из оглавления
+    scroll-margin-top: 120rem;
+  }
+
+  h3 {
+    margin-top: 44rem;
+    font-size: 24rem;
+    font-weight: 500;
+    line-height: 32rem;
+    letter-spacing: -0.48rem;
+    color: #000;
+  }
+
+  ul,
+  ol {
+    margin-top: 24rem;
+    padding-left: 0;
+    list-style: none;
+    counter-reset: post-ol;
+  }
+
+  li {
+    position: relative;
+    padding-left: 32rem;
+  }
+
+  li + li {
+    margin-top: 12rem;
+  }
+
+  ul li::before {
+    content: '';
+    position: absolute;
+    left: 8rem;
+    top: 13rem;
+    width: 6rem;
+    height: 6rem;
+    border-radius: 50%;
+    background-color: $color-blue;
+  }
+
+  ol li::before {
+    counter-increment: post-ol;
+    content: counter(post-ol) '.';
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: $color-blue;
+  }
+
+  a {
+    color: $color-blue;
+    text-decoration: underline;
+    text-underline-offset: 3rem;
+    transition: opacity 0.2s ease;
+
+    @include hover {
+      &:hover {
+        opacity: 0.6;
+      }
+    }
+  }
+
+  strong {
+    font-weight: 500;
+    color: #000;
+  }
+
+  blockquote {
+    margin-top: 44rem;
+    padding-left: 32rem;
+    border-left: 2px solid $color-blue;
+    font-size: 24rem;
+    font-weight: 500;
+    line-height: 34rem;
+    color: #000;
+  }
+
+  figure {
+    margin-top: 44rem;
+  }
+
+  figure img {
+    width: 100%;
+    border-radius: 6rem;
+  }
+
+  figcaption {
+    margin-top: 14rem;
+    font-size: 16rem;
+    line-height: 22rem;
+    color: $color-muted-dark;
+  }
+
+  table {
+    width: 100%;
+    margin-top: 32rem;
+    border-collapse: collapse;
+    font-size: 18rem;
+    line-height: 26rem;
+  }
+
+  th,
+  td {
+    padding: 16rem 0;
+    border-bottom: 1px solid $color-line-grey;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  th {
+    font-weight: 500;
+    color: #000;
+  }
+
+  td:last-child,
+  th:last-child {
+    text-align: right;
+  }
+}
+
+// Врезка «важно»: короткий вывод, который читатель заберёт, даже пролистав
+.post-note {
+  margin-top: 44rem;
+  padding: 32rem 36rem;
+  border-radius: 6rem;
+  background-color: #f2f4fb;
+  font-size: 18rem;
+  font-weight: 500;
+  line-height: 28rem;
+  color: #000;
+
+  p {
+    margin-top: 0;
+  }
+
+  p + p {
+    margin-top: 16rem;
+  }
+}
+
+// ------------------------------------------------------------ конец статьи
+.post-cta {
+  margin-top: 72rem;
+  padding: 48rem;
+  border-radius: 6rem;
+  background-color: $color-blue;
+  color: #fff;
+}
+
+.post-cta__title {
+  font-size: 32rem;
+  font-weight: 500;
+  line-height: 40rem;
+  letter-spacing: -0.64rem;
+}
+
+.post-cta__note {
+  margin-top: 14rem;
+  font-size: 18rem;
+  font-weight: 500;
+  line-height: 28rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.post-cta__btn {
+  margin-top: 32rem;
+}
+
+// «Читайте также» — на всю ширину контейнера, уже вне колоночной раскладки
+.post-next {
+  padding-bottom: 120rem;
+  background-color: #fff;
+  color: #000;
+}
+
+.post-next__title {
+  padding-top: 96rem;
+  border-top: 1px solid $color-line-grey;
+  font-size: 40rem;
+  font-weight: 500;
+  line-height: 48rem;
+  letter-spacing: -1.2rem;
+}
+
+// ---------------------------------------------------------------- мобильный
+// Две колонки схлопываются в одну. Липкая колонка слева (оглавление и
+// «поделиться») переезжает ПОД статью и перестаёт быть липкой: на телефоне
+// ей негде стоять сбоку, а висеть сверху она мешала бы чтению. Оглавление
+// при этом оставляем — после длинного текста по нему удобно вернуться к нужному
+// разделу, и ссылки те же, что в десктопной колонке.
+@include tablet {
+  .post {
+    padding-top: 92rem;
+  }
+
+  .post-layout {
+    grid-template-columns: 1fr;
+    gap: 0;
+    margin-top: 28rem;
+  }
+
+  .post-main {
+    order: 1;
+    min-width: 0;
+  }
+
+  .post-aside {
+    order: 2;
+    position: static;
+    top: auto;
+    margin-top: 56rem;
+    padding-top: 32rem;
+    border-top: 1px solid $color-line-grey;
+  }
+
+  .post-share {
+    margin-top: 36rem;
+  }
+
+  .post-meta {
+    font-size: 14rem;
+  }
+
+  .post-title {
+    margin-top: 16rem;
+    font-size: 32rem;
+    line-height: 38rem;
+    letter-spacing: -0.96rem;
+  }
+
+  .post-cover {
+    width: 100%;
+    margin-top: 28rem;
+  }
+
+  .post-body {
+    margin-top: 32rem;
+    font-size: 17rem;
+    line-height: 26rem;
+
+    p {
+      margin-top: 18rem;
+    }
+
+    h2 {
+      margin-top: 44rem;
+      font-size: 24rem;
+      line-height: 30rem;
+      scroll-margin-top: 90rem;
+    }
+
+    h3 {
+      margin-top: 28rem;
+      font-size: 19rem;
+      line-height: 26rem;
+    }
+
+    ul,
+    ol {
+      margin-top: 18rem;
+    }
+
+    blockquote {
+      margin-top: 28rem;
+      padding-left: 20rem;
+      font-size: 19rem;
+      line-height: 28rem;
+    }
+
+    figure {
+      margin-top: 28rem;
+    }
+
+    figcaption {
+      font-size: 14rem;
+    }
+
+    table {
+      margin-top: 24rem;
+      font-size: 15rem;
+    }
+  }
+
+  .post-note {
+    margin-top: 28rem;
+    padding: 20rem;
+    font-size: 16rem;
+    line-height: 24rem;
+  }
+
+  .post-cta {
+    margin-top: 44rem;
+    padding: 28rem 20rem;
+  }
+
+  .post-cta__title {
+    font-size: 24rem;
+    line-height: 30rem;
+    letter-spacing: -0.48rem;
+  }
+
+  .post-cta__note {
+    font-size: 15rem;
+    line-height: 22rem;
+  }
+
+  .post-next {
+    padding-bottom: 56rem;
+  }
+
+  .post-next__title {
+    padding-top: 48rem;
+    font-size: 26rem;
+    line-height: 32rem;
+    letter-spacing: -0.78rem;
+  }
+}

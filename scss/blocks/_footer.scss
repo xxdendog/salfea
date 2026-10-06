@@ -1,0 +1,213 @@
+@use '../utils/variables' as *;
+@use '../utils/mixins' as *;
+
+// Футер нового макета (1440x526): чёрный, три колонки —
+// лого с адресом, разделы, контакты с мессенджерами.
+.footer {
+  padding: 80rem 0;
+  background-color: #000;
+  color: #fff;
+}
+
+.footer-top {
+  display: flex;
+  padding-bottom: 92rem;
+}
+
+// Колонки стоят по координатам макета: 80 / 622 / 881
+.footer-col {
+  &:nth-child(1) { flex: 0 0 542rem; }
+  &:nth-child(2) { flex: 0 0 259rem; }
+  &:nth-child(3) { flex: 1; }
+}
+
+.footer-logo {
+  display: block;
+  width: 128rem;
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+}
+
+.footer-address {
+  width: 397rem;
+  margin-top: 28rem;
+  font-size: 20rem;
+  font-weight: 400;
+  line-height: 28.8rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.footer-col__title {
+  font-size: 20rem;
+  font-weight: 500;
+  line-height: 28.8rem;
+  color: #fff;
+}
+
+.footer-nav {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8rem;
+  margin-top: 20rem;
+
+  a {
+    font-size: 18rem;
+    font-weight: 500;
+    line-height: 28rem;
+    color: rgba(255, 255, 255, 0.7);
+    transition: color 0.2s ease;
+
+    @include hover {
+      &:hover {
+        color: #fff;
+      }
+    }
+  }
+}
+
+// Контакты: телефон и почта белые, 20/28
+.footer-contacts a {
+  font-size: 20rem;
+  color: #fff;
+}
+
+// Мессенджеры: иконка 20 + подпись 16/20
+.footer-messengers {
+  display: flex;
+  flex-direction: column;
+  gap: 16rem;
+  margin-top: 32rem;
+
+  a {
+    display: flex;
+    align-items: center;
+    gap: 16rem;
+    font-size: 16rem;
+    font-weight: 500;
+    line-height: 20rem;
+    color: #fff;
+    transition: opacity 0.2s ease;
+
+    @include hover {
+      &:hover {
+        opacity: 0.7;
+      }
+    }
+  }
+
+  img {
+    width: 20rem;
+    height: 20rem;
+  }
+}
+
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20rem;
+  padding-top: 20rem;
+  border-top: 1px solid rgba(216, 216, 216, 0.5);
+
+  a {
+    font-size: 18rem;
+    font-weight: 400;
+    line-height: 28rem;
+    color: $color-muted-light;
+    transition: color 0.2s ease;
+
+    @include hover {
+      &:hover {
+        color: #fff;
+      }
+    }
+  }
+}
+
+.footer-bottom__left {
+  display: flex;
+  gap: 28rem;
+}
+
+// ---------------------------------------------------------------- мобильный
+// Три колонки встают друг под другом. Нижняя строка тоже в колонку: там
+// четыре ссылки, и в строку они на 350 не помещаются.
+@include tablet {
+  .footer {
+    padding: 48rem 0 32rem;
+  }
+
+  .footer-top {
+    flex-direction: column;
+    gap: 36rem;
+    padding-bottom: 36rem;
+  }
+
+  .footer-col {
+    &:nth-child(1),
+    &:nth-child(2),
+    &:nth-child(3) {
+      flex: none;
+    }
+  }
+
+  .footer-logo {
+    width: 104rem;
+  }
+
+  .footer-address {
+    width: auto;
+    margin-top: 16rem;
+    font-size: 15rem;
+    line-height: 22rem;
+  }
+
+  .footer-col__title {
+    font-size: 16rem;
+    line-height: 22rem;
+  }
+
+  .footer-nav {
+    margin-top: 14rem;
+
+    a {
+      font-size: 16rem;
+      line-height: 26rem;
+    }
+  }
+
+  .footer-contacts a {
+    font-size: 18rem;
+  }
+
+  .footer-messengers {
+    gap: 12rem;
+    margin-top: 20rem;
+
+    a {
+      font-size: 15rem;
+    }
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10rem;
+    padding-top: 18rem;
+
+    a {
+      font-size: 14rem;
+      line-height: 22rem;
+    }
+  }
+
+  .footer-bottom__left {
+    flex-direction: column;
+    gap: 4rem;
+  }
+}

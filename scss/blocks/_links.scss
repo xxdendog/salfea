@@ -1,0 +1,59 @@
+// Underline Link Animation (osmo) — линия появляется слева при ховере.
+// data-underline-link       — линии нет, при ховере рисуется слева
+// data-underline-link="alt" — линия есть всегда, при ховере уходит вправо и возвращается слева
+@use '../utils/variables' as *;
+@use '../utils/mixins' as *;
+
+[data-underline-link] {
+  position: relative;
+  text-decoration: none;
+  font-size: 20rem;
+  line-height: 28rem;
+  color: inherit; // на светлых страницах (блог) шапка тёмная
+}
+
+[data-underline-link]::before,
+[data-underline-link='alt']::before,
+[data-underline-link='alt']::after {
+  content: '';
+  position: absolute;
+  bottom: -4rem;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: currentColor;
+  transition: transform 0.735s var(--ease-out-quint);
+  transform-origin: right;
+  transform: scaleX(0) rotate(0.001deg);
+}
+
+[data-underline-link='alt']::before {
+  transform-origin: left;
+  transform: scaleX(1) rotate(0.001deg);
+  transition-delay: 0.3s;
+}
+
+[data-underline-link='alt']::after {
+  transform-origin: right;
+  transform: scaleX(0) rotate(0.001deg);
+  transition-delay: 0s;
+}
+
+@include hover {
+  [data-underline-link]:hover::before {
+    transform-origin: left;
+    transform: scaleX(1) rotate(0.001deg);
+  }
+
+  [data-underline-link='alt']:hover::before {
+    transform-origin: right;
+    transform: scaleX(0) rotate(0.001deg);
+    transition-delay: 0s;
+  }
+
+  [data-underline-link='alt']:hover::after {
+    transform-origin: left;
+    transform: scaleX(1) rotate(0.001deg);
+    transition-delay: 0.3s;
+  }
+}

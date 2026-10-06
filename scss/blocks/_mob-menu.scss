@@ -1,0 +1,151 @@
+@use '../utils/variables' as *;
+@use '../utils/mixins' as *;
+
+// Мобильное меню: панель во весь экран по кнопке-бургеру в шапке.
+// На десктопе не существует — ни кнопки, ни панели.
+// Раскрытие ведёт JS (initMobileMenu), здесь только состояния.
+
+.burger {
+  display: none; // появляется только в мобильной ветке
+  position: relative;
+  flex-shrink: 0;
+  width: 44rem;
+  height: 44rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+// Две линии: в открытом состоянии складываются в крест
+.burger__line {
+  position: absolute;
+  left: 50%;
+  width: 20rem;
+  height: 2px;
+  margin-left: -10rem;
+  border-radius: 2px;
+  background-color: currentColor;
+  transition: transform 0.4s var(--ease-main), opacity 0.2s ease;
+
+  &:first-child {
+    top: 18rem;
+  }
+
+  &:last-child {
+    bottom: 18rem;
+  }
+}
+
+.header.is--menu .burger__line {
+  &:first-child {
+    transform: translateY(3rem) rotate(45deg);
+  }
+
+  &:last-child {
+    transform: translateY(-3rem) rotate(-45deg);
+  }
+}
+
+.mob-menu {
+  display: none; // включается в мобильной ветке
+  position: fixed;
+  inset: 0;
+  // ниже контейнера шапки (у него z-index 2): лого и бургер должны
+  // оставаться поверх панели, иначе её нечем закрыть
+  z-index: 1;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 120rem 20rem 40rem;
+  background: linear-gradient(173deg, #000 0%, #{$color-blue} 60%, #3b56b8 100%);
+  color: #fff;
+
+  // Панель раскрывается шторкой сверху вниз, как и остальные маски на сайте.
+  // clip-path, а не высота: не трогает раскладку и не вызывает перерасчёт.
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 0.6s var(--ease-main);
+  pointer-events: none;
+}
+
+.header.is--menu .mob-menu {
+  clip-path: inset(0 0 0 0);
+  pointer-events: auto;
+}
+
+.mob-menu__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+
+  a {
+    // Крупная строка — главный приём мобильного меню: пункт читается
+    // с расстояния вытянутой руки и в него легко попасть пальцем
+    display: block;
+    padding: 6rem 0;
+    font-size: 34rem;
+    font-weight: 500;
+    line-height: 44rem;
+    letter-spacing: -1rem;
+    color: #fff;
+
+    // стартовое состояние для выезда строк (ставит JS через GSAP)
+    will-change: transform, opacity;
+  }
+}
+
+.mob-menu__foot {
+  display: flex;
+  flex-direction: column;
+  gap: 10rem;
+  padding-top: 28rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.mob-menu__contact {
+  font-size: 18rem;
+  font-weight: 500;
+  line-height: 26rem;
+  color: #fff;
+}
+
+.mob-menu__messengers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18rem;
+  margin-top: 8rem;
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8rem;
+    font-size: 16rem;
+    font-weight: 500;
+    line-height: 24rem;
+    color: $color-muted-light;
+  }
+
+  img {
+    width: 18rem;
+    height: 18rem;
+  }
+}
+
+@include tablet {
+  .burger {
+    display: block;
+  }
+
+  .mob-menu {
+    display: flex;
+  }
+
+  // Пока меню открыто, страница под ним не скроллится — скролл глушит JS,
+  // а здесь прячем то, что иначе торчало бы поверх панели
+  .header.is--menu {
+    .header-contact__label {
+      display: none;
+    }
+  }
+}

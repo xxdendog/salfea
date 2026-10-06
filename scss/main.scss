@@ -1,0 +1,46 @@
+// Точка входа: сюда подключаются все части
+@use 'utils/variables' as *;
+@use 'utils/easings';
+
+@use 'base/reset';
+@use 'base/fonts';
+@use 'base/global';
+
+// Общее
+@use 'blocks/links';
+@use 'blocks/buttons';
+@use 'blocks/section';
+@use 'blocks/metrics';   // полоса показателей: блоки 5 и 7
+@use 'blocks/title-roll';
+@use 'blocks/marquee';
+@use 'blocks/header';
+@use 'blocks/nav-dropdown';
+@use 'blocks/mob-menu';   // мобильное меню и бургер
+@use 'blocks/modal';
+@use 'blocks/faq';
+@use 'blocks/footer-parallax';
+@use 'blocks/footer';
+
+// Главная — по файлу на блок макета
+@use 'blocks/hero';       // 1
+@use 'blocks/products';   // 2
+@use 'blocks/callback';   // форма (общая с product.html)
+@use 'blocks/contact';    // 3
+@use 'blocks/skus';       // 4
+@use 'blocks/rating';     // 5
+@use 'blocks/features';   // 6
+@use 'blocks/plant';      // 7
+@use 'blocks/delivery';   // 8
+
+// Блог
+@use 'blocks/blog';   // лента
+@use 'blocks/post';   // страница статьи
+
+// Страница продукта
+@use 'blocks/product-hero';
+@use 'blocks/reasons';
+@use 'blocks/configurator';
+
+// Блоки старой главной (process, clients, stm) и старой страницы продукта
+// (channels, showcase, request, supply) из проекта убраны — лежат
+// в salfea-archive рядом с проектом, на случай возврата.

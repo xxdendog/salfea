@@ -1,0 +1,195 @@
+@use '../utils/variables' as *;
+@use '../utils/mixins' as *;
+
+// Первый экран (макет 1440x1140): фото микрофибры на всю секцию,
+// поверх — шапка, бегущая строка с лого, заголовок, кнопки, описание,
+// внизу полоса из трёх карточек-цифр.
+// Градиент виден сквозь прозрачные места фото ткани
+.hero {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(173deg, #000 0%, #{$color-blue} 50%, #7993e3 100%);
+}
+
+// Фото с запасом по высоте 112% — под параллакс ±6%
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+
+  img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    max-width: none;
+    height: 112%;
+    object-fit: cover;
+  }
+}
+
+// Экран без полосы цифр: в макете 900 при 1440
+.hero-screen {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100svh;
+  min-height: 790rem;
+  max-height: 1100rem;
+}
+
+// Шапка вынесена в <body>, поэтому отступ считаем от верха экрана (макет y118)
+.hero-marquee {
+  flex-shrink: 0;
+  margin-top: 118rem;
+}
+
+.hero-content {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-top: 40rem;
+}
+
+.hero-title {
+  max-width: 965rem;
+  font-size: 48rem;
+  font-weight: 500;
+  line-height: 52rem;
+  letter-spacing: -0.96rem;
+}
+
+.hero-buttons {
+  margin-top: 43rem;
+}
+
+.hero-desc {
+  align-self: flex-end;
+  width: 630rem;
+  margin-top: auto;
+  padding-bottom: 80rem;
+  font-size: 20rem;
+  font-weight: 500;
+  line-height: 28rem;
+}
+
+// Полоса цифр: три карточки 413 с зазором 20, линия сверху и между ними
+.hero-stats {
+  position: relative;
+  z-index: 1;
+  padding-bottom: 20rem;
+}
+
+// Элементы полосы названы от блока (.hero-stats__*): прежние .stats-*
+// не говорили, к какому блоку относятся
+.hero-stats__grid {
+  display: flex;
+  gap: 20rem;
+  height: 220rem;
+  border-top: 1px solid #fff;
+}
+
+.hero-stats__item {
+  flex: 1 1 413rem;
+  display: flex;
+  flex-direction: column;
+  gap: 12rem;
+  padding: 28rem 20rem;
+
+  & + & {
+    border-left: 1px solid #fff;
+  }
+}
+
+.hero-stats__value {
+  font-family: $font-display;
+  font-weight: 600;
+  font-size: 36rem;
+  line-height: 48rem;
+  text-transform: uppercase;
+}
+
+.hero-stats__text {
+  font-size: 20rem;
+  font-weight: 500;
+  line-height: 28rem;
+}
+
+// ---------------------------------------------------------------- мобильный
+// Первый экран держит ту же схему, что и на десктопе: бегущая строка, крупный
+// заголовок, кнопка, описание внизу. Меняются только кегли и то, что описание
+// и полоса цифр встают в колонку.
+@include tablet {
+  .hero-screen {
+    // На телефоне берём ровно высоту экрана: 100svh учитывает сворачивающуюся
+    // адресную строку, а жёсткий минимум в 790 на коротких экранах (iPhone SE)
+    // вылезал бы за кадр
+    min-height: 0;
+    max-height: none;
+  }
+
+  .hero-marquee {
+    margin-top: 84rem;
+  }
+
+  .hero-content {
+    padding-top: 28rem;
+  }
+
+  .hero-title {
+    max-width: none;
+    font-size: 34rem;
+    line-height: 40rem;
+    letter-spacing: -0.68rem;
+  }
+
+  .hero-buttons {
+    margin-top: 24rem;
+  }
+
+  .hero-desc {
+    align-self: stretch;
+    width: auto;
+    padding-bottom: 32rem;
+    // 16 — нижняя граница комфортного чтения с руки; мельче уже щуримся
+    font-size: 16rem;
+    line-height: 24rem;
+  }
+
+  // Полоса цифр: три колонки не влезают, поэтому строки друг под другом,
+  // разделитель переезжает с боков на верх
+  .hero-stats {
+    padding-bottom: 0;
+  }
+
+  .hero-stats__grid {
+    flex-direction: column;
+    gap: 0;
+    height: auto;
+  }
+
+  // В строку не ставим: «ЕАС/МИР» длиннее колонки и ломает сетку,
+  // а цифра сверху читается на узком экране даже лучше
+  .hero-stats__item {
+    flex: none;
+    gap: 6rem;
+    padding: 16rem 0;
+
+    & + & {
+      border-left: none;
+      border-top: 1px solid rgba(255, 255, 255, 0.3);
+    }
+  }
+
+  .hero-stats__value {
+    font-size: 24rem;
+    line-height: 30rem;
+  }
+
+  .hero-stats__text {
+    font-size: 15rem;
+    line-height: 21rem;
+  }
+}

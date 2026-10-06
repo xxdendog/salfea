@@ -1,0 +1,129 @@
+@use '../utils/variables' as *;
+@use '../utils/mixins' as *;
+
+// Блок 3 «Обсудим вашу оптовую закупку» (финальный макет 3.svg, 1440x802,
+// сверен 02.10.2026 — панель с формой сходится в пиксель).
+// Задник собран из двух слоёв: фирменный градиент прямо на секции и поверх
+// него паттерн из фигур отдельной картинкой — он один и едет параллаксом.
+.contact {
+  position: relative;
+  height: 802rem;
+  overflow: hidden;
+  background: linear-gradient(173deg, #000 0%, #{$color-blue} 50%, #7993e3 100%);
+}
+
+.contact-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+
+  // Ход параллакса считается в процентах от высоты самой картинки, поэтому
+  // «двигать сильнее» обычно значит «рисовать крупнее»: чтобы фигуры при
+  // ходе ±P перекрывали секцию, высота должна быть не меньше S / (1 - 2P/100).
+  // Нам нужно было наоборот — ход больше, а паттерн мельче, поэтому края
+  // растушёваны маской: на любом конце хода кромка не читается как обрез,
+  // паттерн просто растворяется в градиенте.
+  // Ширина и высота заданы так, что пропорция картинки (1041x802) сохраняется.
+  img {
+    position: absolute;
+    top: -2%;
+    left: 0;
+    width: 75%;
+    height: 104%;
+    max-width: none; // перебиваем reset: иначе svg обрежется по ширине секции
+    mask-image: linear-gradient(
+      to bottom,
+      transparent 0,
+      #000 90rem,
+      #000 calc(100% - 90rem),
+      transparent 100%
+    );
+  }
+}
+
+// Контент держится сетки 1440 и не разъезжается на широких экранах
+.contact-inner {
+  position: relative;
+  z-index: 1;
+  width: 1440rem;
+  height: 100%;
+  margin-inline: auto;
+  padding: 144rem 80rem 0;
+}
+
+.contact-info {
+  width: 700rem; // 40 + 620 текста + 40
+  padding-inline: 40rem;
+}
+
+.contact-desc {
+  width: 413rem;
+  margin-top: 32rem;
+  font-size: 24rem;
+  font-weight: 500;
+  line-height: 30rem;
+}
+
+// Панель стоит по координатам макета: 541x642 в правой части экрана
+.contact-panel {
+  position: absolute;
+  left: 774rem;
+  top: 80rem;
+  width: 541rem;
+  padding: 64rem 40rem;
+  border-radius: 12rem;
+  // В финальном макете панель нейтральная, а не синяя: чёрная сверху и до
+  // 41%, дальше линейно к #4f4f4f. Значения взяты прямо из градиента Figma.
+  background: linear-gradient(180deg, #000 41.35%, #4f4f4f 100%);
+  // Обводка именно рамкой, а не внутренней тенью: выглядит так же, но рамка
+  // забирает свой пиксель у паддинга — и поля встают ровно по макету (815/145
+  // вместо 814/144), а их ширина получается 459, как в Figma.
+}
+
+// Оформление формы — общее, в scss/blocks/_callback.scss (.form-flat)
+
+// Кнопка отправки: белая пилюля на всю ширину, пузырёк внутри справа —
+// позиционирование в .btn-calc.is--wide (scss/blocks/_buttons.scss)
+
+// ---------------------------------------------------------------- мобильный
+// Панель перестаёт быть абсолютной: текст и форма идут друг за другом, высота
+// секции собирается из содержимого. Паттерн кадрируем — рисунок абстрактный,
+// обрезка по краям на нём не читается, а пропорция 1041x802 на узком экране
+// растянула бы секцию на лишние пол-экрана пустого фона.
+@include tablet {
+  .contact {
+    height: auto;
+  }
+
+  .contact-bg img {
+    top: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .contact-inner {
+    width: 100%;
+    height: auto;
+    padding: 56rem $page-margin-mobile;
+  }
+
+  .contact-info {
+    width: auto;
+    padding-inline: 0;
+  }
+
+  .contact-desc {
+    width: auto;
+    margin-top: 20rem;
+    font-size: 16rem;
+    line-height: 24rem;
+  }
+
+  .contact-panel {
+    position: static;
+    width: auto;
+    margin-top: 32rem;
+    padding: 28rem 20rem;
+  }
+}

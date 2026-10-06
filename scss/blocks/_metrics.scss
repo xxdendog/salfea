@@ -1,0 +1,133 @@
+@use '../utils/variables' as *;
+@use '../utils/mixins' as *;
+
+// Полоса показателей: три колонки, разделённые волосяными линиями.
+// Один компонент на два блока главной — «рейтинг» (блок 5, светлый текст
+// поверх фото) и «производство» (блок 7, тёмный текст на белом фоне).
+// Разметка и размеры общие, модификатор `is--light` меняет только цвета
+// под светлый фон. Размеры сверены с макетом 5.svg (1440x900).
+//
+// Сетка та же, что у колонок первого экрана: три по 413 с зазором 20,
+// линия-разделитель живёт на левом крае соседней колонки.
+.metrics {
+  display: flex;
+  gap: 20rem;
+  height: 226rem;
+  border-top: 1px solid #fff;
+}
+
+.metric {
+  flex: 1 1 413rem;
+  padding: 22rem 20rem;
+
+  & + & {
+    border-left: 1px solid #fff;
+  }
+}
+
+.metric__label {
+  font-size: 15rem;
+  font-weight: 500;
+  line-height: 21rem;
+  color: $color-muted-light;
+}
+
+// Отступ сверху небольшой не случайно: маска одометра NumberFlow
+// (--number-flow-mask-height) сама добавляет над цифрами ~10, и вместе
+// с ней зазор от подписи выходит ровно как в макете.
+.metric__value {
+  margin-top: 8rem;
+  font-size: 64rem;
+  font-weight: 500;
+  line-height: 70rem;
+  letter-spacing: -1.92rem;
+
+  // «м²»: без обнулённого интерлиньяжа надстрочный знак растягивает строку,
+  // и первая колонка становится выше соседних
+  sup {
+    font-size: 0.5em;
+    line-height: 0;
+    vertical-align: super;
+  }
+
+  // NumberFlow: цифры прокручиваются как одометр. Без наследования шрифта
+  // и интерлиньяжа он ставит свои — строка вырастает с 70 до 96, и подвал
+  // колонки вылезает за полосу.
+  number-flow {
+    font: inherit;
+    line-height: inherit;
+    --number-flow-mask-height: 0.15em;
+  }
+}
+
+.metric__desc {
+  margin-top: 14rem;
+  font-size: 18rem;
+  font-weight: 500;
+  line-height: 24rem;
+}
+
+// Вариант для белого фона (блок «производство»). Отличий от тёмного три, и
+// все из макета 7.svg: цвета линии и подписи, **нет вертикальных
+// разделителей** и текст прижат к левому краю колонки.
+// Левый отступ держится за разделители не случайно: там, где линия есть
+// (блок «рейтинг»), текст без отступа упирался бы прямо в неё.
+.metrics.is--light {
+  border-top-color: rgba(0, 0, 0, 0.4);
+
+  .metric {
+    padding-left: 0;
+  }
+
+  .metric + .metric {
+    border-left: none;
+  }
+
+  .metric__label {
+    color: $color-muted-dark;
+  }
+}
+
+// ---------------------------------------------------------------- мобильный
+// Три колонки по 413 на 390 не живут: полоса встаёт в столбец, а разделитель
+// переезжает с левого края колонки на её верх. Цифру уменьшаем с 64 до 40 —
+// «5270м²» в 64 не влезает в 350 даже без подписи.
+@include tablet {
+  .metrics {
+    flex-direction: column;
+    gap: 0;
+    height: auto;
+  }
+
+  .metric {
+    flex: none;
+    padding: 18rem 0;
+
+    & + & {
+      border-left: none;
+      border-top: 1px solid rgba(255, 255, 255, 0.3);
+    }
+  }
+
+  .metric__label {
+    font-size: 14rem;
+    line-height: 20rem;
+  }
+
+  .metric__value {
+    margin-top: 4rem;
+    font-size: 40rem;
+    line-height: 46rem;
+    letter-spacing: -1.2rem;
+  }
+
+  .metric__desc {
+    margin-top: 8rem;
+    font-size: 15rem;
+    line-height: 21rem;
+  }
+
+  .metrics.is--light .metric + .metric {
+    border-top-color: rgba(0, 0, 0, 0.2);
+  }
+}

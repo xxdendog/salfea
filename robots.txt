@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Фильтр рубрик блога живёт в ?cat= и дублирует ленту — canonical ведёт
+# на /blog.html, но закрываем и здесь, чтобы не тратить обход
+Disallow: /*?cat=
+
+Sitemap: https://salfea.com/sitemap.xml

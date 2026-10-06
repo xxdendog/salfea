@@ -1,0 +1,506 @@
+@use '../utils/variables' as *;
+@use '../utils/mixins' as *;
+
+// Блог — единственная светлая страница сайта.
+//
+// Порядок: шапка страницы (H1 «Блог» + описание) → фильтр рубрик →
+// закреплённая статья → сетка карточек → синяя CTA-полоса → продолжение
+// сетки → «Показать ещё».
+//
+// Пагинации нет намеренно: при 15–20 материалах вся лента помещается в один
+// документ — так её целиком обходит поиск, а читатель не кликает по страницам,
+// которых почти нет. Карточки сверх первого экрана лежат в разметке сразу,
+// «Показать ещё» только снимает с них класс, ничего не подгружая.
+// Светлые страницы перекрашивают и body: его фон (тёмно-синий, под первый
+// экран главной) иначе просвечивает в любом зазоре между секциями
+.page-blog {
+  background-color: #fff;
+}
+
+.blog {
+  background-color: #fff;
+  color: #000;
+}
+
+// ---------------------------------------------------------------- шапка
+// Шапка сайта лежит в <body> поверх страницы, поэтому отступ сверху держит
+// сама секция.
+.blog-head {
+  padding-top: 124rem;
+}
+
+.blog-crumbs {
+  display: flex;
+  align-items: center;
+  gap: 10rem;
+  font-size: 16rem;
+  font-weight: 500;
+  line-height: 20rem;
+  color: $color-muted-dark;
+
+  a {
+    color: #000;
+    transition: opacity 0.2s ease;
+
+    @include hover {
+      &:hover {
+        opacity: 0.6;
+      }
+    }
+  }
+
+  svg {
+    width: 10rem;
+    height: 10rem;
+    opacity: 0.4;
+  }
+}
+
+// Заголовок страницы и описание в одну строку: крупное слово слева,
+// пояснение прижато к правому краю и выровнено по базовой линии заголовка.
+.blog-head__row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 60rem;
+  margin-top: 48rem;
+}
+
+.blog-head__title {
+  font-size: 96rem;
+  font-weight: 500;
+  line-height: 96rem;
+  letter-spacing: -2.88rem;
+}
+
+.blog-head__note {
+  flex-shrink: 0;
+  width: 520rem;
+  padding-bottom: 10rem;
+  font-size: 24rem;
+  font-weight: 500;
+  line-height: 32rem;
+  color: $color-muted-dark;
+}
+
+// ---------------------------------------------------------------- рубрики
+// Фильтр клиентский: кнопки переключают видимость карточек и пишут выбор
+// в ?cat=, чтобы ссылкой на рубрику можно было поделиться.
+.blog-cats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10rem;
+  margin-top: 56rem;
+  padding-top: 32rem;
+  border-top: 1px solid $color-line-grey;
+}
+
+.blog-cat {
+  height: 44rem;
+  padding-inline: 22rem;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 100rem;
+  background: none;
+  color: #000;
+  font-family: inherit;
+  font-size: 16rem;
+  font-weight: 500;
+  line-height: 20rem;
+  cursor: pointer;
+  transition: border-color 0.25s ease, background-color 0.25s ease, color 0.25s ease;
+
+  &.is--on {
+    border-color: $color-blue;
+    background-color: $color-blue;
+    color: #fff;
+  }
+
+  @include hover {
+    &:not(.is--on):hover {
+      border-color: rgba(0, 0, 0, 0.45);
+    }
+  }
+}
+
+// ---------------------------------------------------- закреплённая статья
+// Самый свежий материал: фото слева, текст справа. На фильтре по рубрике
+// скрывается — в выдаче рубрики все статьи равны и идут обычной сеткой.
+// Отступ сверху держит сама секция (.blog-list), а не margin первого блока:
+// у секции нет ни рамки, ни паддинга, поэтому margin ребёнка схлопывается
+// наружу и открывает тёмный фон body между белыми секциями.
+.blog-lead {
+  display: flex;
+  gap: 72rem;
+}
+
+.blog-lead__media {
+  position: relative;
+  flex: 0 0 688rem;
+  height: 460rem;
+  border-radius: 6rem;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s var(--ease-main);
+  }
+}
+
+.blog-lead__body {
+  flex: 1;
+  min-width: 0;
+  padding-top: 8rem;
+}
+
+.blog-lead__title {
+  margin-top: 20rem;
+  font-size: 40rem;
+  font-weight: 500;
+  line-height: 48rem;
+  letter-spacing: -1.2rem;
+}
+
+// Ссылка-стрелка внизу карточки: на ховере по всей карточке уезжает вправо
+.blog-lead__more {
+  display: flex;
+  align-items: center;
+  gap: 12rem;
+  margin-top: 36rem;
+  font-size: 18rem;
+  font-weight: 500;
+  line-height: 28rem;
+  color: $color-blue;
+
+  svg {
+    width: 20rem;
+    height: 20rem;
+    transition: transform 0.4s var(--ease-main);
+  }
+}
+
+// ---------------------------------------------------------------- карточки
+.blog-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 72rem 20rem;
+  margin-top: 80rem;
+}
+
+.blog-card {
+  display: block;
+  color: inherit;
+
+  // «Показать ещё» снимает класс — карточки уже есть в разметке
+  &.is--hidden,
+  &.is--off {
+    display: none;
+  }
+}
+
+.blog-card__media {
+  position: relative;
+  height: 260rem;
+  border-radius: 6rem;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s var(--ease-main);
+  }
+}
+
+// Рубрика кружком на фото — читателю сразу видно, из какого раздела материал,
+// и подтверждается выбранный фильтр
+.blog-cat-badge {
+  position: absolute;
+  left: 12rem;
+  bottom: 12rem;
+  padding: 6rem 14rem;
+  border-radius: 100rem;
+  background-color: #fff;
+  color: $color-blue;
+  font-size: 14rem;
+  font-weight: 500;
+  line-height: 20rem;
+}
+
+// Заголовок обрезаем по двум строкам — иначе ряды карточек разъезжаются
+.blog-card__title {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  margin-top: 12rem;
+  font-size: 24rem;
+  font-weight: 500;
+  line-height: 32rem;
+  letter-spacing: -0.48rem;
+}
+
+// Дата и время чтения — общая строка для всех карточек
+.blog-meta {
+  margin-top: 24rem;
+  font-size: 16rem;
+  font-weight: 500;
+  line-height: 20rem;
+  color: $color-muted-dark;
+}
+
+.blog-excerpt {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  margin-top: 16rem;
+  font-size: 18rem;
+  font-weight: 500;
+  line-height: 28rem;
+  color: $color-muted-dark;
+
+  &.is--long {
+    -webkit-line-clamp: 4;
+  }
+}
+
+@include hover {
+  .blog-card:hover .blog-card__media img,
+  .blog-lead:hover .blog-lead__media img {
+    transform: scale(1.04);
+  }
+
+  .blog-lead:hover .blog-lead__more svg {
+    transform: translate(6rem, -6rem);
+  }
+}
+
+// ------------------------------------------------------------ CTA в ленте
+// Синяя полоса в середине ленты: блог без призыва к действию — трафик в никуда.
+// Кнопка открывает тот же попап заявки, что и на остальных страницах.
+.blog-cta {
+  margin-top: 96rem;
+  padding: 72rem 80rem;
+  border-radius: 6rem;
+  background-color: $color-blue;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 60rem;
+}
+
+.blog-cta__title {
+  font-size: 40rem;
+  font-weight: 500;
+  line-height: 48rem;
+  letter-spacing: -1.2rem;
+}
+
+.blog-cta__note {
+  width: 520rem;
+  margin-top: 16rem;
+  font-size: 18rem;
+  font-weight: 500;
+  line-height: 28rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+// ------------------------------------------------------- показать ещё
+.blog-more {
+  display: flex;
+  justify-content: center;
+  margin-top: 80rem;
+}
+
+.blog-more__btn {
+  height: 56rem;
+  padding-inline: 44rem;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 100rem;
+  background: none;
+  color: #000;
+  font-family: inherit;
+  font-size: 18rem;
+  font-weight: 500;
+  line-height: 28rem;
+  cursor: pointer;
+  transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+
+  @include hover {
+    &:hover {
+      border-color: #000;
+      background-color: #000;
+      color: #fff;
+    }
+  }
+}
+
+// Пустая рубрика: сообщение вместо сетки
+.blog-empty {
+  display: none;
+  margin-top: 80rem;
+  font-size: 24rem;
+  font-weight: 500;
+  line-height: 32rem;
+  color: $color-muted-dark;
+
+  &.is--on {
+    display: block;
+  }
+}
+
+.blog-list {
+  padding-top: 64rem;
+  padding-bottom: 120rem;
+}
+
+// ---------------------------------------------------------------- мобильный
+// Лента становится одноколоночной. Карточка при этом не растягивается на всю
+// ширину в один ряд — фото 16:10 и две строки заголовка читаются так же, как
+// на десктопе, просто крупнее.
+@include tablet {
+  .blog-head {
+    padding-top: 92rem;
+  }
+
+  .blog-crumbs {
+    font-size: 14rem;
+    line-height: 18rem;
+  }
+
+  .blog-head__row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16rem;
+    margin-top: 28rem;
+  }
+
+  .blog-head__title {
+    font-size: 48rem;
+    line-height: 50rem;
+    letter-spacing: -1.44rem;
+  }
+
+  .blog-head__note {
+    flex-shrink: 1;
+    width: auto;
+    padding-bottom: 0;
+    font-size: 16rem;
+    line-height: 24rem;
+  }
+
+  .blog-cats {
+    gap: 8rem;
+    margin-top: 32rem;
+    padding-top: 24rem;
+  }
+
+  .blog-cat {
+    height: 38rem;
+    padding-inline: 16rem;
+    font-size: 14rem;
+    line-height: 18rem;
+  }
+
+  // Закреплённая статья: фото сверху, текст под ним
+  .blog-lead {
+    flex-direction: column;
+    gap: 20rem;
+  }
+
+  .blog-lead__media {
+    flex: none;
+    height: 220rem;
+  }
+
+  .blog-lead__body {
+    padding-top: 0;
+  }
+
+  .blog-lead__title {
+    margin-top: 14rem;
+    font-size: 26rem;
+    line-height: 32rem;
+    letter-spacing: -0.78rem;
+  }
+
+  .blog-lead__more {
+    margin-top: 20rem;
+    font-size: 16rem;
+    line-height: 24rem;
+  }
+
+  .blog-grid {
+    grid-template-columns: 1fr;
+    gap: 36rem;
+    margin-top: 40rem;
+  }
+
+  .blog-card__media {
+    height: 200rem;
+  }
+
+  .blog-card__title {
+    margin-top: 10rem;
+    font-size: 20rem;
+    line-height: 26rem;
+    letter-spacing: -0.4rem;
+  }
+
+  .blog-meta {
+    margin-top: 16rem;
+    font-size: 14rem;
+    line-height: 18rem;
+  }
+
+  .blog-excerpt {
+    margin-top: 10rem;
+    font-size: 15rem;
+    line-height: 22rem;
+  }
+
+  .blog-cta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24rem;
+    margin-top: 48rem;
+    padding: 32rem 20rem;
+  }
+
+  .blog-cta__title {
+    font-size: 26rem;
+    line-height: 32rem;
+    letter-spacing: -0.78rem;
+  }
+
+  .blog-cta__note {
+    width: auto;
+    margin-top: 12rem;
+    font-size: 15rem;
+    line-height: 22rem;
+  }
+
+  .blog-more {
+    margin-top: 44rem;
+  }
+
+  .blog-more__btn {
+    height: 50rem;
+    padding-inline: 32rem;
+    font-size: 16rem;
+  }
+
+  .blog-empty {
+    margin-top: 44rem;
+    font-size: 18rem;
+    line-height: 26rem;
+  }
+
+  .blog-list {
+    padding-top: 40rem;
+    padding-bottom: 56rem;
+  }
+}

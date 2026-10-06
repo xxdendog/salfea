@@ -1,0 +1,202 @@
+// Sticky Features (osmo + custo.io): секция пинится на весь экран,
+// тексты слева сменяются анимацией (js/main.js -> initStickyFeatures),
+// колонка картинок справа прокручивается скрабом
+@use '../utils/variables' as *;
+@use '../utils/mixins' as *;
+
+.features {
+  position: relative;
+  overflow: hidden;
+  height: 100svh;
+  min-height: 860rem;
+  background: linear-gradient(180deg, #000 41%, #4f4f4f 100%), #01117f;
+  color: #fff;
+}
+
+// Светлый вариант — блок 2 страницы продукта «Можно использовать повторно»
+.features--light {
+  background: #fff;
+  color: #000;
+
+  .features-title {
+    top: 200rem;
+  }
+
+  .features-label {
+    top: 579rem;
+  }
+
+  .features-desc {
+    top: 628rem;
+    color: rgba(0, 0, 0, 0.59);
+  }
+}
+
+// Координаты внутри считаем от сетки 1440, а не от края окна
+.features-item {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc((100vw - 1440rem) / 2);
+  width: 1440rem;
+  opacity: 0;
+  visibility: hidden;
+
+  // До инициализации JS показываем первый экран текста
+  &:first-child {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+.features-title {
+  position: absolute;
+  left: 189rem;
+  top: 197rem;
+  max-width: 464rem;
+  font-size: 60rem;
+  font-weight: 500;
+  line-height: 68rem;
+  letter-spacing: -1.8rem;
+}
+
+.features-label {
+  position: absolute;
+  left: 189rem;
+  top: 600rem;
+  font-size: 20rem;
+  line-height: 25rem;
+}
+
+.features-desc {
+  position: absolute;
+  left: 189rem;
+  top: 649rem;
+  width: 401rem;
+  font-size: 20rem;
+  font-weight: 400;
+  line-height: 28rem;
+  color: #e0e0e0;
+}
+
+// Окно колонки картинок: track выезжает за нижнюю границу,
+// обрезается overflow'ом секции
+.features-visual {
+  position: absolute;
+  left: calc((100vw - 1440rem) / 2 + 733rem);
+  top: 120rem;
+  bottom: 116rem;
+  width: 517rem;
+}
+
+.features-track {
+  display: flex;
+  flex-direction: column;
+  gap: 28rem;
+  will-change: transform;
+}
+
+.features-img {
+  position: relative;
+  height: 720rem;
+  border-radius: 6rem;
+  overflow: hidden;
+
+  // Запас по высоте под внутренний параллакс (yPercent задаёт JS)
+  img {
+    position: absolute;
+    left: 0;
+    top: -10%;
+    width: 100%;
+    height: 120%;
+    object-fit: cover;
+  }
+}
+
+// ---------------------------------------------------------------- мобильный
+// Пин снимаем (JS не собирает блок ниже 992) и разворачиваем секцию в обычную
+// колонку: подпись — заголовок — описание — фото, и так трижды. Фотографии
+// лежат отдельной лентой в конце разметки, поэтому обёртки растворяем через
+// display: contents и расставляем пары порядком — переносить фото внутрь
+// карточек ради одного брейкпоинта не стали, разметка нужна общая с десктопом.
+@include tablet {
+  .features {
+    display: flex;
+    flex-direction: column;
+    gap: 24rem;
+    height: auto;
+    min-height: 0;
+    padding: 48rem $page-margin-mobile 56rem;
+  }
+
+  // обёртки ленты исчезают как коробки: фото становятся соседями карточек
+  .features-visual,
+  .features-track {
+    display: contents;
+  }
+
+  .features .features-item {
+    position: static;
+    left: auto;
+    display: flex;
+    flex-direction: column;
+    width: auto;
+    opacity: 1;
+    visibility: visible;
+  }
+
+  // Селекторы с .features не для красоты: у светлого варианта
+  // (.features--light .features-title) координаты заданы с большей
+  // специфичностью, и без неё position: static до них не доходит
+  .features .features-title,
+  .features .features-label,
+  .features .features-desc {
+    position: static;
+    left: auto;
+    top: auto;
+    width: auto;
+    max-width: none;
+  }
+
+  // На узком экране порядок переворачиваем: сначала номер шага, потом
+  // заголовок. В разметке наоборот — там заголовок стоит выше по макету.
+  .features-label {
+    order: 1;
+    font-size: 14rem;
+    line-height: 20rem;
+  }
+
+  .features-title {
+    order: 2;
+    margin-top: 8rem;
+    font-size: 28rem;
+    line-height: 34rem;
+    letter-spacing: -0.84rem;
+  }
+
+  .features-desc {
+    order: 3;
+    margin-top: 12rem;
+    font-size: 16rem;
+    line-height: 24rem;
+  }
+
+  .features-img {
+    height: 320rem;
+
+    // параллакс картинок живёт в JS, которого здесь нет: запас по высоте
+    // без него только сдвигал бы кадр вверх
+    img {
+      top: 0;
+      height: 100%;
+    }
+  }
+
+  // пары «текст — фото»: карточки и фото чередуются порядком
+  .features-item:nth-of-type(1) { order: 1; }
+  .features-img:nth-of-type(1)  { order: 2; }
+  .features-item:nth-of-type(2) { order: 3; }
+  .features-img:nth-of-type(2)  { order: 4; }
+  .features-item:nth-of-type(3) { order: 5; }
+  .features-img:nth-of-type(3)  { order: 6; }
+}

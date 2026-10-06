@@ -1,0 +1,157 @@
+@use '../utils/variables' as *;
+@use '../utils/mixins' as *;
+
+// Блок 4 «Более 60 видов SKU» (макет 1440x827): бесконечная лента карточек
+// товара. Крутится сама, на скролле меняет направление — как лого-ролл
+// в первом экране (js/main.js -> initMarqueeScrollDirection).
+.skus {
+  padding: 80rem 0 97rem;
+  background-color: #fff;
+  color: #000;
+  overflow: hidden;
+}
+
+.skus-head {
+  text-align: center;
+}
+
+.skus-label {
+  font-size: 27rem;
+  font-weight: 500;
+  line-height: 33rem;
+  letter-spacing: -0.81rem;
+  color: $color-muted-dark;
+}
+
+// Лента прячет горизонтальный перелив, поэтому ей нужен вертикальный запас —
+// иначе увеличенная на ховере карточка срезается. Запас гасим отрицательным
+// полем. Своих линий у ленты нет: разделители живут на карточках.
+.skus-strip {
+  position: relative;
+  margin-top: 40rem;
+  margin-bottom: -24rem;
+  padding-block: 24rem;
+  cursor: grab;
+  user-select: none; // иначе при протяжке выделяются подписи карточек
+
+  &.is--dragging {
+    cursor: grabbing;
+  }
+
+  img {
+    -webkit-user-drag: none;
+  }
+}
+
+.skus-row {
+  display: flex;
+}
+
+// Ячейка ленты: 256, контент 216. Обводка у каждой карточки своя, со всех
+// сторон; соседние карточки наезжают друг на друга на 1px (margin-left: -1px),
+// поэтому в местах стыка линия остаётся одинарной, а не двойной.
+// На ховере карточка подрастает и вылезает поверх соседей.
+.sku-card {
+  position: relative;
+  flex-shrink: 0;
+  width: 256rem;
+  height: 401rem;
+  padding: 19rem 20rem 0;
+  margin-left: -1px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: #000;
+  background-color: #fff;
+  transition: transform 0.35s var(--ease-main);
+}
+
+.sku-card__cat {
+  font-size: 11rem;
+  font-weight: 500;
+  line-height: 11rem;
+  opacity: 0.5;
+}
+
+// Коробка ровно под фото: отступы сверху и снизу заданы явно (24 и 35),
+// а не остатком от высоты коробки — так их видно в коде и легко сверить
+// с макетом. Центрирование оставлено на случай снимка другой пропорции.
+.sku-card__media {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 267rem;
+  margin-top: 24rem;
+
+  // Фото на 10% меньше слота по макету (было 200x267). Коробка остаётся 267 —
+  // на ней держится положение подвала карточки, фото просто центрируется в ней.
+  img {
+    width: 180rem;
+    height: 240rem;
+    object-fit: contain;
+  }
+}
+
+.sku-card__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 35rem;
+  font-size: 13rem;
+  font-weight: 500;
+  line-height: 16rem;
+}
+
+// На ховере растёт только карточка целиком: фото своим масштабом не добавляет,
+// а двойное увеличение читалось как рывок
+@include hover {
+  .sku-card:hover {
+    z-index: 2;
+    transform: scale(1.06);
+  }
+}
+
+// ---------------------------------------------------------------- мобильный
+// Лента остаётся бесконечной и живой — это дешёвая анимация (один transform
+// на строку) и главный приём блока. Уменьшаем саму карточку: при 256 в кадр
+// попадала бы полторы штуки, при 180 — две с хвостом, и лента читается как лента.
+@include tablet {
+  .skus {
+    padding: 48rem 0 56rem;
+  }
+
+  .skus-label {
+    font-size: 18rem;
+    line-height: 24rem;
+    letter-spacing: -0.54rem;
+  }
+
+  .skus-strip {
+    margin-top: 28rem;
+  }
+
+  .sku-card {
+    width: 180rem;
+    height: 290rem;
+    padding: 14rem 14rem 0;
+  }
+
+  .sku-card__cat {
+    font-size: 10rem;
+    line-height: 10rem;
+  }
+
+  .sku-card__media {
+    height: 188rem;
+    margin-top: 16rem;
+
+    img {
+      width: 126rem;
+      height: 168rem;
+    }
+  }
+
+  .sku-card__foot {
+    margin-top: 22rem;
+    font-size: 11rem;
+    line-height: 14rem;
+  }
+}

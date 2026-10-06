@@ -1,0 +1,210 @@
+@use '../utils/variables' as *;
+@use '../utils/mixins' as *;
+
+// Шапка лежит первым элементом в <body> и накрывает первый экран
+.header {
+  position: absolute;
+  z-index: 50;
+  top: 0;
+  left: 0;
+  right: 0;
+  // 33, а не 37: самый высокий элемент строки — кружок-телефон 48, и по макету
+  // он начинается на 37. Капсула-ховер вокруг него выше кружка на 8, поэтому
+  // отступ шапки на эти 8/2 меньше.
+  padding-top: 33rem;
+}
+
+// Контейнер шапки лежит над выпадающей панелью
+.header > .container {
+  position: relative;
+  z-index: 2;
+}
+
+.header-inner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 48rem;
+}
+
+.header-logo {
+  position: relative;
+  z-index: 1;
+
+  img {
+    width: 128rem;
+    height: auto;
+  }
+}
+
+.header-nav {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 32rem;
+  font-size: 20rem;
+  font-weight: 500;
+  line-height: 28rem;
+}
+
+// Справа: ссылка «Связаться» и круглая кнопка-телефон
+.header-actions {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 12rem;
+}
+
+// «Связаться» вместе с кружком-телефоном — одна кнопка.
+// В покое рамки нет, на ховере проявляется контур-капсула, а шарик
+// перепрыгивает налево — надпись при этом встаёт зеркально исходной.
+.header-contact {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 12rem;
+  height: 56rem;
+  // кружок прижат к правому краю сетки (x1360), рамка на ховере выходит на 4
+  margin-right: -4rem;
+  padding: 0 4rem 0 28rem;
+  border: 1px solid transparent;
+  border-radius: 99rem;
+  font-size: 20rem;
+  font-weight: 500;
+  line-height: 28rem;
+  transition: border-color 0.35s var(--ease-main);
+}
+
+// Текст уезжает вправо, освобождая место шарику слева
+.header-contact__label {
+  position: relative;
+  transition: transform 0.735s var(--ease-main);
+}
+
+
+.header-contact__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 48rem;
+  height: 48rem;
+  border-radius: 50%;
+  background-color: #fff;
+  color: #1c1b1f;
+
+  svg {
+    width: 24rem;
+    height: 24rem;
+  }
+
+  // видимый шарик схлопывается к правому краю
+  transform: scale(1) rotate(0.001deg);
+  transform-origin: right;
+  transition: transform 0.735s var(--ease-main);
+
+  // копия слева: в покое схлопнута, на ховере вырастает
+  // зеркально видимому: тот прижат к правому краю на 4, этот — к левому
+  &.is--ghost {
+    position: absolute;
+    left: 4rem;
+    top: 4rem;
+    transform: scale(0) rotate(0.001deg);
+    transform-origin: left;
+  }
+}
+
+@include hover {
+  .header-contact:hover {
+    border-color: currentColor;
+
+    // шарик перепрыгивает налево: правый схлопывается, левый вырастает,
+    // надпись сдвигается ровно в зеркальную позицию (28 -> 64 от края)
+    .header-contact__label {
+      transform: translateX(36rem);
+    }
+
+    .header-contact__icon {
+      transform: scale(0) rotate(0.001deg);
+    }
+
+    .header-contact__icon.is--ghost {
+      transform: scale(1) rotate(0.001deg);
+    }
+  }
+}
+
+// Тёмный вариант: на светлых страницах (блог) и пока открыта выпадающая
+// панель «Продукты» — чёрные надписи, лого перекрашиваем инверсией,
+// кнопка-телефон синяя
+.header--dark,
+.header.is--open {
+  color: #000;
+
+  .header-logo img {
+    filter: invert(1);
+  }
+
+  .header-contact__icon {
+    background-color: $color-blue;
+    color: #fff;
+  }
+}
+
+// На блоге лого уже чёрное — вторая инверсия его бы вернула в белое
+.header--dark.is--open .header-logo img {
+  filter: invert(1);
+}
+
+// ---------------------------------------------------------------- мобильный
+// Ниже 992 от шапки остаётся только лого, кнопка-телефон и бургер: меню
+// переезжает в полноэкранную панель (_mob-menu.scss), выпадающая панель
+// «Продукты» исчезает — она построена на ховере, которого на тач-экране нет.
+@include tablet {
+  .header {
+    padding-top: 20rem;
+  }
+
+  .header-inner {
+    min-height: 44rem;
+  }
+
+  .header-logo img {
+    width: 104rem;
+  }
+
+  .header-nav,
+  .nav-dropdown {
+    display: none;
+  }
+
+  .header-actions {
+    gap: 8rem;
+  }
+
+  // «Связаться» прячем: на узком экране хватает кружка-телефона
+  .header-contact {
+    height: 44rem;
+    margin-right: 0;
+    padding: 0;
+  }
+
+  .header-contact__label,
+  .header-contact__icon.is--ghost {
+    display: none;
+  }
+
+  .header-contact__icon {
+    width: 44rem;
+    height: 44rem;
+
+    svg {
+      width: 22rem;
+      height: 22rem;
+    }
+  }
+}
