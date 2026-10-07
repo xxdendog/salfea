@@ -1064,6 +1064,16 @@ html.lenis body {
   .header.is--menu .header-contact__label {
     display: none;
   }
+  .header--dark.is--menu {
+    color: #fff;
+  }
+  .header--dark.is--menu .header-logo img {
+    filter: none;
+  }
+  .header--dark.is--menu .header-contact__icon {
+    background-color: #fff;
+    color: #111111;
+  }
 }
 .modal {
   --modal-reveal: 0.8s;
