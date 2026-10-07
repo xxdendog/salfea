@@ -79,38 +79,98 @@
 }
 
 // ---------------------------------------------------------------- мобильный
-// Жёсткие 900 снимаем: на узком экране текст и полоса показателей занимают
-// больше, и высоту задаёт содержимое. Фото-фон с запасом 112% остаётся —
-// параллакс вертикальный, на телефоне он так же уместен.
+// Макет 5.svg (402x1016): сверху градиент с текстом и полосой из двух
+// показателей, снизу фото на 446, и поверх него — третий показатель.
+// На десктопе фото лежит на всей секции, здесь только на нижней части.
 @include tablet {
   .rating {
     height: auto;
   }
 
+  // Фото занимает нижнюю часть секции; запас 112% по высоте оставлен
+  // под тот же вертикальный параллакс, что и на десктопе
+  .rating-bg {
+    top: auto;
+    bottom: 0;
+    height: 446rem;
+    // запас под параллакс (112% высоты) обрезаем по самой коробке, иначе
+    // фото вылезает вверх и наезжает на полосу показателей
+    overflow: hidden;
+  }
+
   .rating-inner {
     width: 100%;
-    padding: 56rem $page-margin-mobile;
+    padding: 66rem $page-margin-mobile 25rem;
   }
 
   .rating-caption {
-    font-size: 14rem;
-    line-height: 20rem;
+    font-size: 18rem;
+    line-height: 23rem;
   }
 
   .rating .sec-title {
     max-width: none;
+    margin-top: 10rem;
   }
 
   .rating-desc {
     width: auto;
-    margin-top: 20rem;
+    margin-top: 23rem;
     font-size: 16rem;
-    line-height: 24rem;
+    line-height: 26rem;
   }
 
-  // margin-top: auto прижимал полосу к низу секции высотой 900; высоты больше
-  // нет, поэтому отступ задаём явно
+  // Полоса: два показателя рядом, третий уходит на следующую строку —
+  // под полосу, на фото. Поэтому flex с переносом, а не колонка.
   .rating-inner > .metrics {
-    margin-top: 40rem;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0;
+    height: auto;
+    margin-top: 48rem;
+  }
+
+  .rating .metric {
+    flex: 0 0 50%;
+    padding: 22rem 0 33rem;
+
+    & + & {
+      border-top: none;
+      border-left: 1px solid rgba(255, 255, 255, 0.4);
+      padding-left: 20rem;
+    }
+  }
+
+  // Третий показатель стоит отдельно, поверх фото
+  .rating .metric:nth-child(3) {
+    flex: 0 0 100%;
+    margin-top: 303rem;
+    padding: 0;
+    border-left: none;
+
+    .metric__desc {
+      max-width: 170rem;
+    }
+  }
+
+  .rating .metric__label {
+    font-size: 16rem;
+    line-height: 22rem;
+  }
+
+  .rating .metric__value {
+    margin-top: 8rem;
+    font-size: 28rem;
+    line-height: 34rem;
+    letter-spacing: -0.84rem;
+  }
+
+  // Подпись под цифрой заметно мельче остального текста и переносится
+  // раньше, чем упёрлась бы в колонку — по макету строка короткая
+  .rating .metric__desc {
+    max-width: 140rem;
+    margin-top: 5rem;
+    font-size: 11rem;
+    line-height: 19rem;
   }
 }
