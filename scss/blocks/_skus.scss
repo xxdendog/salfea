@@ -115,43 +115,43 @@
 // попадала бы полторы штуки, при 180 — две с хвостом, и лента читается как лента.
 @include tablet {
   .skus {
-    padding: 48rem 0 56rem;
+    padding: 66rem 0 82rem;
   }
 
   .skus-label {
     font-size: 18rem;
-    line-height: 24rem;
-    letter-spacing: -0.54rem;
+    line-height: 23rem;
+    letter-spacing: 0;
   }
 
   .skus-strip {
-    margin-top: 28rem;
+    margin-top: 24rem;
   }
 
   .sku-card {
-    width: 180rem;
-    height: 290rem;
-    padding: 14rem 14rem 0;
+    width: 185rem;
+    height: 297rem;
+    padding: 16rem 16rem 0;
   }
 
   .sku-card__cat {
-    font-size: 10rem;
-    line-height: 10rem;
+    font-size: 11rem;
+    line-height: 11rem;
   }
 
   .sku-card__media {
-    height: 188rem;
-    margin-top: 16rem;
+    height: 192rem;
+    margin-top: 20rem;
 
     img {
-      width: 126rem;
-      height: 168rem;
+      width: 130rem;
+      height: 173rem;
     }
   }
 
   .sku-card__foot {
     margin-top: 22rem;
-    font-size: 11rem;
-    line-height: 14rem;
+    font-size: 12rem;
+    line-height: 15rem;
   }
 }

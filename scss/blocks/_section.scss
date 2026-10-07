@@ -74,22 +74,27 @@
 @include tablet {
   .sec-head {
     flex-direction: column;
-    gap: 16rem;
+    gap: 21rem;
   }
 
   .sec-label {
-    font-size: 15rem;
-    line-height: 20rem;
+    font-size: 18rem;
+    line-height: 23rem;
   }
 
+  // Интерлиньяж по макетам 2 и 4 заметно свободнее десктопного (34/44
+  // против 64/70): на узкой колонке строки заголовка иначе слипаются
+  // Ширина строки уже контейнера: в макетах заголовок переносится раньше,
+  // чем упёрся бы в поля (в блоке 2 «клиентов» уходит на третью строку)
   .sec-title {
-    margin-top: 10rem;
-    font-size: 34rem;
-    line-height: 38rem;
-    letter-spacing: -0.68rem;
+    max-width: 350rem;
+    margin-top: 12rem;
+    font-size: 35rem;
+    line-height: 44rem;
+    letter-spacing: -0.7rem;
 
     &.is--wide {
-      line-height: 40rem;
+      line-height: 44rem;
     }
   }
 
@@ -97,7 +102,7 @@
     width: auto;
     margin-top: 0;
     font-size: 16rem;
-    line-height: 24rem;
+    line-height: 26rem;
   }
 
   // Строка списка перестаёт быть одной: текст переносится, поэтому высота
@@ -105,18 +110,18 @@
   .arrow-list li {
     height: auto;
     align-items: flex-start;
-    gap: 8rem;
-    font-size: 15rem;
-    line-height: 21rem;
+    gap: 14rem;
+    font-size: 16rem;
+    line-height: 22rem;
   }
 
   .arrow-list li + li {
-    margin-top: 8rem;
+    margin-top: 6rem;
   }
 
   .arrow-list svg {
-    width: 18rem;
-    height: 18rem;
-    margin-top: 2rem;
+    width: 11rem;
+    height: 11rem;
+    margin-top: 5rem;
   }
 }

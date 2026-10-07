@@ -171,27 +171,34 @@
 // удобного попадания пальцем, а кегль ровно 16 обязателен — при меньшем
 // Safari на iOS зумит страницу, как только встаёшь в поле.
 @include tablet {
+  // Размеры по макету 3.svg. Форма одна и та же в блоке обратной связи
+  // и в попапе заявки, поэтому правила общие — расходятся только поля
+  // контейнеров: панель блока шире, попап во весь экран.
   .form-flat {
-    gap: 28rem;
+    gap: 29rem;
   }
 
   .form-flat__fields {
-    gap: 14rem;
+    gap: 20rem;
+  }
+
+  .callback-form__fields {
+    gap: 13rem;
   }
 
   .form-field__input {
-    height: 48rem;
-    padding: 14rem 40rem 14rem 12rem;
+    height: 51rem;
+    padding: 16rem 40rem 16rem 12rem;
     font-size: 16rem;
 
     &.is--textarea {
-      height: 120rem;
-      padding-block: 14rem;
+      height: 127rem;
+      padding-block: 16rem;
     }
   }
 
   .form-field__icon {
-    top: 16rem;
+    top: 18rem;
   }
 
   .form-check__text {

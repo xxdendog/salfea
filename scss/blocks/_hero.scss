@@ -145,7 +145,7 @@
 
   .hero-content {
     flex: 1 0 auto;
-    padding-top: 28rem;
+    padding-top: 29rem;
   }
 
   // Части заголовка встают в столбец и меняются местами
@@ -154,9 +154,9 @@
     flex-direction: column;
     align-items: flex-start;
     max-width: none;
-    font-size: 42rem;
-    line-height: 45rem;
-    letter-spacing: -0.84rem;
+    font-size: 37rem;
+    line-height: 42rem;
+    letter-spacing: -0.74rem;
   }
 
   .hero-title__part.is--stuff { order: 1; }
@@ -168,9 +168,9 @@
   // Прописную даём через ::first-letter: в разметке строка идёт серединой
   // предложения и начинаться с большой буквы не может.
   .hero-title__part.is--stuff {
-    margin-bottom: 16rem;
-    font-size: 20rem;
-    line-height: 26rem;
+    margin-bottom: 14rem;
+    font-size: 18rem;
+    line-height: 23rem;
     letter-spacing: 0;
     color: $color-muted-light;
 
@@ -184,7 +184,7 @@
     order: 2;
     align-self: stretch;
     width: auto;
-    margin-top: 29rem;
+    margin-top: 27rem;
     padding-bottom: 0;
     font-size: 16rem;
     line-height: 26rem;

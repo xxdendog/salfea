@@ -200,19 +200,19 @@
 // карточке занимает больше строк, и прежнее большое фото его перекрывало.
 @include tablet {
   .products {
-    padding: 48rem 0;
+    padding: 66rem 0 70rem;
   }
 
   .products-row {
     flex-direction: column;
-    margin-top: 32rem;
+    margin-top: 39rem;
   }
 
+  // Карточки идут вплотную: по макету вторая начинается ровно там, где
+  // кончается первая, и общая граница у них одна
   .hit-card {
     flex: none;
-    // Высота считается от содержимого и фото: фото прибито к нижней кромке,
-    // поэтому карточке нужен явный рост. На планшете строк меньше — хватает 480
-    height: 480rem;
+    height: 560rem;
     padding: 20rem;
 
     &:first-child {
@@ -226,39 +226,35 @@
     }
   }
 
-  // Запас справа под кружок «ХИТ»: на узкой карточке первая строка
-  // заголовка доходила до правого края и уезжала ему под низ
-  .hit-card__cat,
-  .hit-card__title {
-    padding-right: 52rem;
-  }
-
   .hit-card__cat {
-    font-size: 15rem;
-    line-height: 20rem;
+    font-size: 25rem;
+    line-height: 32rem;
   }
 
   .hit-card__title {
     margin-top: 8rem;
-    font-size: 24rem;
-    line-height: 30rem;
-    letter-spacing: -0.72rem;
+    font-size: 28rem;
+    line-height: 36rem;
+    letter-spacing: -0.84rem;
   }
 
   // размеры строк задаёт общий .arrow-list в _section.scss
   .hit-card__list {
-    margin-top: 14rem;
+    margin-top: 20rem;
   }
 
-  // Фото по центру карточки и крупное: это главный товар, на телефоне он
-  // должен читаться первым. Центрируем отрицательным полем, а не transform:
-  // transform занят ховером (scale на подрастание рулона).
+  // Фото по макету крупное, стоит на нижней кромке карточки и уходит под
+  // неё — обрезает её же overflow. Коробка задана ровно в пропорции файла
+  // (1160x1060), поэтому contain ничего не поля не добавляет, и положение
+  // рулона считается прямо от неё.
   .hit-card__media {
-    left: 50%;
+    left: -4rem;
     right: auto;
-    width: 260rem;
-    height: 240rem;
-    margin-left: -130rem;
+    top: auto;
+    bottom: 0;
+    width: 370rem;
+    height: 338rem;
+    margin-left: 0;
   }
 
   .hit-card__badge {
@@ -270,23 +266,10 @@
     line-height: 15rem;
   }
 
+  // В мобильном макете стрелки в углу карточки нет: вся карточка и так
+  // ссылка, а на тач-экране наведения, ради которого она рисовалась, нет
   .hit-card__arrow {
-    right: 16rem;
-    bottom: 16rem;
-    width: 48rem;
-    height: 48rem;
-
-    svg {
-      width: 18rem;
-      height: 18rem;
-    }
+    display: none;
   }
 }
 
-// На телефоне заголовок и пункты списка переносятся чаще, и 420 карточке мало:
-// нижние строки упирались бы в фото
-@include mobile {
-  .hit-card {
-    height: 540rem;
-  }
-}

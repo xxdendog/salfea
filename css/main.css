@@ -369,7 +369,12 @@ html.lenis body {
   .btn-calc:not(.is--wide) .btn-calc__pill {
     padding: 0 30rem;
   }
+  .btn-calc.is--wide {
+    --calc-size: 46rem;
+    padding-left: 0;
+  }
   .btn-calc.is--wide .btn-calc__pill {
+    height: 54rem;
     font-size: 16rem;
     line-height: 24rem;
   }
@@ -433,41 +438,42 @@ html.lenis body {
 @media (max-width: 991px) {
   .sec-head {
     flex-direction: column;
-    gap: 16rem;
+    gap: 21rem;
   }
   .sec-label {
-    font-size: 15rem;
-    line-height: 20rem;
+    font-size: 18rem;
+    line-height: 23rem;
   }
   .sec-title {
-    margin-top: 10rem;
-    font-size: 34rem;
-    line-height: 38rem;
-    letter-spacing: -0.68rem;
+    max-width: 350rem;
+    margin-top: 12rem;
+    font-size: 35rem;
+    line-height: 44rem;
+    letter-spacing: -0.7rem;
   }
   .sec-title.is--wide {
-    line-height: 40rem;
+    line-height: 44rem;
   }
   .sec-note {
     width: auto;
     margin-top: 0;
     font-size: 16rem;
-    line-height: 24rem;
+    line-height: 26rem;
   }
   .arrow-list li {
     height: auto;
     align-items: flex-start;
-    gap: 8rem;
-    font-size: 15rem;
-    line-height: 21rem;
+    gap: 14rem;
+    font-size: 16rem;
+    line-height: 22rem;
   }
   .arrow-list li + li {
-    margin-top: 8rem;
+    margin-top: 6rem;
   }
   .arrow-list svg {
-    width: 18rem;
-    height: 18rem;
-    margin-top: 2rem;
+    width: 11rem;
+    height: 11rem;
+    margin-top: 5rem;
   }
 }
 .metrics {
@@ -1827,16 +1833,16 @@ html.lenis body {
   }
   .hero-content {
     flex: 1 0 auto;
-    padding-top: 28rem;
+    padding-top: 29rem;
   }
   .hero-title {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     max-width: none;
-    font-size: 42rem;
-    line-height: 45rem;
-    letter-spacing: -0.84rem;
+    font-size: 37rem;
+    line-height: 42rem;
+    letter-spacing: -0.74rem;
   }
   .hero-title__part.is--stuff {
     order: 1;
@@ -1851,9 +1857,9 @@ html.lenis body {
     order: 4;
   }
   .hero-title__part.is--stuff {
-    margin-bottom: 16rem;
-    font-size: 20rem;
-    line-height: 26rem;
+    margin-bottom: 14rem;
+    font-size: 18rem;
+    line-height: 23rem;
     letter-spacing: 0;
     color: rgba(255, 255, 255, 0.5);
   }
@@ -1864,7 +1870,7 @@ html.lenis body {
     order: 2;
     align-self: stretch;
     width: auto;
-    margin-top: 29rem;
+    margin-top: 27rem;
     padding-bottom: 0;
     font-size: 16rem;
     line-height: 26rem;
@@ -2068,15 +2074,15 @@ html.lenis body {
 }
 @media (max-width: 991px) {
   .products {
-    padding: 48rem 0;
+    padding: 66rem 0 70rem;
   }
   .products-row {
     flex-direction: column;
-    margin-top: 32rem;
+    margin-top: 39rem;
   }
   .hit-card {
     flex: none;
-    height: 480rem;
+    height: 560rem;
     padding: 20rem;
   }
   .hit-card:first-child {
@@ -2087,29 +2093,27 @@ html.lenis body {
     border-top: none;
     border-radius: 0 0 12rem 12rem;
   }
-  .hit-card__cat,
-  .hit-card__title {
-    padding-right: 52rem;
-  }
   .hit-card__cat {
-    font-size: 15rem;
-    line-height: 20rem;
+    font-size: 25rem;
+    line-height: 32rem;
   }
   .hit-card__title {
     margin-top: 8rem;
-    font-size: 24rem;
-    line-height: 30rem;
-    letter-spacing: -0.72rem;
+    font-size: 28rem;
+    line-height: 36rem;
+    letter-spacing: -0.84rem;
   }
   .hit-card__list {
-    margin-top: 14rem;
+    margin-top: 20rem;
   }
   .hit-card__media {
-    left: 50%;
+    left: -4rem;
     right: auto;
-    width: 260rem;
-    height: 240rem;
-    margin-left: -130rem;
+    top: auto;
+    bottom: 0;
+    width: 370rem;
+    height: 338rem;
+    margin-left: 0;
   }
   .hit-card__badge {
     right: 16rem;
@@ -2120,19 +2124,7 @@ html.lenis body {
     line-height: 15rem;
   }
   .hit-card__arrow {
-    right: 16rem;
-    bottom: 16rem;
-    width: 48rem;
-    height: 48rem;
-  }
-  .hit-card__arrow svg {
-    width: 18rem;
-    height: 18rem;
-  }
-}
-@media (max-width: 767px) {
-  .hit-card {
-    height: 540rem;
+    display: none;
   }
 }
 .form-flat {
@@ -2287,22 +2279,25 @@ html.lenis body {
 
 @media (max-width: 991px) {
   .form-flat {
-    gap: 28rem;
+    gap: 29rem;
   }
   .form-flat__fields {
-    gap: 14rem;
+    gap: 20rem;
+  }
+  .callback-form__fields {
+    gap: 13rem;
   }
   .form-field__input {
-    height: 48rem;
-    padding: 14rem 40rem 14rem 12rem;
+    height: 51rem;
+    padding: 16rem 40rem 16rem 12rem;
     font-size: 16rem;
   }
   .form-field__input.is--textarea {
-    height: 120rem;
-    padding-block: 14rem;
+    height: 127rem;
+    padding-block: 16rem;
   }
   .form-field__icon {
-    top: 16rem;
+    top: 18rem;
   }
   .form-check__text {
     font-size: 14rem;
@@ -2376,7 +2371,7 @@ html.lenis body {
   .contact-inner {
     width: 100%;
     height: auto;
-    padding: 56rem 20rem;
+    padding: 66rem 20rem 64rem;
   }
   .contact-info {
     width: auto;
@@ -2384,15 +2379,16 @@ html.lenis body {
   }
   .contact-desc {
     width: auto;
-    margin-top: 20rem;
+    margin-top: 19rem;
     font-size: 16rem;
-    line-height: 24rem;
+    line-height: 26rem;
   }
   .contact-panel {
     position: static;
     width: auto;
-    margin-top: 32rem;
-    padding: 28rem 20rem;
+    margin-top: 42rem;
+    margin-inline: -8rem;
+    padding: 29rem 20rem 28rem;
   }
 }
 .skus {
@@ -2484,37 +2480,37 @@ html.lenis body {
 }
 @media (max-width: 991px) {
   .skus {
-    padding: 48rem 0 56rem;
+    padding: 66rem 0 82rem;
   }
   .skus-label {
     font-size: 18rem;
-    line-height: 24rem;
-    letter-spacing: -0.54rem;
+    line-height: 23rem;
+    letter-spacing: 0;
   }
   .skus-strip {
-    margin-top: 28rem;
+    margin-top: 24rem;
   }
   .sku-card {
-    width: 180rem;
-    height: 290rem;
-    padding: 14rem 14rem 0;
+    width: 185rem;
+    height: 297rem;
+    padding: 16rem 16rem 0;
   }
   .sku-card__cat {
-    font-size: 10rem;
-    line-height: 10rem;
+    font-size: 11rem;
+    line-height: 11rem;
   }
   .sku-card__media {
-    height: 188rem;
-    margin-top: 16rem;
+    height: 192rem;
+    margin-top: 20rem;
   }
   .sku-card__media img {
-    width: 126rem;
-    height: 168rem;
+    width: 130rem;
+    height: 173rem;
   }
   .sku-card__foot {
     margin-top: 22rem;
-    font-size: 11rem;
-    line-height: 14rem;
+    font-size: 12rem;
+    line-height: 15rem;
   }
 }
 .rating {

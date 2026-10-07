@@ -105,7 +105,7 @@
   .contact-inner {
     width: 100%;
     height: auto;
-    padding: 56rem $page-margin-mobile;
+    padding: 66rem $page-margin-mobile 64rem;
   }
 
   .contact-info {
@@ -115,15 +115,18 @@
 
   .contact-desc {
     width: auto;
-    margin-top: 20rem;
+    margin-top: 19rem;
     font-size: 16rem;
-    line-height: 24rem;
+    line-height: 26rem;
   }
 
+  // Панель по макету шире контейнера: её края стоят на 12 от края экрана,
+  // а не на 20 — отсюда отрицательные поля
   .contact-panel {
     position: static;
     width: auto;
-    margin-top: 32rem;
-    padding: 28rem 20rem;
+    margin-top: 42rem;
+    margin-inline: -8rem;
+    padding: 29rem 20rem 28rem;
   }
 }
