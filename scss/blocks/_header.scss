@@ -165,8 +165,11 @@
 // переезжает в полноэкранную панель (_mob-menu.scss), выпадающая панель
 // «Продукты» исчезает — она построена на ховере, которого на тач-экране нет.
 @include tablet {
+  // Высоту строки задаёт бургер (44), а по макету кружок-телефон 40 стоит
+  // на 24..64 и лого 24 высотой — на 32..56. Отсюда отступ сверху 22:
+  // строка 22..66, и оба элемента центрируются ровно по макету.
   .header {
-    padding-top: 20rem;
+    padding-top: 22rem;
   }
 
   .header-inner {
@@ -174,7 +177,7 @@
   }
 
   .header-logo img {
-    width: 104rem;
+    width: 102rem;
   }
 
   .header-nav,
@@ -188,7 +191,7 @@
 
   // «Связаться» прячем: на узком экране хватает кружка-телефона
   .header-contact {
-    height: 44rem;
+    height: 40rem;
     margin-right: 0;
     padding: 0;
   }
@@ -199,12 +202,12 @@
   }
 
   .header-contact__icon {
-    width: 44rem;
-    height: 44rem;
+    width: 40rem;
+    height: 40rem;
 
     svg {
-      width: 22rem;
-      height: 22rem;
+      width: 20rem;
+      height: 20rem;
     }
   }
 }

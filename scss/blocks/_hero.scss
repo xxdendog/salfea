@@ -140,7 +140,7 @@
   }
 
   .hero-marquee {
-    margin-top: 90rem;
+    margin-top: 92rem;
   }
 
   .hero-content {
@@ -154,9 +154,9 @@
     flex-direction: column;
     align-items: flex-start;
     max-width: none;
-    font-size: 36rem;
-    line-height: 42rem;
-    letter-spacing: -0.72rem;
+    font-size: 42rem;
+    line-height: 45rem;
+    letter-spacing: -0.84rem;
   }
 
   .hero-title__part.is--stuff { order: 1; }
@@ -168,9 +168,9 @@
   // Прописную даём через ::first-letter: в разметке строка идёт серединой
   // предложения и начинаться с большой буквы не может.
   .hero-title__part.is--stuff {
-    margin-bottom: 14rem;
-    font-size: 17rem;
-    line-height: 22rem;
+    margin-bottom: 16rem;
+    font-size: 20rem;
+    line-height: 26rem;
     letter-spacing: 0;
     color: $color-muted-light;
 
@@ -184,10 +184,10 @@
     order: 2;
     align-self: stretch;
     width: auto;
-    margin-top: 18rem;
+    margin-top: 29rem;
     padding-bottom: 0;
     font-size: 16rem;
-    line-height: 24rem;
+    line-height: 26rem;
   }
 
   .hero-buttons {
@@ -204,20 +204,23 @@
     padding-bottom: 20rem;
   }
 
+  // По макету: линия сверху во всю сетку (20..382), разделитель на 200,
+  // то есть колонки ровно пополам; текст второй колонки начинается на 221,
+  // отсюда её левое поле 20. Полоса от линии до низа экрана — 150.
   .hero-stats__grid {
     flex-direction: row;
-    gap: 16rem;
+    gap: 0;
     height: auto;
   }
 
   .hero-stats__item {
     flex: 1 1 50%;
-    gap: 8rem;
-    padding: 18rem 0 0;
+    gap: 5rem;
+    padding: 30rem 0 29rem;
 
     & + & {
       border-left: 1px solid rgba(255, 255, 255, 0.4);
-      padding-left: 16rem;
+      padding-left: 20rem;
     }
 
     &:nth-child(3) {
@@ -232,6 +235,6 @@
 
   .hero-stats__text {
     font-size: 13rem;
-    line-height: 18rem;
+    line-height: 17rem;
   }
 }

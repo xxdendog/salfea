@@ -57,18 +57,18 @@
 // уезжают за экран, и от бегущей строки виден один обрезок буквы.
 @include tablet {
   .marquee-item {
-    gap: 16rem;
-    height: 68rem;
+    gap: 15rem;
+    height: 65rem;
   }
 
   .marquee-item__mark {
-    width: 68rem;
-    height: 53rem;
+    width: 65rem;
+    height: 51rem;
   }
 
   // пропорция знака и слова та же, что на десктопе
   .marquee-item__word {
-    width: 288rem;
-    height: 68rem;
+    width: 275rem;
+    height: 65rem;
   }
 }
