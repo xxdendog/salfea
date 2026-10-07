@@ -9,7 +9,7 @@
  * Содержание:
  *   Плавный скролл        lenis + ScrollTrigger
  *   Общее для страниц     initGlobalParallax, initTitleRoll (перекат текста),
- *                         initNavDropdown, initMobileMenu,
+ *                         initNavDropdown, initMobileMenu (+ createBurger),
  *                         initMobileCallButton, initAnchorScroll,
  *                         initModals,
  *                         initFaq, initCallbackForm, initMetricCounters,
@@ -246,12 +246,56 @@ function createRoll(el, mode) {
 // Пока она открыта — страница под ней не скроллится (глушим Lenis), строки
 // выезжают по очереди тем же изингом, что и остальные перекаты на сайте.
 // Закрывается крестом, Esc, клику по ссылке и переходу на десктопную ширину.
+// Кнопка-бургер: анимация из снипета osmo Burger Menu Button, значения и
+// порядок шагов авторские. Открытие: средняя полоса схлопывается, крайние
+// разъезжаются в стороны и гаснут, затем мгновенно переставляются уже
+// повёрнутыми — и возвращаются в кадр готовым крестом. Закрытие — одним
+// движением обратно. Смещения заданы в em и считаются от кегля кнопки
+// (см. .burger в _mob-menu.scss).
+function createBurger(button) {
+  const lines = Array.from(button.querySelectorAll('.burger__line'));
+  if (lines.length < 3) return null;
+  const [line1, line2, line3] = lines;
+
+  // CustomEase подключён не на всех страницах (на блоге его нет) — там
+  // берём ближайший встроенный
+  if (window.CustomEase && !CustomEase.get('button-ease')) {
+    gsap.registerPlugin(CustomEase);
+    CustomEase.create('button-ease', '0.5, 0.05, 0.05, 0.99');
+  }
+  const ease = window.CustomEase ? 'button-ease' : 'power3.inOut';
+
+  const tl = gsap.timeline({ defaults: { overwrite: 'auto', ease, duration: 0.3 } });
+
+  return {
+    open() {
+      tl.clear()
+        .to(line2, { scaleX: 0, opacity: 0 })                       // средняя схлопывается
+        .to(line1, { x: '-1.3em', opacity: 0 }, '<')                // верхняя уезжает влево
+        .to(line3, { x: '1.3em', opacity: 0 }, '<')                 // нижняя — вправо
+        .to([line1, line3], { opacity: 0, duration: 0.1 }, '<+=0.2')
+        .set(line1, { rotate: -135, y: '-1.3em', scaleX: 0.9 })     // переставляем повёрнутыми
+        .set(line3, { rotate: 135, y: '-1.4em', scaleX: 0.9 }, '<')
+        .to(line1, { opacity: 1, x: '0em', y: '0.5em' })            // и возвращаем крестом
+        .to(line3, { opacity: 1, x: '0em', y: '-0.25em' }, '<+=0.1');
+    },
+    close() {
+      tl.clear().to(lines, {
+        scaleX: 1, rotate: 0, x: '0em', y: '0em', opacity: 1,
+        duration: 0.45, overwrite: 'auto'
+      });
+    }
+  };
+}
+
+
 function initMobileMenu() {
   const header = document.querySelector('.header');
   const toggle = document.querySelector('[data-mob-toggle]');
   const menu = document.querySelector('[data-mob-menu]');
   if (!header || !toggle || !menu) return;
 
+  const burger = createBurger(toggle);
   const rows = Array.from(menu.querySelectorAll('[data-mob-link]'));
   let open = false;
 
@@ -261,6 +305,7 @@ function initMobileMenu() {
     header.classList.toggle('is--menu', open);
     toggle.setAttribute('aria-expanded', String(open));
     menu.setAttribute('aria-hidden', String(!open));
+    if (burger) (open ? burger.open : burger.close)();
 
     if (open) {
       lenis.stop();
