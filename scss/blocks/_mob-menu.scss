@@ -10,8 +10,12 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  position: relative;
   flex-shrink: 0;
-  width: 44rem;
+  // Ширина по самим полоскам: зазор до кружка-телефона задаётся в шапке
+  // и считается от видимой линии, а не от пустого поля кнопки.
+  // Зона нажатия остаётся крупной — её держит ::before.
+  width: 24rem;
   height: 44rem;
   padding: 0;
   border: 0;
@@ -26,6 +30,13 @@
   // 12 = половина ширины полосы: 2em как раз дают привычные 24.
   font-size: 12rem;
   gap: 0.1875em;
+}
+
+// Зона нажатия шире видимой кнопки: 44x52, как требуют пальцем
+.burger::before {
+  content: '';
+  position: absolute;
+  inset: -4rem -10rem;
 }
 
 .burger__line {
