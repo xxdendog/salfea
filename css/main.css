@@ -442,7 +442,7 @@ html.lenis body {
   }
   .sec-label {
     font-size: 18rem;
-    line-height: 23rem;
+    line-height: 26rem;
   }
   .sec-title {
     max-width: 350rem;
@@ -544,26 +544,26 @@ html.lenis body {
   }
   .metric {
     flex: none;
-    padding: 18rem 0;
+    padding: 24rem 0 28rem;
   }
   .metric + .metric {
     border-left: none;
     border-top: 1px solid rgba(255, 255, 255, 0.3);
   }
   .metric__label {
-    font-size: 14rem;
-    line-height: 20rem;
+    font-size: 16rem;
+    line-height: 22rem;
   }
   .metric__value {
-    margin-top: 4rem;
-    font-size: 40rem;
-    line-height: 46rem;
-    letter-spacing: -1.2rem;
+    margin-top: 12rem;
+    font-size: 48rem;
+    line-height: 54rem;
+    letter-spacing: -1.44rem;
   }
   .metric__desc {
-    margin-top: 8rem;
-    font-size: 15rem;
-    line-height: 21rem;
+    margin-top: 18rem;
+    font-size: 16rem;
+    line-height: 25rem;
   }
   .metrics.is--light .metric + .metric {
     border-top-color: rgba(0, 0, 0, 0.2);
@@ -2091,7 +2091,7 @@ html.lenis body {
 }
 @media (max-width: 991px) {
   .products {
-    padding: 66rem 0 70rem;
+    padding: 64rem 0 70rem;
   }
   .products-row {
     flex-direction: column;
@@ -2388,7 +2388,7 @@ html.lenis body {
   .contact-inner {
     width: 100%;
     height: auto;
-    padding: 66rem 20rem 64rem;
+    padding: 64rem 20rem 64rem;
   }
   .contact-info {
     width: auto;
@@ -2497,7 +2497,7 @@ html.lenis body {
 }
 @media (max-width: 991px) {
   .skus {
-    padding: 66rem 0 82rem;
+    padding: 64rem 0 82rem;
   }
   .skus-label {
     font-size: 18rem;
@@ -2602,6 +2602,11 @@ html.lenis body {
     height: 446rem;
     overflow: hidden;
   }
+  .rating-bg img {
+    top: 0;
+    height: 100%;
+    object-position: 100% 50%;
+  }
   .rating-inner {
     width: 100%;
     padding: 66rem 20rem 25rem;
@@ -2631,7 +2636,7 @@ html.lenis body {
     flex: 0 0 50%;
     padding: 22rem 0 33rem;
   }
-  .rating .metric + .rating .metric {
+  .rating .metric + .metric {
     border-top: none;
     border-left: 1px solid rgba(255, 255, 255, 0.4);
     padding-left: 20rem;
@@ -2640,6 +2645,7 @@ html.lenis body {
     flex: 0 0 100%;
     margin-top: 303rem;
     padding: 0;
+    border-top: none;
     border-left: none;
   }
   .rating .metric:nth-child(3) .metric__desc {
@@ -2966,7 +2972,7 @@ html.lenis body {
 
 @media (max-width: 991px) {
   .plant {
-    padding: 48rem 0 56rem;
+    padding: 67rem 0 65rem;
   }
   .plant-note {
     width: auto;
@@ -2975,27 +2981,26 @@ html.lenis body {
     line-height: 24rem;
   }
   .plant-slider {
-    --slide-w: 440;
+    --slide-w: 520;
     --slide-gap: 12;
-    --slide-center: 1;
     margin-top: 32rem;
   }
   .plant-track {
-    height: 345rem;
+    height: 399rem;
   }
   .plant-slide {
-    height: 345rem;
+    height: 399rem;
   }
   .plant-nav {
-    left: calc(20rem + 12rem);
-    bottom: 12rem;
+    left: calc(20rem + 16rem);
+    bottom: 16rem;
   }
   .plant-nav__btn {
     width: 48rem;
     height: 48rem;
   }
   .plant .metrics {
-    margin-top: 40rem;
+    margin-top: 48rem;
   }
 }
 .delivery {

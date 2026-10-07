@@ -99,9 +99,11 @@
     height: auto;
   }
 
+  // Нижний отступ меньше верхнего не случайно: маска одометра NumberFlow
+  // добавляет над цифрами около 16, и строка занимает больше, чем её кегль
   .metric {
     flex: none;
-    padding: 18rem 0;
+    padding: 24rem 0 28rem;
 
     & + & {
       border-left: none;
@@ -110,21 +112,21 @@
   }
 
   .metric__label {
-    font-size: 14rem;
-    line-height: 20rem;
+    font-size: 16rem;
+    line-height: 22rem;
   }
 
   .metric__value {
-    margin-top: 4rem;
-    font-size: 40rem;
-    line-height: 46rem;
-    letter-spacing: -1.2rem;
+    margin-top: 12rem;
+    font-size: 48rem;
+    line-height: 54rem;
+    letter-spacing: -1.44rem;
   }
 
   .metric__desc {
-    margin-top: 8rem;
-    font-size: 15rem;
-    line-height: 21rem;
+    margin-top: 18rem;
+    font-size: 16rem;
+    line-height: 25rem;
   }
 
   .metrics.is--light .metric + .metric {
