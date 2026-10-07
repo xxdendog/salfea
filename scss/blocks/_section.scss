@@ -110,18 +110,20 @@
   .arrow-list li {
     height: auto;
     align-items: flex-start;
-    gap: 14rem;
+    gap: 9rem;
     font-size: 16rem;
     line-height: 22rem;
   }
 
   .arrow-list li + li {
-    margin-top: 6rem;
+    margin-top: 4rem;
   }
 
+  // 20 — это коробка иконки: сама стрелка занимает в ней чуть больше
+  // половины и выходит ровно в 11, как в макете
   .arrow-list svg {
-    width: 11rem;
-    height: 11rem;
-    margin-top: 5rem;
+    width: 20rem;
+    height: 20rem;
+    margin-top: 1rem;
   }
 }

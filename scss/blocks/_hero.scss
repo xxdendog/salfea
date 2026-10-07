@@ -148,21 +148,30 @@
     padding-top: 29rem;
   }
 
-  // Части заголовка встают в столбец и меняются местами
+  // Заголовок на телефоне читается в другом порядке: «из микрофибры и
+  // целлюлозы» уходит наверх отдельной подписью, «оптом» — в самый конец.
+  // Собираем его как flex с переносом: части остаются обычными строчными
+  // элементами (на десктопе текст течёт как раньше, слово в слово), а здесь
+  // становятся элементами строки и расставляются через order. Зазор между
+  // ними равен пробелу, поэтому строки читаются сплошным текстом.
   .hero-title {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: 9rem;
+    row-gap: 0;
     max-width: none;
-    font-size: 37rem;
-    line-height: 42rem;
-    letter-spacing: -0.74rem;
+    font-size: 35rem;
+    line-height: 44rem;
+    letter-spacing: -0.7rem;
   }
 
-  .hero-title__part.is--stuff { order: 1; }
-  .hero-title__part.is--name  { order: 2; }
-  .hero-title__part.is--from  { order: 3; }
-  .hero-title__part.is--form  { order: 4; }
+  .hero-title__part.is--stuff { order: 1; flex: 0 0 100%; }
+  .hero-title__part.is--one   { order: 2; }
+  .hero-title__part.is--two   { order: 3; }
+  .hero-title__part.is--roll  { order: 4; }
+  .hero-title__part.is--from  { order: 5; }
+  .hero-title__part.is--bulk  { order: 6; }
 
   // «из микрофибры и целлюлозы» на телефоне — подпись над заголовком.
   // Прописную даём через ::first-letter: в разметке строка идёт серединой
@@ -184,7 +193,7 @@
     order: 2;
     align-self: stretch;
     width: auto;
-    margin-top: 27rem;
+    margin-top: 20rem;
     padding-bottom: 0;
     font-size: 16rem;
     line-height: 26rem;

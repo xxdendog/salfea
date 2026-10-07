@@ -463,17 +463,17 @@ html.lenis body {
   .arrow-list li {
     height: auto;
     align-items: flex-start;
-    gap: 14rem;
+    gap: 9rem;
     font-size: 16rem;
     line-height: 22rem;
   }
   .arrow-list li + li {
-    margin-top: 6rem;
+    margin-top: 4rem;
   }
   .arrow-list svg {
-    width: 11rem;
-    height: 11rem;
-    margin-top: 5rem;
+    width: 20rem;
+    height: 20rem;
+    margin-top: 1rem;
   }
 }
 .metrics {
@@ -1837,24 +1837,33 @@ html.lenis body {
   }
   .hero-title {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: 9rem;
+    row-gap: 0;
     max-width: none;
-    font-size: 37rem;
-    line-height: 42rem;
-    letter-spacing: -0.74rem;
+    font-size: 35rem;
+    line-height: 44rem;
+    letter-spacing: -0.7rem;
   }
   .hero-title__part.is--stuff {
     order: 1;
+    flex: 0 0 100%;
   }
-  .hero-title__part.is--name {
+  .hero-title__part.is--one {
     order: 2;
   }
-  .hero-title__part.is--from {
+  .hero-title__part.is--two {
     order: 3;
   }
-  .hero-title__part.is--form {
+  .hero-title__part.is--roll {
     order: 4;
+  }
+  .hero-title__part.is--from {
+    order: 5;
+  }
+  .hero-title__part.is--bulk {
+    order: 6;
   }
   .hero-title__part.is--stuff {
     margin-bottom: 14rem;
@@ -1870,7 +1879,7 @@ html.lenis body {
     order: 2;
     align-self: stretch;
     width: auto;
-    margin-top: 27rem;
+    margin-top: 20rem;
     padding-bottom: 0;
     font-size: 16rem;
     line-height: 26rem;
@@ -2094,11 +2103,11 @@ html.lenis body {
     border-radius: 0 0 12rem 12rem;
   }
   .hit-card__cat {
-    font-size: 25rem;
-    line-height: 32rem;
+    font-size: 20rem;
+    line-height: 26rem;
   }
   .hit-card__title {
-    margin-top: 8rem;
+    margin-top: 14rem;
     font-size: 28rem;
     line-height: 36rem;
     letter-spacing: -0.84rem;
