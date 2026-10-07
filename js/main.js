@@ -1188,21 +1188,42 @@ function initPlantSlider() {
     state.current += horizontal ? e.deltaX : 0;
     if (horizontal) {
       clearTimeout(wheelTimer);
-      wheelTimer = setTimeout(snap, 140); // колесо остановилось — подравниваем
+      // колесо остановилось — подравниваем (на телефоне доводки нет)
+      wheelTimer = setTimeout(() => { if (!freeScroll.matches) snap(); }, 140);
     }
   }, { passive: false });
+
+  // На телефоне лента листается свободно, без доводки до слайда: пальцем
+  // удобнее остановиться где угодно, а защёлкивание на каждом отпускании
+  // ощущается как рывок. На десктопе доводка остаётся — там ввод дискретный
+  // (колесо, стрелки), и раскладка из макета держится на ней.
+  const freeScroll = window.matchMedia('(max-width: 991px)');
+
+  // скорость руки — нужна, чтобы после отпускания лента доезжала по инерции,
+  // а не вставала колом
+  let dragVel = 0;
+  let dragLast = 0;
+  let dragTime = 0;
 
   track.addEventListener('pointerdown', (e) => {
     if (e.button !== 0) return;
     state.dragging = true;
     state.startX = e.clientX;
     state.startAt = state.current;
+    dragVel = 0;
+    dragLast = e.clientX;
+    dragTime = performance.now();
     track.setPointerCapture(e.pointerId);
     track.classList.add('is--dragging');
   });
 
   track.addEventListener('pointermove', (e) => {
     if (!state.dragging) return;
+    const now = performance.now();
+    const dt = now - dragTime || 16;
+    dragVel = ((e.clientX - dragLast) / dt) * -1; // px/мс в координатах ленты
+    dragLast = e.clientX;
+    dragTime = now;
     state.current = state.startAt - (e.clientX - state.startX) * DRAG;
   });
 
@@ -1210,6 +1231,13 @@ function initPlantSlider() {
     if (!state.dragging) return;
     state.dragging = false;
     track.classList.remove('is--dragging');
+
+    if (freeScroll.matches) {
+      // бросок: сглаживание lerp само погасит его за несколько кадров
+      state.current += gsap.utils.clamp(-900, 900, dragVel * 260);
+      return;
+    }
+
     snap();
   };
   track.addEventListener('pointerup', release);

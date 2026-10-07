@@ -39,6 +39,9 @@
   overflow: hidden;
   cursor: grab;
   user-select: none;
+  // горизонталь обрабатываем сами, вертикаль отдаём странице — иначе
+  // на тач-экране браузер забирает жест себе и лента не тянется
+  touch-action: pan-y;
 
   &.is--dragging {
     cursor: grabbing;

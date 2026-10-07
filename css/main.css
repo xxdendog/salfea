@@ -2819,7 +2819,7 @@ html.lenis body {
   }
   .features-img {
     height: 440rem;
-    border-radius: 12rem;
+    border-radius: 4rem;
   }
   .features-img img {
     top: 0;
@@ -2876,6 +2876,7 @@ html.lenis body {
   overflow: hidden;
   cursor: grab;
   user-select: none;
+  touch-action: pan-y;
 }
 .plant-track.is--dragging {
   cursor: grabbing;
