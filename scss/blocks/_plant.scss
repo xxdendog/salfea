@@ -201,6 +201,18 @@
     height: 48rem;
   }
 
+  // Иконка внутри кнопки мельче десктопной: на кружке 48 стрелка в 21
+  // занимала почти весь диск
+  .plant-nav__icons {
+    width: 16rem;
+    height: 13rem;
+
+    svg {
+      width: 16rem;
+      height: 13rem;
+    }
+  }
+
   .plant .metrics {
     margin-top: 48rem;
   }

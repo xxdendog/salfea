@@ -64,7 +64,7 @@ function initGlobalParallax() {
       isDesktop: '(min-width:992px)'
     },
     (context) => {
-      const { isMobile, isMobileLandscape, isTablet } = context.conditions;
+      const { isMobile, isMobileLandscape, isTablet, isDesktop } = context.conditions;
 
       const ctx = gsap.context(() => {
         document.querySelectorAll('[data-parallax="trigger"]').forEach((trigger) => {
@@ -72,7 +72,9 @@ function initGlobalParallax() {
           if (
             (disable === 'mobile' && isMobile) ||
             (disable === 'mobileLandscape' && isMobileLandscape) ||
-            (disable === 'tablet' && isTablet)
+            (disable === 'tablet' && isTablet) ||
+            // «только на мобильном»: на десктопе у блока свой параллакс
+            (disable === 'desktop' && isDesktop)
           ) {
             return;
           }

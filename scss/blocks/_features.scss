@@ -169,27 +169,29 @@
 
   .features-label {
     order: 2;
-    margin-top: 34rem;
-    font-size: 20rem;
+    margin-top: 35rem;
+    font-size: 18rem;
     line-height: 26rem;
   }
 
   .features-desc {
     order: 3;
-    margin-top: 24rem;
-    font-size: 18rem;
+    margin-top: 16rem;
+    font-size: 16rem;
     line-height: 26rem;
   }
 
   .features-img {
-    height: 440rem;
+    height: 400rem;
     border-radius: 4rem;
 
-    // параллакс картинок живёт в JS, которого здесь нет: запас по высоте
-    // без него только сдвигал бы кадр вверх
+    // Запас под параллакс: ±6% хода, значит перекрытие 12%. Пин на мобильном
+    // снят, и картинки ведёт общий initGlobalParallax — кадры помечены
+    // в разметке как триггеры с отключением на десктопе, где у блока
+    // свой параллакс внутри sticky-механики.
     img {
-      top: 0;
-      height: 100%;
+      top: -6%;
+      height: 112%;
     }
   }
 
@@ -203,6 +205,6 @@
 
   // отступ между пунктами: от описания до следующего кадра
   .features-img:nth-of-type(n + 2) {
-    margin-top: 66rem;
+    margin-top: 68rem;
   }
 }
