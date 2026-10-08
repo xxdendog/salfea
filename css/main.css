@@ -468,7 +468,7 @@ html.lenis body {
     line-height: 22rem;
   }
   .arrow-list li + li {
-    margin-top: 4rem;
+    margin-top: 6rem;
   }
   .arrow-list svg {
     width: 20rem;
@@ -2121,8 +2121,8 @@ html.lenis body {
     border-radius: 0 0 12rem 12rem;
   }
   .hit-card__cat {
-    font-size: 18rem;
-    line-height: 26rem;
+    font-size: 16rem;
+    line-height: 24rem;
   }
   .hit-card__title {
     margin-top: 8rem;
@@ -2131,7 +2131,7 @@ html.lenis body {
     letter-spacing: -0.84rem;
   }
   .hit-card__list {
-    margin-top: 20rem;
+    margin-top: 18rem;
   }
   .hit-card__media {
     left: -4rem;
