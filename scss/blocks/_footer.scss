@@ -194,10 +194,13 @@
     }
   }
 
+  // Ссылки идут столбиком, и шаг между ними один и тот же: две лежат
+  // в .footer-bottom__left, третья — соседний элемент строки, поэтому
+  // зазоры обоих контейнеров должны совпадать
   .footer-bottom {
     flex-direction: column;
     align-items: flex-start;
-    gap: 10rem;
+    gap: 6rem;
     padding-top: 18rem;
 
     a {
@@ -208,6 +211,6 @@
 
   .footer-bottom__left {
     flex-direction: column;
-    gap: 4rem;
+    gap: 6rem;
   }
 }

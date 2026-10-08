@@ -103,7 +103,7 @@
   // добавляет над цифрами около 16, и строка занимает больше, чем её кегль
   .metric {
     flex: none;
-    padding: 24rem 0 28rem;
+    padding: 27rem 0 41rem;
 
     & + & {
       border-left: none;
@@ -116,15 +116,18 @@
     line-height: 22rem;
   }
 
+  // Отступ отрицательный не по ошибке: маска одометра NumberFlow добавляет
+  // над цифрами около 16, и без компенсации цифра стоит на столько же ниже
+  // макета, а за ней съезжает и подпись
   .metric__value {
-    margin-top: 12rem;
+    margin-top: -8rem;
     font-size: 48rem;
     line-height: 54rem;
     letter-spacing: -1.44rem;
   }
 
   .metric__desc {
-    margin-top: 18rem;
+    margin-top: 14rem;
     font-size: 16rem;
     line-height: 25rem;
   }
