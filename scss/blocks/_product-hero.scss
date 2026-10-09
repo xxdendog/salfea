@@ -19,7 +19,12 @@
   margin-inline: auto;
 }
 
-// Рулоны: вырезки с прозрачностью, задний правее и выше переднего
+// Рулоны: вырезки с прозрачностью, задний правее и выше переднего.
+// Снимки — полные рулоны из макета (1086x1448 и 1087x1447): прежде здесь
+// стояли картинки карточек главной (hit-cellu*), а у них рулон обрезан нижней
+// кромкой файла — задний рулон обрывался ровно посреди секции. Координаты и
+// размеры сняты с макета 1.svg: Figma кладёт снимок узором в прямоугольник,
+// и реальная рамка картинки — это прямоугольник, умноженный на матрицу узора.
 .product-hero__media {
   position: absolute;
   inset: 0;
@@ -28,7 +33,6 @@
 
   img {
     position: absolute;
-    width: 886rem;
     max-width: none;
     height: auto;
     object-fit: contain;
@@ -36,13 +40,15 @@
   }
 
   .product-hero__roll--back {
-    left: 686rem;
+    left: 733.31rem;
     top: 53rem;
+    width: 791.42rem;
   }
 
   .product-hero__roll--front {
-    left: 507rem;
-    top: 182rem;
+    left: 555.24rem;
+    top: 194.93rem;
+    width: 789.57rem;
   }
 }
 
@@ -96,8 +102,10 @@
     padding: 120rem $page-margin-mobile 300rem;
   }
 
+  // relative, а не static: коробка с рулонами позиционирована и лежит выше
+  // любого непозиционированного содержимого — текст уходил бы под рулоны
   .product-hero__content {
-    position: static;
+    position: relative;
     left: auto;
     top: auto;
     width: auto;
@@ -125,21 +133,26 @@
   }
 
   // Рулоны прижимаем к нижнему краю секции и уменьшаем вдвое с небольшим:
-  // кадр остаётся узнаваемым, а текст над ними не зажимается
-  .product-hero__media img {
-    width: 300rem;
+  // кадр остаётся узнаваемым, а текст над ними не зажимается. Ширина 268,
+  // а не прежние 300: у полных снимков вокруг рулона больше пустого поля,
+  // и при 268 сам рулон выходит ровно той же ширины, что и раньше.
+  // Координаты отсчитаны так, чтобы рулон стоял на прежнем месте: задний
+  // нижней кромкой на 60 от низа секции, передний — вровень с ней.
+  .product-hero__media .product-hero__roll--back,
+  .product-hero__media .product-hero__roll--front {
+    width: 268rem;
   }
 
   .product-hero__media .product-hero__roll--back {
     left: auto;
-    right: -70rem;
+    right: -54rem;
     top: auto;
-    bottom: 60rem;
+    bottom: 17rem;
   }
 
   .product-hero__media .product-hero__roll--front {
-    left: -40rem;
+    left: -24rem;
     top: auto;
-    bottom: 0;
+    bottom: -35rem;
   }
 }

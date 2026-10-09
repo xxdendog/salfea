@@ -4116,19 +4116,20 @@ html.lenis body {
 }
 .product-hero__media img {
   position: absolute;
-  width: 886rem;
   max-width: none;
   height: auto;
   object-fit: contain;
   will-change: transform;
 }
 .product-hero__media .product-hero__roll--back {
-  left: 686rem;
+  left: 733.31rem;
   top: 53rem;
+  width: 791.42rem;
 }
 .product-hero__media .product-hero__roll--front {
-  left: 507rem;
-  top: 182rem;
+  left: 555.24rem;
+  top: 194.93rem;
+  width: 789.57rem;
 }
 
 .product-hero__content {
@@ -4172,7 +4173,7 @@ html.lenis body {
     padding: 120rem 20rem 300rem;
   }
   .product-hero__content {
-    position: static;
+    position: relative;
     left: auto;
     top: auto;
     width: auto;
@@ -4194,19 +4195,20 @@ html.lenis body {
     width: auto;
     padding: 0 28rem;
   }
-  .product-hero__media img {
-    width: 300rem;
+  .product-hero__media .product-hero__roll--back,
+  .product-hero__media .product-hero__roll--front {
+    width: 268rem;
   }
   .product-hero__media .product-hero__roll--back {
     left: auto;
-    right: -70rem;
+    right: -54rem;
     top: auto;
-    bottom: 60rem;
+    bottom: 17rem;
   }
   .product-hero__media .product-hero__roll--front {
-    left: -40rem;
+    left: -24rem;
     top: auto;
-    bottom: 0;
+    bottom: -35rem;
   }
 }
 .reasons {

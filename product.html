@@ -127,9 +127,11 @@
   <section class="product-hero">
 
     <div class="product-hero__inner">
-      <div class="product-hero__media" data-parallax="trigger" data-parallax-start="-4" data-parallax-end="4">
-        <img class="product-hero__roll--back" src="assets/images/hit-cellu.webp" alt="" aria-hidden="true" data-parallax="target">
-        <img class="product-hero__roll--front" src="assets/images/hit-cellu-hover.webp" alt="Рулон безворсовых салфеток Salfea в упаковке">
+      <!-- Параллакс начинается с нуля: первый экран страницы и есть то, что
+           видно при загрузке, и в покое рулон должен стоять ровно по макету -->
+      <div class="product-hero__media" data-parallax="trigger" data-parallax-start="0" data-parallax-end="8">
+        <img class="product-hero__roll--back" src="assets/images/product/hero-roll-white.webp" alt="" aria-hidden="true" data-parallax="target">
+        <img class="product-hero__roll--front" src="assets/images/product/hero-roll-pack.webp" alt="Рулон безворсовых салфеток Salfea в упаковке">
       </div>
 
       <div class="product-hero__content">
