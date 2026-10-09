@@ -11,7 +11,10 @@
 // пути гаснет. Сила снега (0–10) задаётся атрибутом data-strength и решает,
 // сколько снежинок в секунду появляется и сколько их держится на экране.
 // Возвращает ручки start/stop: снег идёт, только пока его слайд открыт,
-// а секция на экране — иначе твины крутились бы впустую.
+// а секция на экране — иначе твины крутились бы впустую. На старте экран
+// засевается снежинками, которые уже в пути: у каждой свой случайный
+// прогресс падения, поэтому слайд открывается при идущем снеге, а не
+// с пустой картинкой, куда только начинают сыпаться первые снежинки сверху.
 const SNOW = {
   fall: [8, 12],      // сколько секунд летит снежинка
   scale: [0.3, 1.2],
@@ -36,7 +39,10 @@ function initSnowflake(container) {
   let alive = 0;
   let next = null;
 
-  const drop = () => {
+  // head — какую долю пути снежинка уже пролетела к моменту появления.
+  // 0 у обычных: они входят сверху. У засеянных на старте — случайная,
+  // поэтому слайд открывается при полном снеге, а не при пустом экране.
+  const drop = (head = 0) => {
     if (!running || alive >= limit) return;
 
     const flake = template.cloneNode(true);
@@ -66,22 +72,34 @@ function initSnowflake(container) {
       alive--;
     };
 
-    tweens.push(gsap.fromTo(
+    const fall = gsap.fromTo(
       flake,
       { y: -gsap.utils.random(30, Math.min(180, h * 0.25), 1), xPercent: -50, scale: gsap.utils.random(...SNOW.scale, 0.001), rotate: turn },
       { y: h + gsap.utils.random(30, Math.min(220, h * 0.35), 1), ease: 'none', duration: time, onComplete: done }
-    ));
-    tweens.push(gsap.fromTo(
+    );
+    const swayTween = gsap.fromTo(
       flake,
       { x: sway },
       { x: -sway, ease: 'sine.inOut', duration: swayTime, repeat: Math.max(1, Math.floor(time / swayTime)), yoyo: true }
-    ));
-    tweens.push(gsap.fromTo(
+    );
+    const turnTween = gsap.fromTo(
       flake,
       { rotate: turn },
       { rotate: gsap.utils.random(...SNOW.turn, 0.1), ease: 'sine.inOut', duration: turnTime, repeat: Math.max(1, Math.floor(time / turnTime)), yoyo: true }
-    ));
-    tweens.push(gsap.to(flake, { opacity: 0, duration: 1, ease: 'power1.out', delay: Math.max(0, time - 1) }));
+    );
+    // Гаснет за секунду до конца пути. У засеянной снежинки путь уже начат,
+    // поэтому до затухания остаётся меньше времени
+    const left = time * (1 - head);
+    const fade = gsap.to(flake, { opacity: 0, duration: 1, ease: 'power1.out', delay: Math.max(0, left - 1) });
+    tweens.push(fall, swayTween, turnTween, fade);
+
+    if (head) {
+      fall.progress(head);
+      // качание и поворот зациклены — им нужен свой случайный момент,
+      // иначе весь засеянный снег качался бы в одну сторону разом
+      swayTween.totalProgress(gsap.utils.random(0, 1, 0.001));
+      turnTween.totalProgress(gsap.utils.random(0, 1, 0.001));
+    }
   };
 
   const schedule = () => {
@@ -97,7 +115,9 @@ function initSnowflake(container) {
     start() {
       if (running) return;
       running = true;
-      for (let i = 0; i < seed; i++) gsap.delayedCall(gsap.utils.random(0, 1.2, 0.001), drop);
+      // засев — сразу, не по таймеру: снежинки распределены по всей высоте
+      // (прогресс 0…0.9), так что снег виден с первого кадра
+      for (let i = 0; i < seed; i++) drop(gsap.utils.random(0, 0.9, 0.001));
       schedule();
     },
     stop() {
