@@ -12,7 +12,9 @@
   user-select: none;
 }
 
-// Три фона (по одному на слайд), переключаются прозрачностью
+// Три фона (по одному на слайд), переключаются прозрачностью.
+// Синий — тот же градиент, что на первом экране страницы (раньше тут был
+// свой, чуть другой); под новогодним слайдом остаётся красный.
 .configurator__bg {
   position: absolute;
   inset: 0;
@@ -20,7 +22,7 @@
   transition: opacity 0.9s ease;
 
   &--1,
-  &--2 { background: linear-gradient(180deg, #162f8d 0%, #0032c8 50%, #7993e3 100%); }
+  &--2 { background: linear-gradient(173deg, #000 0%, #{$color-blue} 50%, #7993e3 100%); }
   &--3 { background: linear-gradient(180deg, #5e0703 0%, #ae0c05 100%); }
 }
 
@@ -120,12 +122,37 @@
   height: 904rem;
 }
 
-// Новый паттерн (Slide 4, фрейм Pattern 883x995 на 282,577)
-.configurator__back--3 {
-  top: 378rem;
-  left: 282rem;
-  width: 883rem;
-  height: 995rem;
+// Snowflake Effect (osmo): снег на третьем слайде. Контейнер лежит внутри
+// слайда, поэтому снег идёт только в его границах — лишнее режет overflow
+// самого слайда. Снежинки создаёт JS копиями шаблона; размер задан в em,
+// чтобы весь снег масштабировался одной переменной контейнера.
+.configurator__snow {
+  position: absolute;
+  inset: 0;
+  z-index: 2; // перед рулоном: снег идёт ближе к зрителю
+  font-size: 26rem;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.snowflake {
+  position: absolute;
+  top: 0;
+  display: block;
+  width: 1em;
+  height: 1em;
+  color: #fff;
+
+  svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  // шаблон, с которого снимаются копии, сам не виден
+  &.hidden {
+    opacity: 0;
+  }
 }
 
 // Рулоны: все три на одном месте. Стартуют на 40rem ниже макетной позиции (558),
@@ -600,11 +627,9 @@
     height: 190rem;
   }
 
-  .configurator__back--3 {
-    top: 23rem;
-    left: 82rem;
-    width: 185rem;
-    height: 209rem;
+  // снежинки мельче — слайд на телефоне занимает примерно четверть площади
+  .configurator__snow {
+    font-size: 14rem;
   }
 
   .cfg-switcher {

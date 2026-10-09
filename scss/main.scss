@@ -20,6 +20,7 @@
 @use 'blocks/faq';
 @use 'blocks/footer-parallax';
 @use 'blocks/footer';
+@use 'blocks/back-top';   // кнопка «наверх»
 
 // Главная — по файлу на блок макета
 @use 'blocks/hero';       // 1

@@ -24,6 +24,7 @@
     <symbol id="i-arrow" viewBox="0 0 24 24"><path fill="currentColor" d="M18 18H6V16H14.6L5 6.4L6.4 5L16 14.6V6H18V18Z"/></symbol>
     <symbol id="i-arrow-left" viewBox="0 0 21 17"><path fill="currentColor" d="M7.74 16.74L0.0 8.37L7.74 0.0L9.54 1.65L4.38 7.14H20.73V9.57H4.38L9.54 15.06L7.74 16.74Z"/></symbol>
     <symbol id="i-arrow-right" viewBox="0 0 21 17"><path fill="currentColor" d="M12.99 16.74L11.19 15.06L16.35 9.57H0.0V7.14H16.35L11.19 1.65L12.99 0.0L20.73 8.37L12.99 16.74Z"/></symbol>
+    <symbol id="i-arrow-up" viewBox="0 0 24 24"><path fill="currentColor" d="M11 20V7.825l-5.6 5.6L4 12l8-8 8 8-1.4 1.425-5.6-5.6V20Z"/></symbol>
     <symbol id="i-person" viewBox="0 0 24 24"><path fill="currentColor" d="M12 12q-1.65 0-2.825-1.175Q8 9.65 8 8q0-1.65 1.175-2.825Q10.35 4 12 4q1.65 0 2.825 1.175Q16 6.35 16 8q0 1.65-1.175 2.825Q13.65 12 12 12Zm-8 8v-2.8q0-.85.438-1.563.437-.712 1.162-1.087 1.55-.775 3.15-1.163Q10.35 13 12 13t3.25.387q1.6.388 3.15 1.163.725.375 1.163 1.087.437.713.437 1.563V20Z"/></symbol>
     <symbol id="i-mail" viewBox="0 0 24 24"><path fill="currentColor" d="M4 20q-.825 0-1.412-.587Q2 18.825 2 18V6q0-.825.588-1.412Q3.175 4 4 4h16q.825 0 1.413.588Q22 5.175 22 6v12q0 .825-.587 1.413Q20.825 20 20 20Zm8-7 8-5V6l-8 5-8-5v2Z"/></symbol>
     <symbol id="i-message" viewBox="0 0 24 24"><path fill="currentColor" d="M6 14h8v-2H6v2Zm0-3h12V9H6v2Zm0-3h12V6H6v2ZM2 22V4q0-.825.588-1.413Q3.175 2 4 2h16q.825 0 1.413.587Q22 3.175 22 4v12q0 .825-.587 1.413Q20.825 18 20 18H6l-4 4Z"/></symbol>
@@ -869,6 +870,21 @@
        за секцией едет сам шар внутри него (offset). Так слой канваса не
        приходится двигать на каждом кадре скролла. Логика — js/globe.js. -->
   <canvas class="globe-canvas" data-globe aria-hidden="true"></canvas>
+
+  <!--
+    Кнопка «наверх» (osmo Back To Top). Появляется, когда страница прокручена
+    на половину экрана, и прячется обратно. Стрелка внутри меняется тем же
+    приёмом, что иконки в стрелках слайдера производства: уезжает вверх,
+    её место занимает копия. Логика — initBackToTop() в js/main.js.
+  -->
+  <div class="back-top" data-back-to-top="wrap">
+    <button class="back-top__btn" type="button" data-back-to-top="button" aria-label="Наверх">
+      <span class="back-top__icons">
+        <svg aria-hidden="true"><use href="#i-arrow-up"></use></svg>
+        <svg aria-hidden="true"><use href="#i-arrow-up"></use></svg>
+      </span>
+    </button>
+  </div>
 
   <script src="js/vendor/gsap.min.js" defer></script>
   <script src="js/vendor/ScrollTrigger.min.js" defer></script>

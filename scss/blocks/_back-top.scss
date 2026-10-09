@@ -1,0 +1,86 @@
+@use '../utils/variables' as *;
+@use '../utils/mixins' as *;
+
+// Back To Top Button (osmo) — кнопка «наверх» в правом нижнем углу.
+// От снипета взяты механика появления (её ведёт GSAP в initBackToTop) и
+// подмена стрелки на ховере; вид свой — белый кружок с чёрной стрелкой,
+// как у стрелок слайдера производства. Это единственный плавающий элемент
+// на сайте, поэтому он должен читаться и на белых секциях, и на чёрных:
+// белый кружок даёт контраст на тёмном, а на светлом его отделяет тень.
+.back-top {
+  position: fixed;
+  right: 40rem;
+  bottom: 40rem;
+  z-index: 90; // ниже попапов (100) и шапки, выше содержимого
+  pointer-events: none;
+  // до инициализации JS обёртка скрыта, иначе кнопка мигает при загрузке
+  opacity: 0;
+  visibility: hidden;
+}
+
+.back-top__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64rem;
+  height: 64rem;
+  border-radius: 50%;
+  background-color: #fff;
+  color: #000;
+  box-shadow: 0 4rem 16rem rgba(0, 0, 0, 0.18);
+  pointer-events: auto;
+  overflow: hidden;
+}
+
+// Ход как у стрелок слайдера и кнопки с пузырьком: иконка уезжает по своей
+// оси, её место занимает копия. Здесь ось вертикальная — стрелка «наверх»
+// и уходит наверх.
+.back-top__icons {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+  width: 24rem;
+  height: 24rem;
+  gap: 4rem; // зазор между уходящей иконкой и приходящей
+
+  svg {
+    flex: none;
+    width: 24rem;
+    height: 24rem;
+    transition: transform 0.525s var(--ease-main);
+  }
+}
+
+@include hover {
+  .back-top__btn:hover .back-top__icons svg,
+  .back-top__btn:focus-visible .back-top__icons svg {
+    transform: translateY(calc(-100% - 4rem));
+  }
+}
+
+// с клавиатуры подмена работает и без указателя
+.back-top__btn:focus-visible .back-top__icons svg {
+  transform: translateY(calc(-100% - 4rem));
+}
+
+// ---------------------------------------------------------------- мобильный
+// Поля как у страницы (20) и размер как у стрелок слайдера на телефоне (48)
+@include tablet {
+  .back-top {
+    right: $page-margin-mobile;
+    bottom: $page-margin-mobile;
+  }
+
+  .back-top__btn {
+    width: 48rem;
+    height: 48rem;
+  }
+
+  .back-top__icons,
+  .back-top__icons svg {
+    width: 20rem;
+    height: 20rem;
+  }
+}

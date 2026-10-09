@@ -5,6 +5,116 @@
  * GSAP Observer (перетаскивание сцены), CustomEase и NumberFlow (одометр цифр).
  */
 
+// Snowflake Effect (osmo): снежинки сыплются внутри переданной коробки.
+// Каждая — копия шаблона [data-snowflake]: падает сверху вниз за 8–12 с,
+// по пути качается из стороны в сторону и чуть поворачивается, к концу
+// пути гаснет. Сила снега (0–10) задаётся атрибутом data-strength и решает,
+// сколько снежинок в секунду появляется и сколько их держится на экране.
+// Возвращает ручки start/stop: снег идёт, только пока его слайд открыт,
+// а секция на экране — иначе твины крутились бы впустую.
+const SNOW = {
+  fall: [8, 12],      // сколько секунд летит снежинка
+  scale: [0.3, 1.2],
+  opacity: [0.2, 1],
+  sway: [12, 60],     // размах покачивания в пикселях
+  swayTime: [1.6, 3.8],
+  turn: [-28, 28],
+  turnTime: [2.2, 5]
+};
+
+function initSnowflake(container) {
+  if (!container) return null;
+  const template = container.querySelector('[data-snowflake]');
+  if (!template) return null;
+
+  const strength = gsap.utils.clamp(0, 10, parseInt(container.dataset.strength, 10) || 0);
+  const rate = gsap.utils.mapRange(0, 10, 0.15, 5, strength);      // снежинок в секунду
+  const limit = Math.round(gsap.utils.mapRange(0, 10, 12, 180, strength));
+  const seed = Math.round(gsap.utils.mapRange(0, 10, 6, 60, strength));
+
+  let running = false;
+  let alive = 0;
+  let next = null;
+
+  const drop = () => {
+    if (!running || alive >= limit) return;
+
+    const flake = template.cloneNode(true);
+    flake.classList.remove('hidden');
+    flake.style.willChange = 'transform, opacity';
+
+    // Качание выбираем до колонки: на сколько снежинка уедет вбок, на столько
+    // же отступаем от краёв, иначе у кромок снег был бы реже
+    const sway = gsap.utils.random(...SNOW.sway, 0.1) * (0.6 + strength / 20);
+    const pad = Math.min(20, (sway / (container.clientWidth || 1)) * 100);
+    flake.style.left = `${gsap.utils.random(pad, 100 - pad, 0.1)}%`;
+    flake.style.opacity = gsap.utils.random(...SNOW.opacity, 0.001);
+
+    container.appendChild(flake);
+    alive++;
+
+    const h = container.clientHeight || window.innerHeight;
+    const time = gsap.utils.random(...SNOW.fall, 0.001);
+    const turn = gsap.utils.random(-12, 12, 0.1);
+    const swayTime = gsap.utils.random(...SNOW.swayTime, 0.001);
+    const turnTime = gsap.utils.random(...SNOW.turnTime, 0.001);
+    const tweens = [];
+
+    const done = () => {
+      tweens.forEach((t) => t && t.kill());
+      flake.remove();
+      alive--;
+    };
+
+    tweens.push(gsap.fromTo(
+      flake,
+      { y: -gsap.utils.random(30, Math.min(180, h * 0.25), 1), xPercent: -50, scale: gsap.utils.random(...SNOW.scale, 0.001), rotate: turn },
+      { y: h + gsap.utils.random(30, Math.min(220, h * 0.35), 1), ease: 'none', duration: time, onComplete: done }
+    ));
+    tweens.push(gsap.fromTo(
+      flake,
+      { x: sway },
+      { x: -sway, ease: 'sine.inOut', duration: swayTime, repeat: Math.max(1, Math.floor(time / swayTime)), yoyo: true }
+    ));
+    tweens.push(gsap.fromTo(
+      flake,
+      { rotate: turn },
+      { rotate: gsap.utils.random(...SNOW.turn, 0.1), ease: 'sine.inOut', duration: turnTime, repeat: Math.max(1, Math.floor(time / turnTime)), yoyo: true }
+    ));
+    tweens.push(gsap.to(flake, { opacity: 0, duration: 1, ease: 'power1.out', delay: Math.max(0, time - 1) }));
+  };
+
+  const schedule = () => {
+    if (!running) return;
+    const gap = 1 / rate;
+    next = gsap.delayedCall(gsap.utils.random(gap * 0.6, gap * 1.4, 0.001), () => {
+      drop();
+      schedule();
+    });
+  };
+
+  return {
+    start() {
+      if (running) return;
+      running = true;
+      for (let i = 0; i < seed; i++) gsap.delayedCall(gsap.utils.random(0, 1.2, 0.001), drop);
+      schedule();
+    },
+    stop() {
+      if (!running) return;
+      running = false;
+      if (next) next.kill();
+      // шаблон оставляем, снятые копии убираем
+      container.querySelectorAll('[data-snowflake]:not(.hidden)').forEach((el) => {
+        gsap.killTweensOf(el);
+        el.remove();
+      });
+      alive = 0;
+    }
+  };
+}
+
+
 // Конфигуратор продукта: переключение слайдов (кнопки цвета + свайп по сцене)
 // и слайдеры характеристик (стрелки + перетаскивание ручки)
 function initConfigurator() {
@@ -35,6 +145,29 @@ function initConfigurator() {
     b.classList.toggle('is--active', n === current);
     b.setAttribute('aria-selected', n === current ? 'true' : 'false');
   });
+
+  // Снег живёт на своём слайде: сыплется, только пока этот слайд открыт
+  // и секция на экране. Номер слайда берём у самого контейнера, чтобы
+  // не держать его числом в двух местах.
+  const snowBox = root.querySelector('[data-snowflake-container]');
+  const snow = initSnowflake(snowBox);
+  const snowSlide = snowBox ? slides.indexOf(snowBox.closest('[data-cfg-slide]')) : -1;
+  let snowOnScreen = true;
+  const syncSnow = () => {
+    if (!snow) return;
+    if (snowOnScreen && current === snowSlide) snow.start();
+    else snow.stop();
+  };
+  if (snow) {
+    const seen = ScrollTrigger.create({
+      trigger: root,
+      start: 'top bottom',
+      end: 'bottom top',
+      onToggle: (self) => { snowOnScreen = self.isActive; syncSnow(); }
+    });
+    snowOnScreen = seen.isActive;
+    syncSnow();
+  }
 
   // При смене слайда страница доскролливает так, чтобы низ блока совпал с низом
   // экрана — тем же easing и за то же время, что и переход слайдов
@@ -81,6 +214,7 @@ function initConfigurator() {
           b.classList.toggle('is--active', n === current);
           b.setAttribute('aria-selected', n === current ? 'true' : 'false');
         });
+        syncSnow();
       },
       onComplete: () => {
         currentSlide.classList.remove('is--current');

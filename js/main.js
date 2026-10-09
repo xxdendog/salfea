@@ -13,6 +13,7 @@
  *                         initMobileCallButton, initAnchorScroll,
  *                         initModals,
  *                         initFaq, initCallbackForm, initMetricCounters,
+ *                         initBackToTop (кнопка «наверх»),
  *                         initFooterParallax (футер выезжает медленнее)
  *   Блоки главной         initLogoRoll (буквы лого в первом экране),
  *                         initMarqueeScrollDirection (лого-ролл и лента SKU),
@@ -763,6 +764,47 @@ function initLogoRoll() {
 }
 
 
+// Back To Top Button (osmo): кнопка «наверх» в правом нижнем углу.
+// Появляется, когда страница прокручена на половину экрана, и прячется
+// обратно. Значения появления авторские: поворот −65°, масштаб 0.4 → 1,
+// 0.45s power4.out; уход чуть короче и с масштаба 0.6. Обёртка скрыта
+// стилями, снимаем это только здесь — иначе кнопка мигала бы при загрузке.
+const BACK_TOP = { showAt: 50, time: 0.45, back: 0.4, turn: -65 };
+
+function initBackToTop() {
+  const wrap = document.querySelector('[data-back-to-top="wrap"]');
+  const btn = document.querySelector('[data-back-to-top="button"]');
+  if (!wrap || !btn) return;
+
+  gsap.set(wrap, { autoAlpha: 1 });
+  gsap.set(btn, { autoAlpha: 0 });
+
+  ScrollTrigger.create({
+    trigger: document.body,
+    start: `top top-=${BACK_TOP.showAt}%`,
+    onEnter: () => {
+      gsap.fromTo(
+        btn,
+        { autoAlpha: 0, rotate: BACK_TOP.turn, scale: 0.4 },
+        { autoAlpha: 1, rotate: 0, scale: 1, duration: BACK_TOP.time, ease: 'power4.out', overwrite: true }
+      );
+    },
+    onLeaveBack: () => {
+      gsap.to(btn, {
+        autoAlpha: 0,
+        rotate: BACK_TOP.turn,
+        scale: 0.6,
+        duration: BACK_TOP.back,
+        ease: 'power4.out',
+        overwrite: true
+      });
+    }
+  });
+
+  btn.addEventListener('click', () => lenis.scrollTo(0, { lerp: 0.1 }));
+}
+
+
 // Footer Parallax Effect (osmo): футер выезжает медленнее
 // страницы и на подходе притемнён. Ход — от «верх обёртки коснулся низа экрана»
 // до «верх обёртки у верха экрана»; clamp держит точки внутри страницы, поэтому
@@ -1490,6 +1532,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initCallbackForm();
   initModals();
   initFaq();
+  initBackToTop();
   initFooterParallax();
   initMetricCounters();
   initPlantSlider();

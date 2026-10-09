@@ -1730,6 +1730,72 @@ html.lenis body {
     gap: 6rem;
   }
 }
+.back-top {
+  position: fixed;
+  right: 40rem;
+  bottom: 40rem;
+  z-index: 90;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.back-top__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64rem;
+  height: 64rem;
+  border-radius: 50%;
+  background-color: #fff;
+  color: #000;
+  box-shadow: 0 4rem 16rem rgba(0, 0, 0, 0.18);
+  pointer-events: auto;
+  overflow: hidden;
+}
+
+.back-top__icons {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+  width: 24rem;
+  height: 24rem;
+  gap: 4rem;
+}
+.back-top__icons svg {
+  flex: none;
+  width: 24rem;
+  height: 24rem;
+  transition: transform 0.525s var(--ease-main);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .back-top__btn:hover .back-top__icons svg,
+  .back-top__btn:focus-visible .back-top__icons svg {
+    transform: translateY(calc(-100% - 4rem));
+  }
+}
+.back-top__btn:focus-visible .back-top__icons svg {
+  transform: translateY(calc(-100% - 4rem));
+}
+
+@media (max-width: 991px) {
+  .back-top {
+    right: 20rem;
+    bottom: 20rem;
+  }
+  .back-top__btn {
+    width: 48rem;
+    height: 48rem;
+  }
+  .back-top__icons,
+  .back-top__icons svg {
+    width: 20rem;
+    height: 20rem;
+  }
+}
 .hero {
   position: relative;
   overflow: hidden;
@@ -4312,7 +4378,7 @@ html.lenis body {
   transition: opacity 0.9s ease;
 }
 .configurator__bg--1, .configurator__bg--2 {
-  background: linear-gradient(180deg, #162f8d 0%, #0032c8 50%, #7993e3 100%);
+  background: linear-gradient(173deg, #000 0%, #002594 50%, #7993e3 100%);
 }
 .configurator__bg--3 {
   background: linear-gradient(180deg, #5e0703 0%, #ae0c05 100%);
@@ -4401,11 +4467,30 @@ html.lenis body {
   height: 904rem;
 }
 
-.configurator__back--3 {
-  top: 378rem;
-  left: 282rem;
-  width: 883rem;
-  height: 995rem;
+.configurator__snow {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  font-size: 26rem;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.snowflake {
+  position: absolute;
+  top: 0;
+  display: block;
+  width: 1em;
+  height: 1em;
+  color: #fff;
+}
+.snowflake svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.snowflake.hidden {
+  opacity: 0;
 }
 
 .configurator__roll {
@@ -4818,11 +4903,8 @@ html.lenis body {
     width: 245rem;
     height: 190rem;
   }
-  .configurator__back--3 {
-    top: 23rem;
-    left: 82rem;
-    width: 185rem;
-    height: 209rem;
+  .configurator__snow {
+    font-size: 14rem;
   }
   .cfg-switcher {
     position: static;
