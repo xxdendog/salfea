@@ -116,10 +116,10 @@
 // Задники: «бабочка» на слайде 2 и новогодний паттерн на слайде 3.
 // Стартуют на 40rem ниже макета (как рулон), параллакс поднимает
 .configurator__back--2 {
-  top: 373rem;
-  left: 136rem;
-  width: 1169rem;
-  height: 904rem;
+  top: 434rem;
+  left: 215rem;
+  width: 1011rem;
+  height: 736rem;
 }
 
 // Snowflake Effect (osmo): снег на третьем слайде. Контейнер лежит внутри
@@ -159,7 +159,7 @@
 // параллакс подтягивает по мере прокрутки.
 // --roll-s задаёт JS от слайдеров: общий масштаб (оба слайдера дают вклад)
 .configurator__roll {
-  top: 556rem;
+  top: 453rem;
   left: 318rem;
   width: 807rem;
   height: 1074rem;
@@ -275,7 +275,9 @@
 }
 
 .cfg-slider__caption {
-  margin-top: 12rem;
+  // 2, а не 12: коробка числа выше самих цифр — маску сверху добавляет
+  // одометр NumberFlow, и зазор по макету набирается уже этой добавкой
+  margin-top: 2rem;
   font-size: 24rem;
   font-weight: 500;
   line-height: 34rem;
@@ -391,7 +393,7 @@
 
 // Горизонтальный (кол-во листов): над рулоном, 20rem под заголовком (заголовок 80+303)
 .cfg-slider--h {
-  top: 324rem;
+  top: 314rem;
   left: 487rem;
   width: 467rem;
   flex-direction: column;
@@ -407,7 +409,6 @@
 
     width: 467rem;
     height: 92rem;
-    margin-top: 8rem;
   }
 
   .cfg-slider__knob {
@@ -431,27 +432,29 @@
 
 // Вертикальный (размер): слева от рулона, текст повёрнут
 .cfg-slider--v {
-  top: 643rem;
+  top: 607rem;
   left: 264rem;
   width: 210rem;
-  height: 561rem;
+  height: 633rem;
   display: block;
 
   // Число и подпись повёрнуты на -90° (читаются снизу вверх) и стоят рядом:
   // число ближе к рулону, подпись слева от него — как в макете (114x366)
   .cfg-slider__number {
     position: absolute;
-    top: 97rem;
+    top: 133rem;
     left: 0;
     display: flex;
-    flex-direction: column-reverse;
+    flex-direction: column;
     align-items: center;
-    gap: 16rem;
+    // зазор набирается самими коробками строк: у числа сверху и снизу
+    // остаётся воздух от интерлиньяжа, по макету этого и достаточно
+    gap: 0;
     width: 366rem;
     height: 114rem;
     // поворот вокруг центра, затем сдвиг: центр блока должен встать в (57, 97+183)
     transform-origin: center;
-    transform: translate(-126rem, 126rem) rotate(-90deg); // (366-114)/2 = 126
+    transform: translate(-135rem, 126rem) rotate(-90deg); // (366-114)/2 = 126, минус 11 по макету
   }
 
   .cfg-slider__value,
@@ -469,11 +472,11 @@
   }
 
   .cfg-slider__track {
-    --range: calc(561rem - 80rem - var(--knob));
+    --range: calc(633rem - 80rem - var(--knob));
 
     flex-direction: column;
     width: 92rem;
-    height: 561rem;
+    height: 633rem;
   }
 
   .cfg-slider__line {
