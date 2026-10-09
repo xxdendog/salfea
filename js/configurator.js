@@ -30,7 +30,7 @@ function initSnowflake(container) {
   const template = container.querySelector('[data-snowflake]');
   if (!template) return null;
 
-  const strength = gsap.utils.clamp(0, 10, parseInt(container.dataset.strength, 10) || 0);
+  const strength = gsap.utils.clamp(0, 10, parseFloat(container.dataset.strength) || 0);
   const rate = gsap.utils.mapRange(0, 10, 0.15, 5, strength);      // снежинок в секунду
   const limit = Math.round(gsap.utils.mapRange(0, 10, 12, 180, strength));
   const seed = Math.round(gsap.utils.mapRange(0, 10, 6, 60, strength));

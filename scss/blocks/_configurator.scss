@@ -100,6 +100,11 @@
   position: absolute;
   inset: 0;
 
+  // рулон поверх всего внутри слайда — в том числе поверх снега
+  &--roll {
+    z-index: 2;
+  }
+
   > div {
     position: absolute;
     inset: 0;
@@ -129,7 +134,7 @@
 .configurator__snow {
   position: absolute;
   inset: 0;
-  z-index: 2; // перед рулоном: снег идёт ближе к зрителю
+  z-index: 1; // за рулоном: снег идёт позади товара
   font-size: 26rem;
   pointer-events: none;
   overflow: hidden;

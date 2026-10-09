@@ -4448,6 +4448,9 @@ html.lenis body {
   position: absolute;
   inset: 0;
 }
+.configurator__layer--roll {
+  z-index: 2;
+}
 .configurator__layer > div {
   position: absolute;
   inset: 0;
@@ -4470,7 +4473,7 @@ html.lenis body {
 .configurator__snow {
   position: absolute;
   inset: 0;
-  z-index: 2;
+  z-index: 1;
   font-size: 26rem;
   pointer-events: none;
   overflow: hidden;
