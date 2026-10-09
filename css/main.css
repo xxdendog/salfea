@@ -91,6 +91,7 @@ ol {
 }
 html {
   font-size: 0.0694444444vw;
+  scrollbar-gutter: stable;
 }
 @media (min-aspect-ratio: 1440/900) {
   html {
@@ -4165,50 +4166,65 @@ html.lenis body {
 
 @media (max-width: 991px) {
   .product-hero {
+    display: flex;
     height: auto;
+    min-height: 100svh;
+    background-image: linear-gradient(135.13deg, #000 0%, #002594 50%, #7993e4 100%);
   }
   .product-hero__inner {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
     width: 100%;
     height: auto;
-    padding: 120rem 20rem 300rem;
+    padding: 105rem 20rem 0;
   }
   .product-hero__content {
     position: relative;
+    order: 1;
     left: auto;
     top: auto;
     width: auto;
   }
   .product-hero__label {
-    font-size: 15rem;
-    line-height: 20rem;
+    font-size: 18rem;
+    line-height: 26rem;
+  }
+  .product-hero .sec-title {
+    margin-top: 11rem;
   }
   .product-hero__desc {
     width: auto;
-    margin-top: 20rem;
+    margin-top: 21rem;
     font-size: 16rem;
-    line-height: 24rem;
+    line-height: 26rem;
   }
   .product-hero__actions {
-    margin-top: 28rem;
+    margin-top: 31rem;
   }
   .product-hero__actions .btn-calc__pill {
-    width: auto;
-    padding: 0 28rem;
+    width: 169rem;
+    padding: 0;
   }
-  .product-hero__media .product-hero__roll--back,
-  .product-hero__media .product-hero__roll--front {
-    width: 268rem;
+  .product-hero__media {
+    position: relative;
+    inset: auto;
+    order: 2;
+    flex: 1 0 442rem;
+    margin-inline: -20rem;
   }
   .product-hero__media .product-hero__roll--back {
-    left: auto;
-    right: -54rem;
-    top: auto;
-    bottom: 17rem;
+    left: 40.36rem;
+    right: auto;
+    top: 0;
+    bottom: auto;
+    width: 414.86rem;
   }
   .product-hero__media .product-hero__roll--front {
-    left: -24rem;
-    top: auto;
-    bottom: -35rem;
+    left: -53rem;
+    top: 71.4rem;
+    bottom: auto;
+    width: 413.9rem;
   }
 }
 .reasons {

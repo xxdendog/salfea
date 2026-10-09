@@ -86,73 +86,95 @@
 }
 
 // ---------------------------------------------------------------- мобильный
-// Текст встаёт в поток сверху, рулоны уходят под него и вправо: на 390 они
-// занимают больше половины экрана, и ставить их рядом с текстом негде.
-// Высоту секции задаёт содержимое плюс место под рулоны.
+// Первый экран по макету 1111.svg (402x900): текст сверху в потоке, под ним
+// коробка с рулонами, которые уходят за нижнюю кромку секции. Секция не ниже
+// экрана; если экран выше макетных 900, лишнее достаётся коробке рулонов —
+// они просто видны чуть больше, а текст остаётся на месте.
 @include tablet {
   .product-hero {
+    display: flex;
     height: auto;
+    min-height: 100svh;
+    // Градиент в макете идёт по диагонали из левого верхнего угла: вектор
+    // 650x653 на коробке 402x900. В пересчёте на CSS это 135.13deg — при
+    // таком угле длина градиентной линии (402·sin + 900·|cos| = 921) сходится
+    // с фигмовской до десятых, поэтому цвета ложатся один в один.
+    // Десктопные 173deg на узкой коробке дают почти вертикальный переход.
+    background-image: linear-gradient(135.13deg, #000 0%, #{$color-blue} 50%, #7993e4 100%);
   }
 
-  // Запас под рулоны даём внутреннему блоку, а не секции: коробка с рулонами
-  // лежит внутри него (inset: 0), и по его высоте они и выравниваются
   .product-hero__inner {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
     width: 100%;
     height: auto;
-    padding: 120rem $page-margin-mobile 300rem;
+    // 105 сверху — от этого числа подпись встаёт на макетные 111 по чернилам
+    padding: 105rem $page-margin-mobile 0;
   }
 
   // relative, а не static: коробка с рулонами позиционирована и лежит выше
   // любого непозиционированного содержимого — текст уходил бы под рулоны
   .product-hero__content {
     position: relative;
+    order: 1;
     left: auto;
     top: auto;
     width: auto;
   }
 
   .product-hero__label {
-    font-size: 15rem;
-    line-height: 20rem;
+    font-size: 18rem;
+    line-height: 26rem;
+  }
+
+  // в макете заголовок отстоит от подписи на 11, общие для секций — 10
+  .product-hero .sec-title {
+    margin-top: 11rem;
   }
 
   .product-hero__desc {
     width: auto;
-    margin-top: 20rem;
+    margin-top: 21rem;
     font-size: 16rem;
-    line-height: 24rem;
+    line-height: 26rem;
   }
 
   .product-hero__actions {
-    margin-top: 28rem;
+    margin-top: 31rem;
 
     .btn-calc__pill {
-      width: auto;
-      padding: 0 28rem;
+      width: 169rem;
+      padding: 0;
     }
   }
 
-  // Рулоны прижимаем к нижнему краю секции и уменьшаем вдвое с небольшим:
-  // кадр остаётся узнаваемым, а текст над ними не зажимается. Ширина 268,
-  // а не прежние 300: у полных снимков вокруг рулона больше пустого поля,
-  // и при 268 сам рулон выходит ровно той же ширины, что и раньше.
-  // Координаты отсчитаны так, чтобы рулон стоял на прежнем месте: задний
-  // нижней кромкой на 60 от низа секции, передний — вровень с ней.
-  .product-hero__media .product-hero__roll--back,
-  .product-hero__media .product-hero__roll--front {
-    width: 268rem;
+  // Коробка рулонов — в поток, сразу под кнопкой и во всю ширину экрана
+  // (поля контейнера снимаем отрицательным полем). 442 — это 900 минус 458,
+  // низ кнопки: ровно столько места под рулоны оставляет макет.
+  .product-hero__media {
+    position: relative;
+    inset: auto;
+    order: 2;
+    flex: 1 0 442rem;
+    margin-inline: -$page-margin-mobile;
   }
 
+  // Размеры и координаты сняты с макета: Figma кладёт снимок узором
+  // в прямоугольник, реальная рамка — прямоугольник, умноженный на матрицу
   .product-hero__media .product-hero__roll--back {
-    left: auto;
-    right: -54rem;
-    top: auto;
-    bottom: 17rem;
+    left: 40.36rem;
+    right: auto;
+    top: 0;
+    bottom: auto;
+    width: 414.86rem;
   }
 
   .product-hero__media .product-hero__roll--front {
-    left: -24rem;
-    top: auto;
-    bottom: -35rem;
+    left: -53rem;
+    top: 71.4rem;
+    bottom: auto;
+    width: 413.9rem;
   }
 }
+

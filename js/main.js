@@ -715,11 +715,25 @@ function initCounters(group) {
 // Настройки как у референса (madewithgsap): порядок случайный, шаг 34 мс,
 // expo.inOut. Все копии ленты анимируем одним твином, иначе каталось бы
 // вразнобой. Заголовок и описание первого экрана не анимируются.
-const LOGO_ROLL = { delay: 0.3, step: 0.034 };
+// Запас, на который оригинал уезжает за верхнюю кромку маски. Копия лежит
+// не ровно на высоте фигуры, а на запас ниже, и перекат идёт на ту же
+// величину: копия приходит точно на место, а низ оригинала оказывается
+// за кромкой, а не впритык к ней. Впритык математически верно, но на экране
+// композитор округляет слой до целых пикселей, и из-под кромки проступает
+// ниточка предыдущей копии. Те же грабли, что у переката заголовков
+// (там копия стоит на 100% + зазор + 2px).
+const LOGO_ROLL = { delay: 0.3, step: 0.034, gap: 4 };
 
 function initLogoRoll() {
   const parts = document.querySelectorAll('.logo-letter');
   if (!parts.length) return;
+
+  // Копия — последний потомок группы: у букв это <path>, у знака <g>
+  parts.forEach((g) => {
+    const shift = Number(g.dataset.roll) + LOGO_ROLL.gap;
+    g.lastElementChild.setAttribute('transform', `translate(0 ${shift})`);
+    g.dataset.roll = shift;
+  });
 
   const start = () => {
     // Лента состоит из пяти одинаковых копий. Фильтровать по видимости
@@ -735,7 +749,7 @@ function initLogoRoll() {
     };
 
     gsap.to(parts, {
-      // высота одной копии лежит в data-roll — у группы их две, bbox не годится
+      // ход лежит в data-roll — у группы две копии, bbox не годится
       y: (i, el) => -Number(el.dataset.roll),
       duration: ROLL_TIME,
       ease: ROLL_EASE,
